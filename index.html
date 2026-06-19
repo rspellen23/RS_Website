@@ -1,30 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Raymond Spellen | Executive Creative Portfolio</title>
+<title>Raymond Spellen | Learning Experience Portfolio</title>
 
 <style>
+/* ─── Tokens ─── */
 :root {
-  --bg: #0f1115;
-  --card: #171a21;
-  --text: #f4f1ea;
-  --muted: #a8a8a8;
-  --accent: #d8b46a;
-  --line: rgba(255,255,255,.12);
+  --bg:           #07090f;
+  --surface:      #0d1223;
+  --card:         rgba(13, 18, 35, 0.75);
+  --text:         #edf0ff;
+  --muted:        #6b7ca4;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.10);
+  --accent-mid:   rgba(2, 105, 237, 0.22);
+  --accent-glow:  rgba(2, 105, 237, 0.32);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.30);
+  --grid-line:    rgba(2, 105, 237, 0.045);
+  --orb-opacity:  0.13;
+  --nav-bg:       rgba(7, 9, 15, 0.65);
 }
 
-* { box-sizing: border-box; }
+[data-theme="light"] {
+  --bg:           #f1f4ff;
+  --surface:      #ffffff;
+  --card:         rgba(255, 255, 255, 0.82);
+  --text:         #07090f;
+  --muted:        #505d7e;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.07);
+  --accent-mid:   rgba(2, 105, 237, 0.15);
+  --accent-glow:  rgba(2, 105, 237, 0.22);
+  --border:       rgba(0, 0, 0, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.25);
+  --grid-line:    rgba(2, 105, 237, 0.04);
+  --orb-opacity:  0.06;
+  --nav-bg:       rgba(241, 244, 255, 0.72);
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 body {
-  margin: 0;
-  font-family: Inter, Arial, sans-serif;
+  font-family: Inter, -apple-system, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
 }
 
+/* ─── Background grid ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+  transition: background-image .4s ease;
+}
+
+/* ─── Gradient orbs ─── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: var(--orb-opacity);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity .4s ease;
+}
+.orb-1 {
+  width: 720px; height: 720px;
+  background: #0269ed;
+  top: -280px; right: -180px;
+  animation: drift 12s ease-in-out infinite;
+}
+.orb-2 {
+  width: 520px; height: 520px;
+  background: #00b4d8;
+  bottom: 5%; left: -160px;
+  animation: drift 14s ease-in-out infinite reverse;
+}
+.orb-3 {
+  width: 400px; height: 400px;
+  background: #5c2eed;
+  top: 45%; right: 15%;
+  animation: drift 10s ease-in-out infinite;
+  animation-delay: -6s;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-44px); }
+}
+
+/* ─── Layer content above bg ─── */
+header, section, .intro-loader, nav, footer { position: relative; z-index: 1; }
+
+/* ─── Intro loader ─── */
 .intro-loader {
   position: fixed;
   inset: 0;
@@ -34,213 +115,543 @@ body {
   place-items: center;
   transition: opacity .7s ease;
 }
-
 .intro-loader.hide {
   opacity: 0;
   pointer-events: none;
 }
-
-.intro-logo,
-.signature-mark {
-  width: 220px;
-}
-
-.signature-mark {
-  width: 180px;
-  margin-bottom: 40px;
-}
-
+.intro-logo { width: 300px; }
 .intro-logo .cls-1,
-.signature-mark .cls-1 {
-  fill: var(--accent);
-}
+.signature-mark .cls-1,
+.nav-logo-svg .cls-1 { fill: #0269ed; }
 
-header {
-  min-height: 100vh;
-  padding: 40px 8vw;
-  display: grid;
-  align-items: center;
-  position: relative;
-}
-
+/* ─── Nav ─── */
 nav {
-  position: absolute;
-  top: 32px;
-  left: 8vw;
-  right: 8vw;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 16px 6vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: background .4s ease, border-color .4s ease;
+}
+
+.nav-logo-svg { width: 72px; height: auto; display: block; }
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 36px;
+}
+.nav-links a {
   color: var(--muted);
+  text-decoration: none;
   font-size: 14px;
+  letter-spacing: .03em;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+.nav-right { display: flex; align-items: center; gap: 16px; }
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-hi);
+  background: var(--accent-lo);
+  color: var(--muted);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all .25s ease;
+  backdrop-filter: blur(8px);
+}
+.theme-btn:hover { color: var(--text); border-color: var(--accent); }
+
+.icon-sun, .icon-moon {
+  width: 15px; height: 15px;
+  display: none;
+}
+[data-theme="dark"]  .icon-moon { display: block; }
+[data-theme="light"] .icon-sun  { display: block; }
+[data-theme="dark"]  .toggle-label::after { content: "Light"; }
+[data-theme="light"] .toggle-label::after { content: "Dark"; }
+
+/* ─── Hero ─── */
+header {
+  min-height: 100vh;
+  padding: 130px 6vw 100px;
+  display: flex;
+  align-items: center;
 }
 
-.mini-logo {
-  color: var(--accent);
-  letter-spacing: .16em;
-  font-weight: 700;
-}
+.hero { max-width: 1000px; }
 
-.hero {
-  max-width: 940px;
+.signature-mark {
+  display: block;
+  width: 200px;
+  margin-bottom: 48px;
 }
 
 .eyebrow {
-  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .22em;
   text-transform: uppercase;
-  letter-spacing: .18em;
-  font-size: 13px;
-  margin-bottom: 24px;
+  color: var(--accent);
+  padding: 6px 16px;
+  border: 1px solid var(--border-hi);
+  border-radius: 999px;
+  background: var(--accent-lo);
+  margin-bottom: 32px;
+  backdrop-filter: blur(8px);
 }
+.eyebrow-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent);
+  animation: blink 2.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.3;} }
 
 h1 {
-  font-size: clamp(48px, 9vw, 116px);
-  line-height: .9;
-  margin: 0;
-  letter-spacing: -0.07em;
+  font-size: clamp(42px, 7vw, 92px);
+  line-height: .93;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  margin-bottom: 32px;
 }
 
-.hero p {
-  max-width: 640px;
-  font-size: 22px;
-  line-height: 1.5;
+.grad {
+  background: linear-gradient(130deg, var(--text) 0%, #4da3ff 55%, #00c6ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="light"] .grad {
+  background: linear-gradient(130deg, #07090f 0%, #0269ed 55%, #0050b3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 19px;
+  line-height: 1.65;
   color: var(--muted);
-  margin-top: 32px;
+  max-width: 560px;
+  margin-bottom: 48px;
 }
 
-.reveal,
-.reveal-card {
-  opacity: 0;
-  transform: translateY(28px);
-}
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
 
-.section {
-  padding: 120px 8vw;
-  border-top: 1px solid var(--line);
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: inherit;
+  letter-spacing: .01em;
+  transition: all .25s ease;
+  cursor: pointer;
 }
-
-.section-title {
-  font-size: clamp(34px, 5vw, 68px);
-  margin-bottom: 24px;
-  letter-spacing: -0.05em;
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 28px var(--accent-glow);
 }
-
-.section-intro {
-  color: var(--muted);
-  font-size: 20px;
-  max-width: 700px;
-  line-height: 1.6;
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 48px var(--accent-glow);
 }
-
-.grid {
-  margin-top: 60px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.card {
+.btn-ghost {
   background: var(--card);
-  padding: 32px;
-  border: 1px solid var(--line);
-  min-height: 280px;
-  transition: transform .3s ease, border-color .3s ease;
+  color: var(--text);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.btn-ghost:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
 }
 
-.card:hover {
-  transform: translateY(-8px);
-  border-color: var(--accent);
+/* ─── Stats bar ─── */
+.stats-bar {
+  display: flex;
+  gap: 0;
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
 }
-
-.card span {
+.stat {
+  flex: 1;
+  min-width: 150px;
+  padding: 28px 40px;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-val {
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.stat-val em {
+  font-style: normal;
   color: var(--accent);
-  font-size: 13px;
-  letter-spacing: .14em;
+}
+.stat-lbl {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .06em;
   text-transform: uppercase;
 }
 
-.card h3 {
-  font-size: 26px;
-  margin: 24px 0 12px;
-}
+/* ─── Section shell ─── */
+.section { padding: 120px 6vw; }
+.section-bordered { border-top: 1px solid var(--border); }
 
-.card p {
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.case-study {
-  display: grid;
-  grid-template-columns: 1fr 1.3fr;
-  gap: 60px;
-  align-items: start;
-  margin-top: 80px;
-}
-
-.case-number {
+.tag-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
   color: var(--accent);
-  font-size: 14px;
-  letter-spacing: .18em;
+  margin-bottom: 20px;
 }
-
-.case-study h3 {
-  font-size: clamp(32px, 4vw, 56px);
-  margin: 16px 0;
-  letter-spacing: -0.04em;
-}
-
-.case-study p {
-  color: var(--muted);
-  line-height: 1.7;
-  font-size: 18px;
-}
-
-.motion-line {
+.tag-label::before {
+  content: '';
+  display: block;
+  width: 24px;
   height: 1px;
   background: var(--accent);
-  width: 0;
-  margin: 40px 0;
+  box-shadow: 0 0 6px var(--accent);
 }
 
-.cta {
-  padding: 140px 8vw;
+.section-h {
+  font-size: clamp(30px, 4vw, 56px);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 580px;
+  margin-bottom: 60px;
+}
+
+/* ─── Capabilities ─── */
+.caps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.cap-card {
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px 30px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+}
+.cap-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent-lo) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+}
+.cap-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 56px rgba(2, 105, 237, 0.13);
+}
+.cap-card:hover::after { opacity: 1; }
+
+.cap-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+  display: block;
+}
+.cap-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--border-hi);
+  background: var(--accent-lo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.cap-icon svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.8; }
+.cap-card h3 {
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.cap-card p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.tool-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--accent-lo);
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  padding: 3px 10px;
+  letter-spacing: .04em;
+}
+
+/* ─── Work / Case Studies ─── */
+.work-stack { display: flex; flex-direction: column; gap: 24px; }
+
+.work-card {
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 52px 48px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  transition: border-color .3s, box-shadow .3s;
+}
+.work-card:hover {
+  border-color: var(--border-hi);
+  box-shadow: 0 20px 60px rgba(2, 105, 237, 0.10);
+}
+
+.work-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.work-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--border-hi);
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent-lo);
+}
+.work-idx {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .1em;
+}
+
+.work-card h3 {
+  font-size: clamp(26px, 2.8vw, 40px);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.work-card p {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.72;
+  margin-bottom: 32px;
+}
+
+.outcomes { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.outcomes li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.outcomes li::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  flex-shrink: 0;
+}
+
+.work-visual {
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--accent-lo) 100%);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.work-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 30%, var(--accent-mid) 100%);
+}
+.visual-label {
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  position: relative;
+  z-index: 1;
+}
+
+/* work-card alternate layout for even items */
+.work-card.flip { direction: rtl; }
+.work-card.flip > * { direction: ltr; }
+
+/* ─── About ─── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.about-text p {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+.about-text p:last-child { margin-bottom: 0; }
+
+.skills-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+  display: block;
+}
+.skill-list { display: flex; flex-direction: column; gap: 22px; }
+.skill-row {}
+.skill-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.skill-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.skill-pct { font-size: 13px; color: var(--accent); }
+.skill-track {
+  height: 2px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.skill-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0269ed, #00b4d8);
+  box-shadow: 0 0 10px rgba(2, 105, 237, 0.5);
+  width: 0;
+  transition: width 1.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── CTA ─── */
+.cta-section {
+  padding: 120px 6vw;
+  border-top: 1px solid var(--border);
   text-align: center;
 }
+.cta-section h2 {
+  font-size: clamp(34px, 5vw, 68px);
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+.cta-section p {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 480px;
+  margin: 0 auto 48px;
+  line-height: 1.65;
+}
+.cta-row { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
 
-.cta h2 {
-  font-size: clamp(42px, 7vw, 88px);
-  letter-spacing: -0.06em;
-  margin: 0 auto 24px;
-  max-width: 900px;
+/* ─── Footer ─── */
+footer {
+  padding: 28px 6vw;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted);
+  position: relative;
+  z-index: 1;
 }
 
-.cta a {
-  display: inline-block;
-  margin-top: 32px;
-  padding: 16px 28px;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  text-decoration: none;
-  border-radius: 999px;
-}
+/* ─── Reveal animation ─── */
+.reveal, .reveal-stagger { opacity: 0; transform: translateY(22px); }
 
-@media(max-width: 850px) {
-  .grid,
-  .case-study {
-    grid-template-columns: 1fr;
-  }
-
-  nav {
-    position: static;
-    margin-bottom: 80px;
-  }
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .caps-grid { grid-template-columns: 1fr; }
+  .work-card { grid-template-columns: 1fr; padding: 32px 28px; gap: 32px; }
+  .work-card.flip { direction: ltr; }
+  .about-grid { grid-template-columns: 1fr; gap: 48px; }
+  .nav-links { display: none; }
+  .stats-bar { flex-direction: column; }
+  .stat { border-right: none; border-bottom: 1px solid var(--border); }
+  .stat:last-child { border-bottom: none; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="intro-loader">
+<!-- Ambient orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- ─── Intro Loader ─── -->
+<div class="intro-loader" id="loader">
   <svg class="intro-logo" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
     <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
     <path class="cls-1" d="M746.52,170.11c-41.01-4.36-80.49-13.59-121.05-20.85-36.13-6.47-71.23-11.73-107.86-14.17-29.82-1.98-58.53-.9-87.3,6.82-17.5,4.69-33.44,12.44-48.13,22.68-16.47,11.48-29.41,26.01-38.27,43.81-15.53,31.22-13.31,71.85,15.78,92.76l-19.06-6.13c-14.24-4.58-26.38-13.5-36.01-24.84-24.78-29.19-21.93-66.45-5.73-99.88,10.49-21.65,25.46-40.45,43.13-56.59,4-3.65,7.99-5.99,12.07-9.19l6.69-5.24c19.83-13.56,40.91-23.45,64.21-29.67l37.31-7.76c42.07-5.44,84.1-2.69,125.65,5.95l70.61,18.24,15.09,4.57,59.17,16.35c79.18,25.2,121,41.06,189.66,34.63s85.92-17.17,88.58-18.08c28.8-9.76,45.96-21.68,65.62-31.13l43.32-22.01c-57.28,35.37-111.01,80.38-176.34,98.19-18.41,5.02-35.52,12.22-98.81,11.55-30.35-.32-68.17-6.8-98.32-10Z"/>
@@ -249,12 +660,47 @@ h1 {
   </svg>
 </div>
 
-<header>
-  <nav>
-    <div class="mini-logo">RS</div>
-    <div>Learning Experience Design / Creative Strategy</div>
-  </nav>
+<!-- ─── Nav ─── -->
+<nav>
+  <svg class="nav-logo-svg" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
+    <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
+    <path class="cls-1" d="M746.52,170.11c-41.01-4.36-80.49-13.59-121.05-20.85-36.13-6.47-71.23-11.73-107.86-14.17-29.82-1.98-58.53-.9-87.3,6.82-17.5,4.69-33.44,12.44-48.13,22.68-16.47,11.48-29.41,26.01-38.27,43.81-15.53,31.22-13.31,71.85,15.78,92.76l-19.06-6.13c-14.24-4.58-26.38-13.5-36.01-24.84-24.78-29.19-21.93-66.45-5.73-99.88,10.49-21.65,25.46-40.45,43.13-56.59,4-3.65,7.99-5.99,12.07-9.19l6.69-5.24c19.83-13.56,40.91-23.45,64.21-29.67l37.31-7.76c42.07-5.44,84.1-2.69,125.65,5.95l70.61,18.24,15.09,4.57,59.17,16.35c79.18,25.2,121,41.06,189.66,34.63s85.92-17.17,88.58-18.08c28.8-9.76,45.96-21.68,65.62-31.13l43.32-22.01c-57.28,35.37-111.01,80.38-176.34,98.19-18.41,5.02-35.52,12.22-98.81,11.55-30.35-.32-68.17-6.8-98.32-10Z"/>
+    <path class="cls-1" d="M389.35,270.35c73.89-64.99,161.21-70.91,202.21-32.68,29.97,27.95,33,77.44,21.45,112.34-29.44,88.96-172.19,139.36-275.74,96.16-13.71-5.72-81.39-31.4-103.15-96.16-15.16-45.12-3.04-93.95,0-93.96,1.83,0,.04,17.59,5.11,34.72,16.6,56.14,105.76,102.1,188.94,86.81,55.87-10.27,110.69-33.31,96-80.68-8.28-26.7-49.24-41.07-52.09-41.87-42.02-11.91-77.17,11.49-82.72,15.32Z"/>
+    <path class="cls-1" d="M412.84.25c7.83-1.89,171,5.68,322.09,73.8,65.77,29.65,86.09,35.79,115.6,40.58,130.66,21.21,242.15-42.4,240.19-40.58-3.19,2.97-108.45,83.8-246.89,58.12-3.77-.7-8.42-1.26-17.36-3.77-90.03-25.29-136.85-61.04-287.14-81.85-90.42-12.52-159.1,30.61-157.17,26.37,1.71-3.75,29.14-72.29,30.69-72.66Z"/>
+  </svg>
 
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#capabilities">Capabilities</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">
+      <!-- Sun icon -->
+      <svg class="icon-sun" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <!-- Moon icon -->
+      <svg class="icon-moon" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span class="toggle-label"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── Hero ─── -->
+<header id="hero">
   <div class="hero">
     <svg class="signature-mark" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
       <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
@@ -263,90 +709,263 @@ h1 {
       <path class="cls-1" d="M412.84.25c7.83-1.89,171,5.68,322.09,73.8,65.77,29.65,86.09,35.79,115.6,40.58,130.66,21.21,242.15-42.4,240.19-40.58-3.19,2.97-108.45,83.8-246.89,58.12-3.77-.7-8.42-1.26-17.36-3.77-90.03-25.29-136.85-61.04-287.14-81.85-90.42-12.52-159.1,30.61-157.17,26.37,1.71-3.75,29.14-72.29,30.69-72.66Z"/>
     </svg>
 
-    <div class="eyebrow reveal">Executive Creative Portfolio</div>
+    <div class="eyebrow reveal">
+      <span class="eyebrow-dot"></span>
+      Executive Creative Portfolio
+    </div>
 
-    <h1 class="headline reveal">
-      Designing learning that feels clear, modern, and human.
+    <h1 class="reveal">
+      Designing learning<br>
+      <span class="grad">that moves people.</span>
     </h1>
 
-    <p class="reveal">
-      I build instructional experiences that turn complex ideas into practical, polished, learner-centered moments.
+    <p class="hero-sub reveal">
+      I build instructional experiences that turn complex ideas into practical,
+      polished, learner-centered moments — combining strategy, design, and technology
+      into work that actually sticks.
     </p>
+
+    <div class="hero-ctas reveal">
+      <a href="#work" class="btn btn-primary">View My Work</a>
+      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+    </div>
   </div>
 </header>
 
-<section class="section">
-  <h2 class="section-title reveal">
-    The work sits at the intersection of clarity, systems, and visual direction.
-  </h2>
+<!-- ─── Stats ─── -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-val">8<em>+</em></div>
+    <div class="stat-lbl">Years Experience</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val">50<em>+</em></div>
+    <div class="stat-lbl">Courses Built</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val">12<em>+</em></div>
+    <div class="stat-lbl">Tools Mastered</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val">4</div>
+    <div class="stat-lbl">Industries</div>
+  </div>
+</div>
 
-  <p class="section-intro reveal">
-    This portfolio uses motion as guidance — not decoration. Every reveal, hover, and transition helps the viewer understand the work faster.
+<!-- ─── Capabilities ─── -->
+<section class="section section-bordered" id="capabilities">
+  <div class="tag-label reveal">Capabilities</div>
+  <h2 class="section-h reveal">
+    Strategy. Design. Execution.
+  </h2>
+  <p class="section-sub reveal">
+    Every project starts with a clear question: what does the learner actually need to walk away able to do? The answer shapes everything else.
   </p>
 
-  <div class="grid">
-    <div class="card reveal-card">
-      <span>01 / Strategy</span>
+  <div class="caps-grid">
+    <div class="cap-card reveal-stagger">
+      <span class="cap-num">01 / Strategy</span>
+      <div class="cap-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+      </div>
       <h3>Learning Architecture</h3>
-      <p>Courses, workflows, and programs structured around what learners actually need to do.</p>
+      <p>Courses, programs, and workflows structured around real performance outcomes — not content coverage.</p>
+      <div class="tool-chips">
+        <span class="chip">ADDIE</span>
+        <span class="chip">SAM</span>
+        <span class="chip">Needs Analysis</span>
+        <span class="chip">Bloom's Taxonomy</span>
+      </div>
     </div>
 
-    <div class="card reveal-card">
-      <span>02 / Design</span>
+    <div class="cap-card reveal-stagger">
+      <span class="cap-num">02 / Design</span>
+      <div class="cap-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
       <h3>Visual Systems</h3>
-      <p>Clean layouts, consistent hierarchy, and branded interactions that feel senior and intentional.</p>
+      <p>Clean layouts, consistent hierarchy, and branded interactions that feel senior and intentional — not templated.</p>
+      <div class="tool-chips">
+        <span class="chip">Figma</span>
+        <span class="chip">Adobe XD</span>
+        <span class="chip">Illustrator</span>
+        <span class="chip">Motion Design</span>
+      </div>
     </div>
 
-    <div class="card reveal-card">
-      <span>03 / Execution</span>
+    <div class="cap-card reveal-stagger">
+      <span class="cap-num">03 / Execution</span>
+      <div class="cap-icon">
+        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
       <h3>Interactive Builds</h3>
-      <p>Rise, Storyline, HTML, AI workflows, and custom media working together as one experience.</p>
+      <p>Rise, Storyline, HTML, AI workflows, and custom media working together as a single cohesive experience.</p>
+      <div class="tool-chips">
+        <span class="chip">Articulate Rise</span>
+        <span class="chip">Storyline</span>
+        <span class="chip">HTML/CSS</span>
+        <span class="chip">AI Workflows</span>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <h2 class="section-title reveal">Featured Case Studies</h2>
+<!-- ─── Featured Work ─── -->
+<section class="section section-bordered" id="work">
+  <div class="tag-label reveal">Featured Work</div>
+  <h2 class="section-h reveal">Case Studies</h2>
+  <p class="section-sub reveal">
+    Selected projects that show what the process looks like from problem to finished experience.
+  </p>
 
-  <div class="case-study">
-    <div>
-      <div class="case-number reveal">CASE 01</div>
-      <h3 class="reveal">UPP Workflow Mindset</h3>
+  <div class="work-stack">
+    <!-- Case 01 -->
+    <div class="work-card reveal">
+      <div>
+        <div class="work-meta">
+          <span class="work-badge">Case Study</span>
+          <span class="work-idx">01 / 02</span>
+        </div>
+        <h3>UPP Workflow Mindset</h3>
+        <p>
+          A complex provisioning process turned into a clear learning path — walkthroughs, simulations, and decision-focused reinforcement that met learners where the actual friction was.
+        </p>
+        <ul class="outcomes">
+          <li>Reduced provisioning errors by clarifying mental models</li>
+          <li>Simulation-based practice for high-stakes decision points</li>
+          <li>Modular design adaptable across three role tracks</li>
+        </ul>
+      </div>
+      <div class="work-visual">
+        <span class="visual-label">Preview Coming Soon</span>
+      </div>
     </div>
 
-    <div>
-      <div class="motion-line"></div>
+    <!-- Case 02 -->
+    <div class="work-card flip reveal">
+      <div>
+        <div class="work-meta">
+          <span class="work-badge">Case Study</span>
+          <span class="work-idx">02 / 02</span>
+        </div>
+        <h3>Learn with AI</h3>
+        <p>
+          A practical AI learning series for employees who need confidence, clarity, and responsible-use guidance — without the hype or jargon that makes most AI training feel abstract.
+        </p>
+        <ul class="outcomes">
+          <li>Built around real employee workflows, not vendor demos</li>
+          <li>Responsible-use framework embedded into every module</li>
+          <li>Measurable confidence shift on pre/post assessments</li>
+        </ul>
+      </div>
+      <div class="work-visual">
+        <span class="visual-label">Preview Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── About ─── -->
+<section class="section section-bordered" id="about">
+  <div class="tag-label reveal">About</div>
+  <h2 class="section-h reveal">Learning Experience Designer.<br>Creative Strategist.</h2>
+
+  <div class="about-grid">
+    <div class="about-text">
       <p class="reveal">
-        A complex provisioning process turned into a clear learning path with walkthroughs, simulations, and decision-focused reinforcement.
+        I've spent the better part of a decade working at the intersection of instructional design, visual craft, and emerging technology. My work shows up in Fortune 500 onboarding programs, custom eLearning builds, and leadership development curricula — anywhere complexity needs to be made clear.
+      </p>
+      <p class="reveal">
+        I'm drawn to projects where the brief is hard. The ones where you have to actually understand the domain before you can design the experience. That's where the interesting work lives.
+      </p>
+      <p class="reveal">
+        Outside of client work, I'm exploring how AI tools are changing what's possible in rapid prototyping, personalization, and adaptive learning design.
       </p>
     </div>
-  </div>
-
-  <div class="case-study">
-    <div>
-      <div class="case-number reveal">CASE 02</div>
-      <h3 class="reveal">Learn with AI</h3>
-    </div>
 
     <div>
-      <div class="motion-line"></div>
-      <p class="reveal">
-        A practical AI learning series designed for employees who need confidence, clarity, and responsible-use guidance without the hype.
-      </p>
+      <span class="skills-label reveal">Core Skills</span>
+      <div class="skill-list">
+        <div class="skill-row reveal-stagger">
+          <div class="skill-top">
+            <span class="skill-name">Instructional Design</span>
+            <span class="skill-pct">95%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-width="95"></div></div>
+        </div>
+        <div class="skill-row reveal-stagger">
+          <div class="skill-top">
+            <span class="skill-name">eLearning Development</span>
+            <span class="skill-pct">92%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-width="92"></div></div>
+        </div>
+        <div class="skill-row reveal-stagger">
+          <div class="skill-top">
+            <span class="skill-name">Visual / UX Design</span>
+            <span class="skill-pct">88%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-width="88"></div></div>
+        </div>
+        <div class="skill-row reveal-stagger">
+          <div class="skill-top">
+            <span class="skill-name">AI Workflow Integration</span>
+            <span class="skill-pct">80%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-width="80"></div></div>
+        </div>
+        <div class="skill-row reveal-stagger">
+          <div class="skill-top">
+            <span class="skill-name">Creative Strategy</span>
+            <span class="skill-pct">90%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-width="90"></div></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="cta">
-  <h2 class="reveal">A portfolio that moves with purpose, not noise.</h2>
-  <a href="#" class="reveal">View Selected Work</a>
+<!-- ─── CTA ─── -->
+<section class="cta-section" id="contact">
+  <div class="tag-label reveal" style="justify-content:center;">Contact</div>
+  <h2 class="reveal">
+    Have a project<br>
+    <span class="grad">worth building?</span>
+  </h2>
+  <p class="reveal">
+    I take on a small number of projects at a time. If yours is interesting, reach out and let's talk.
+  </p>
+  <div class="cta-row reveal">
+    <a href="mailto:rspellen23@gmail.com" class="btn btn-primary">Send a Message</a>
+    <a href="#work" class="btn btn-ghost">View Work First</a>
+  </div>
 </section>
+
+<!-- ─── Footer ─── -->
+<footer>
+  <span>Raymond Spellen &mdash; Learning Experience Design / Creative Strategy</span>
+  <span>&copy; 2026</span>
+</footer>
 
 <script>
+/* ─── Theme Toggle ─── */
+function toggleTheme() {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("rs-theme", html.dataset.theme);
+}
+
+(function() {
+  const saved = localStorage.getItem("rs-theme");
+  if (saved) document.documentElement.dataset.theme = saved;
+})();
+
+/* ─── Intro Loader ─── */
 document.addEventListener("DOMContentLoaded", () => {
-  const loader = document.querySelector(".intro-loader");
+  const loader   = document.getElementById("loader");
   const introPaths = [...document.querySelectorAll(".intro-logo .cls-1")];
-  const sigPaths = [...document.querySelectorAll(".signature-mark .cls-1")];
+  const sigPaths   = [...document.querySelectorAll(".signature-mark .cls-1")];
 
   introPaths.forEach(el => { el.style.opacity = 0; });
   sigPaths.forEach(el => { el.style.opacity = 0; });
@@ -355,12 +974,10 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       el.style.transition = "opacity .55s ease";
       el.style.opacity = 1;
-    }, 200 + i * 180);
+    }, 180 + i * 200);
   });
 
-  setTimeout(() => {
-    loader.classList.add("hide");
-  }, 2300);
+  setTimeout(() => loader.classList.add("hide"), 2400);
 
   setTimeout(() => {
     loader.style.display = "none";
@@ -368,70 +985,71 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         el.style.transition = "opacity .5s ease";
         el.style.opacity = 1;
-      }, i * 120);
+      }, i * 110);
     });
     revealHero();
-  }, 3100);
+  }, 3200);
 
+  /* ─── Hero reveal ─── */
   function revealHero() {
-    document.querySelectorAll(".hero .reveal").forEach((el, index) => {
+    document.querySelectorAll(".hero .reveal").forEach((el, i) => {
       setTimeout(() => {
         el.style.transition = "opacity .8s ease, transform .8s ease";
         el.style.opacity = 1;
         el.style.transform = "translateY(0)";
-      }, index * 140);
+      }, i * 130);
     });
   }
 
-  const revealObserver = new IntersectionObserver((entries) => {
+  /* ─── Scroll reveals ─── */
+  const revealObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-
-      entry.target.style.transition = "opacity .8s ease, transform .8s ease";
+      entry.target.style.transition = "opacity .75s ease, transform .75s ease";
       entry.target.style.opacity = 1;
       entry.target.style.transform = "translateY(0)";
-
-      revealObserver.unobserve(entry.target);
+      revealObs.unobserve(entry.target);
     });
-  }, { threshold: 0.18 });
+  }, { threshold: 0.14 });
 
-  document.querySelectorAll(".section .reveal, .cta .reveal").forEach(el => {
-    revealObserver.observe(el);
-  });
+  document.querySelectorAll(
+    ".section .reveal, .cta-section .reveal, .stats-bar .stat"
+  ).forEach(el => revealObs.observe(el));
 
-  const cardObserver = new IntersectionObserver((entries) => {
+  /* ─── Stagger reveals (cards) ─── */
+  const staggerObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-
-      document.querySelectorAll(".reveal-card").forEach((card, index) => {
+      const group = entry.target.closest(".caps-grid, .skill-list, .about-grid");
+      const items = group
+        ? [...group.querySelectorAll(".reveal-stagger")]
+        : [entry.target];
+      items.forEach((el, i) => {
         setTimeout(() => {
-          card.style.transition = "opacity .8s ease, transform .8s ease";
-          card.style.opacity = 1;
-          card.style.transform = "translateY(0)";
-        }, index * 120);
+          el.style.transition = "opacity .75s ease, transform .75s ease";
+          el.style.opacity = 1;
+          el.style.transform = "translateY(0)";
+        }, i * 110);
       });
-
-      cardObserver.disconnect();
+      items.forEach(el => staggerObs.unobserve(el));
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.15 });
 
-  const firstCard = document.querySelector(".reveal-card");
-  if (firstCard) cardObserver.observe(firstCard);
+  document.querySelectorAll(".reveal-stagger").forEach(el => staggerObs.observe(el));
 
-  const lineObserver = new IntersectionObserver((entries) => {
+  /* ─── Skill bars ─── */
+  const barObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-
-      entry.target.style.transition = "width 1s ease";
-      entry.target.style.width = "100%";
-
-      lineObserver.unobserve(entry.target);
+      entry.target.querySelectorAll(".skill-fill").forEach(fill => {
+        fill.style.width = fill.dataset.width + "%";
+      });
+      barObs.unobserve(entry.target);
     });
-  }, { threshold: 0.4 });
+  }, { threshold: 0.3 });
 
-  document.querySelectorAll(".motion-line").forEach(line => {
-    lineObserver.observe(line);
-  });
+  const skillList = document.querySelector(".skill-list");
+  if (skillList) barObs.observe(skillList);
 });
 </script>
 
