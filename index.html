@@ -441,97 +441,74 @@ h1 {
   letter-spacing: .04em;
 }
 
-/* ─── Work / Case Studies ─── */
-.work-stack { display: flex; flex-direction: column; gap: 24px; }
+/* ─── Work Section ─── */
+.work-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+.work-tab {
+  padding: 8px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.work-tab:hover { border-color: var(--border-hi); color: var(--text); }
+.work-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 22px var(--accent-glow);
+}
 
-.work-card {
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.work-item {
   background: var(--card);
   backdrop-filter: blur(14px);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 52px 48px;
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 64px;
-  align-items: center;
-  transition: border-color .3s, box-shadow .3s;
-}
-.work-card:hover {
-  border-color: var(--border-hi);
-  box-shadow: 0 20px 60px rgba(2, 105, 237, 0.10);
-}
-
-.work-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.work-badge {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  border: 1px solid var(--border-hi);
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: var(--accent-lo);
-}
-.work-idx {
-  font-size: 12px;
-  color: var(--muted);
-  letter-spacing: .1em;
-}
-
-.work-card h3 {
-  font-size: clamp(26px, 2.8vw, 40px);
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-.work-card p {
-  font-size: 16px;
-  color: var(--muted);
-  line-height: 1.72;
-  margin-bottom: 32px;
-}
-
-.outcomes { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-.outcomes li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  color: var(--muted);
-}
-.outcomes li::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
-  flex-shrink: 0;
-}
-
-.work-visual {
-  aspect-ratio: 4 / 3;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--surface) 0%, var(--accent-lo) 100%);
-  border: 1px solid var(--border);
-  position: relative;
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+}
+.work-item:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(2, 105, 237, 0.13);
+}
+
+.work-thumb {
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--accent-lo) 100%);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
-.work-visual::after {
+.work-thumb::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent 30%, var(--accent-mid) 100%);
+  background: linear-gradient(135deg, transparent 40%, var(--accent-mid) 100%);
 }
-.visual-label {
+.thumb-lbl {
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -540,9 +517,70 @@ h1 {
   z-index: 1;
 }
 
-/* work-card alternate layout for even items */
-.work-card.flip { direction: rtl; }
-.work-card.flip > * { direction: ltr; }
+.work-body { padding: 28px 28px 32px; }
+
+.work-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.cat-pill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--border-hi);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--accent-lo);
+}
+.work-yr { font-size: 12px; color: var(--muted); }
+
+.work-item h3 {
+  font-size: 21px;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+.work-client {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.work-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.work-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: .02em;
+}
+.work-cta::after { content: '→'; }
+
+.work-empty {
+  grid-column: 1 / -1;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 80px 40px;
+  border: 1px dashed var(--border);
+  border-radius: 20px;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: .06em;
+  text-align: center;
+}
+.work-empty.visible { display: flex; }
 
 /* ─── About ─── */
 .about-grid {
@@ -632,8 +670,7 @@ footer {
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
   .caps-grid { grid-template-columns: 1fr; }
-  .work-card { grid-template-columns: 1fr; padding: 32px 28px; gap: 32px; }
-  .work-card.flip { direction: ltr; }
+  .work-grid  { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; gap: 48px; }
   .nav-links { display: none; }
   .stats-bar { flex-direction: column; }
@@ -810,58 +847,80 @@ footer {
   </div>
 </section>
 
-<!-- ─── Featured Work ─── -->
+<!-- ─── Work ─── -->
 <section class="section section-bordered" id="work">
-  <div class="tag-label reveal">Featured Work</div>
-  <h2 class="section-h reveal">Case Studies</h2>
+  <div class="tag-label reveal">Work</div>
+  <h2 class="section-h reveal">Selected Projects</h2>
   <p class="section-sub reveal">
-    Selected projects that show what the process looks like from problem to finished experience.
+    Work organized by discipline. Each project is a real problem — strategy, design, and execution working together from brief to build.
   </p>
 
-  <div class="work-stack">
-    <!-- Case 01 -->
-    <div class="work-card reveal">
-      <div>
-        <div class="work-meta">
-          <span class="work-badge">Case Study</span>
-          <span class="work-idx">01 / 02</span>
-        </div>
-        <h3>UPP Workflow Mindset</h3>
-        <p>
-          A complex provisioning process turned into a clear learning path — walkthroughs, simulations, and decision-focused reinforcement that met learners where the actual friction was.
-        </p>
-        <ul class="outcomes">
-          <li>Reduced provisioning errors by clarifying mental models</li>
-          <li>Simulation-based practice for high-stakes decision points</li>
-          <li>Modular design adaptable across three role tracks</li>
-        </ul>
-      </div>
-      <div class="work-visual">
-        <span class="visual-label">Preview Coming Soon</span>
-      </div>
-    </div>
+  <div class="work-tabs reveal">
+    <button class="work-tab active" data-filter="all">All</button>
+    <button class="work-tab" data-filter="ai">AI</button>
+    <button class="work-tab" data-filter="elearning">E-Learning</button>
+    <button class="work-tab" data-filter="uiux">UI/UX</button>
+    <button class="work-tab" data-filter="motion">Motion Graphics</button>
+  </div>
 
-    <!-- Case 02 -->
-    <div class="work-card flip reveal">
-      <div>
-        <div class="work-meta">
-          <span class="work-badge">Case Study</span>
-          <span class="work-idx">02 / 02</span>
+  <div class="work-grid">
+
+    <!-- AT&T Collaborate — UI/UX -->
+    <a class="work-item reveal" data-category="uiux" href="att-collaborate.html">
+      <div class="work-thumb">
+        <span class="thumb-lbl">AT&amp;T Collaborate</span>
+      </div>
+      <div class="work-body">
+        <div class="work-card-meta">
+          <span class="cat-pill">UI/UX</span>
+          <span class="work-yr">2016</span>
+        </div>
+        <h3>AT&amp;T Collaborate</h3>
+        <p class="work-client">UX Design &amp; Instructional Video Production &middot; AT&amp;T</p>
+        <p class="work-desc">Redesigned the enterprise communications platform for business administrators and produced a Key System Emulation demonstration video that turned a technical process into a self-serve experience.</p>
+        <span class="work-cta">View Case Study</span>
+      </div>
+    </a>
+
+    <!-- Learn with AI — AI category -->
+    <a class="work-item reveal" data-category="ai" href="#">
+      <div class="work-thumb">
+        <span class="thumb-lbl">Learn with AI</span>
+      </div>
+      <div class="work-body">
+        <div class="work-card-meta">
+          <span class="cat-pill">AI</span>
+          <span class="work-yr">2024</span>
         </div>
         <h3>Learn with AI</h3>
-        <p>
-          A practical AI learning series for employees who need confidence, clarity, and responsible-use guidance — without the hype or jargon that makes most AI training feel abstract.
-        </p>
-        <ul class="outcomes">
-          <li>Built around real employee workflows, not vendor demos</li>
-          <li>Responsible-use framework embedded into every module</li>
-          <li>Measurable confidence shift on pre/post assessments</li>
-        </ul>
+        <p class="work-client">AI Literacy Learning Series &middot; Internal</p>
+        <p class="work-desc">A practical AI learning series for employees who need confidence, clarity, and responsible-use guidance — built around real workflows, not vendor demos.</p>
+        <span class="work-cta">Case Study Coming Soon</span>
       </div>
-      <div class="work-visual">
-        <span class="visual-label">Preview Coming Soon</span>
+    </a>
+
+    <!-- UPP Workflow — E-Learning -->
+    <a class="work-item reveal" data-category="elearning" href="#">
+      <div class="work-thumb">
+        <span class="thumb-lbl">UPP Workflow Mindset</span>
       </div>
+      <div class="work-body">
+        <div class="work-card-meta">
+          <span class="cat-pill">E-Learning</span>
+          <span class="work-yr">2023</span>
+        </div>
+        <h3>UPP Workflow Mindset</h3>
+        <p class="work-client">Instructional Design &amp; Simulation &middot; Internal</p>
+        <p class="work-desc">A complex provisioning process turned into a guided learning path — walkthroughs, simulations, and decision-focused reinforcement across three role tracks.</p>
+        <span class="work-cta">Case Study Coming Soon</span>
+      </div>
+    </a>
+
+    <!-- Empty state -->
+    <div class="work-empty" id="workEmpty">
+      <span>No projects in this category yet &mdash; more coming soon.</span>
     </div>
+
   </div>
 </section>
 
@@ -1036,6 +1095,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.15 });
 
   document.querySelectorAll(".reveal-stagger").forEach(el => staggerObs.observe(el));
+
+  /* ─── Work tab filter ─── */
+  const tabs      = document.querySelectorAll(".work-tab");
+  const workItems = document.querySelectorAll(".work-item");
+  const emptyBox  = document.getElementById("workEmpty");
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      const filter = tab.dataset.filter;
+      let visible = 0;
+
+      workItems.forEach(item => {
+        const show = filter === "all" || item.dataset.category === filter;
+        item.style.display = show ? "block" : "none";
+        if (show) visible++;
+      });
+
+      emptyBox.classList.toggle("visible", visible === 0);
+    });
+  });
 
   /* ─── Skill bars ─── */
   const barObs = new IntersectionObserver((entries) => {
