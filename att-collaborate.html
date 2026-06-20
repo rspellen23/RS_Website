@@ -139,8 +139,20 @@ nav {
 /* ─── Case Hero ─── */
 .case-hero {
   padding: 140px 6vw 80px;
-  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
 }
+.hero-content {}
+.hero-media img {
+  width: 100%;
+  border-radius: 16px;
+  display: block;
+  cursor: zoom-in;
+  transition: opacity .2s;
+}
+.hero-media img:hover { opacity: .9; }
 
 .breadcrumb {
   display: flex;
@@ -229,16 +241,19 @@ nav {
 main { padding-bottom: 120px; }
 
 .cs-section {
-  padding: 72px 6vw 0;
-  max-width: 1200px;
+  padding: 64px 6vw 0;
 }
 
 .cs-row {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 48px;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
   align-items: start;
 }
+.cs-row.full { grid-template-columns: 1fr; }
+
+.cs-media { min-width: 0; }
+.cs-media .gallery-sublabel:first-child { margin-top: 0; }
 
 .cs-label {
   font-size: 10px;
@@ -246,9 +261,16 @@ main { padding-bottom: 120px; }
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--accent);
-  padding-top: 6px;
-  position: sticky;
-  top: 100px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.cs-label::before {
+  content: '';
+  width: 18px; height: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
 }
 
 .cs-body p {
@@ -256,7 +278,6 @@ main { padding-bottom: 120px; }
   color: var(--muted);
   line-height: 1.8;
   margin-bottom: 20px;
-  max-width: 680px;
 }
 .cs-body p:last-child { margin-bottom: 0; }
 
@@ -274,7 +295,6 @@ main { padding-bottom: 120px; }
   border: 1px solid var(--border-hi);
   border-radius: 16px;
   padding: 36px 40px;
-  max-width: 680px;
   margin-bottom: 20px;
   position: relative;
   overflow: hidden;
@@ -370,8 +390,18 @@ main { padding-bottom: 120px; }
 }
 
 /* ─── Pull quote ─── */
+.cs-media-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-top: 40px;
+}
+.cs-media-col { min-width: 0; }
+.cs-media-col .gallery-sublabel:first-child,
+.cs-media-col .video-label:first-child { margin-top: 0; }
+
 .pull-quote {
-  max-width: 680px;
   margin: 32px 0;
   padding: 32px 40px;
   background: var(--card);
@@ -436,16 +466,183 @@ footer {
   color: var(--muted);
 }
 
+/* ─── Gallery ─── */
+.gallery-sublabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 32px 0 12px;
+}
+
+.gallery-single { margin-top: 28px; }
+.gallery-single img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  cursor: zoom-in;
+  display: block;
+  transition: opacity .2s, border-color .2s;
+}
+.gallery-single img:hover { opacity: .9; border-color: var(--border-hi); }
+
+.gallery-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+.gallery-grid.g2 { grid-template-columns: repeat(2, 1fr); }
+.gallery-grid.g3 { grid-template-columns: repeat(3, 1fr); }
+.gallery-grid.g4 { grid-template-columns: repeat(4, 1fr); }
+
+.gallery-grid img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  cursor: zoom-in;
+  display: block;
+  transition: opacity .2s, border-color .2s, transform .25s;
+}
+.gallery-grid img:hover {
+  opacity: .88;
+  border-color: var(--border-hi);
+  transform: scale(1.015);
+}
+
+.gallery-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-top: 28px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hi) transparent;
+}
+.gallery-row img {
+  flex-shrink: 0;
+  height: 210px;
+  width: auto;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  cursor: zoom-in;
+  display: block;
+  transition: opacity .2s, border-color .2s;
+}
+.gallery-row img:hover { opacity: .88; border-color: var(--border-hi); }
+
+/* ─── Video embed ─── */
+.video-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 40px 0 14px;
+}
+.video-wrap {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+.video-wrap iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: 0;
+}
+
+/* ─── Lightbox ─── */
+.lb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, .95);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.lb-overlay.open { display: flex; }
+
+.lb-img {
+  max-width: 90vw;
+  max-height: 84vh;
+  object-fit: contain;
+  border-radius: 6px;
+  user-select: none;
+  pointer-events: none;
+  display: block;
+}
+
+.lb-close {
+  position: absolute;
+  top: 18px; right: 20px;
+  background: none;
+  border: 1px solid rgba(255,255,255,.22);
+  color: #fff;
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: border-color .2s;
+  line-height: 1;
+}
+.lb-close:hover { border-color: rgba(255,255,255,.5); }
+
+.lb-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 1px solid rgba(255,255,255,.22);
+  color: #fff;
+  width: 46px; height: 46px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: border-color .2s;
+}
+.lb-nav-btn:hover { border-color: rgba(255,255,255,.5); }
+#lbPrev { left: 18px; }
+#lbNext { right: 18px; }
+
+.lb-count {
+  position: absolute;
+  bottom: 18px;
+  font-size: 12px;
+  letter-spacing: .1em;
+  color: rgba(255,255,255,.4);
+}
+
 /* ─── Reveal ─── */
 .reveal { opacity: 0; transform: translateY(20px); }
 
-@media (max-width: 800px) {
-  .cs-row { grid-template-columns: 1fr; gap: 12px; }
-  .cs-label { position: static; }
+@media (max-width: 900px) {
+  .case-hero { grid-template-columns: 1fr; gap: 40px; }
+  .hero-media { order: -1; }
+  .cs-row { grid-template-columns: 1fr; gap: 32px; }
+  .cs-media-row { grid-template-columns: 1fr; gap: 32px; }
   .meta-row { flex-direction: column; }
   .meta-cell { border-right: none; border-bottom: 1px solid var(--border); }
   .meta-cell:last-child { border-bottom: none; }
   .process-cards { grid-template-columns: 1fr; }
+  .gallery-grid.g2 { grid-template-columns: 1fr; }
+  .gallery-grid.g3 { grid-template-columns: repeat(2, 1fr); }
+  .gallery-grid.g4 { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -486,39 +683,47 @@ footer {
 
   <!-- ─── Hero ─── -->
   <div class="case-hero">
-    <div class="breadcrumb reveal">
-      <a href="index.html">Portfolio</a>
-      <span>/</span>
-      <a href="index.html#work">Work</a>
-      <span>/</span>
-      AT&amp;T Collaborate
+    <div class="hero-content">
+      <div class="breadcrumb reveal">
+        <a href="index.html">Portfolio</a>
+        <span>/</span>
+        <a href="index.html#work">Work</a>
+        <span>/</span>
+        AT&amp;T Collaborate
+      </div>
+
+      <div class="case-cat reveal">UI/UX</div>
+
+      <h1 class="reveal">AT&amp;T<br>Collaborate</h1>
+
+      <p class="case-subtitle reveal">
+        UX Design &amp; Instructional Video Production &middot; AT&amp;T &middot; 2016
+      </p>
+
+      <div class="meta-row reveal">
+        <div class="meta-cell">
+          <div class="meta-label">Client</div>
+          <div class="meta-val">AT&amp;T</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Discipline</div>
+          <div class="meta-val">UX Design &amp; Video</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2016</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Deliverables</div>
+          <div class="meta-val">Onboarding UX, Demo Video</div>
+        </div>
+      </div>
     </div>
 
-    <div class="case-cat reveal">UI/UX</div>
-
-    <h1 class="reveal">AT&amp;T<br>Collaborate</h1>
-
-    <p class="case-subtitle reveal">
-      UX Design &amp; Instructional Video Production &middot; AT&amp;T &middot; 2016
-    </p>
-
-    <div class="meta-row reveal">
-      <div class="meta-cell">
-        <div class="meta-label">Client</div>
-        <div class="meta-val">AT&amp;T</div>
-      </div>
-      <div class="meta-cell">
-        <div class="meta-label">Discipline</div>
-        <div class="meta-val">UX Design &amp; Video</div>
-      </div>
-      <div class="meta-cell">
-        <div class="meta-label">Year</div>
-        <div class="meta-val">2016</div>
-      </div>
-      <div class="meta-cell">
-        <div class="meta-label">Deliverables</div>
-        <div class="meta-val">Onboarding UX, Demo Video</div>
-      </div>
+    <div class="hero-media reveal">
+      <img src="images/att-collab-imgs/att-collab_overview.png"
+           alt="AT&T Collaborate platform overview"
+           data-gallery="overview" data-idx="0" />
     </div>
   </div>
 
@@ -526,11 +731,11 @@ footer {
 
   <!-- ─── Overview ─── -->
   <div class="cs-section">
-    <div class="cs-row reveal">
-      <div class="cs-label">Overview</div>
+    <div class="cs-label reveal">Overview</div>
+    <div class="cs-row full reveal">
       <div class="cs-body">
         <p>
-          AT&T Collaborate is an enterprise-grade unified communications platform designed for business customers. It brings together voice, video, instant messaging, and conferencing into a single, seamless experience — eliminating the friction that comes from toggling between disconnected tools. For IT administrators and business owners, it represents a smarter way to manage how their organization communicates.
+          AT&T Collaborate is an enterprise-grade unified communications platform designed for business customers. It brings together voice, video, instant messaging, and conferencing into a single seamless experience, eliminating the friction that comes from toggling between disconnected tools. For IT administrators and business owners, it represents a smarter way to manage how their organization communicates.
         </p>
       </div>
     </div>
@@ -538,13 +743,13 @@ footer {
 
   <!-- ─── The Problem ─── -->
   <div class="cs-section">
-    <div class="cs-row reveal">
-      <div class="cs-label">The Problem</div>
+    <div class="cs-label reveal">The Problem</div>
+    <div class="cs-row full reveal">
       <div class="cs-body">
         <div class="challenge-card">
           <div class="challenge-intro">The Challenge</div>
           <p>
-            AT&T's cloud-based B2B communications product had a presentation problem. The platform itself was capable, but the web experience surrounding it was dated, visually sparse, and failing to communicate its value. Company administrators — the people responsible for deploying and managing the product across their organizations — had no clear, engaging way to learn what Collaborate could actually do for them.
+            AT&T's cloud-based B2B communications product had a presentation problem. The platform itself was capable, but the web experience surrounding it was dated, visually sparse, and failing to communicate its value. Company administrators, the people responsible for deploying and managing the product across their organizations, had no clear, engaging way to learn what Collaborate could actually do for them.
           </p>
         </div>
         <p>The result was predictable:</p>
@@ -559,11 +764,11 @@ footer {
 
   <!-- ─── Solution & Role ─── -->
   <div class="cs-section">
-    <div class="cs-row reveal">
-      <div class="cs-label">Solution &amp; My Role</div>
+    <div class="cs-label reveal">Solution &amp; My Role</div>
+    <div class="cs-row full reveal">
       <div class="cs-body">
         <p>
-          I was brought in to solve two connected challenges: redesign the product experience to be visually engaging and intuitively navigable, and produce a demonstration video that would walk business administrators through one of Collaborate's most practical features — Key System Emulation.
+          I was brought in to solve two connected challenges: redesign the product experience to be visually engaging and intuitively navigable, and produce a demonstration video that would walk business administrators through one of Collaborate's most practical features: Key System Emulation.
         </p>
         <p>
           Both deliverables pointed at the same underlying problem: the gap between what Collaborate could do and what its users understood it could do. Closing that gap required both better design and better instruction.
@@ -574,15 +779,38 @@ footer {
 
   <!-- ─── The Process ─── -->
   <div class="cs-section">
-    <div class="cs-row reveal">
-      <div class="cs-label">The Process</div>
+    <div class="cs-label reveal">The Process</div>
+    <div class="cs-row full reveal">
       <div class="cs-body">
         <p>
           I began by exploring a range of editing styles and interface templates, looking for patterns that could support reusable components across the experience. Given the project's timeline, I anchored the design philosophy around clarity. An uncluttered, focused environment would serve administrators better than a feature-heavy layout.
         </p>
         <div class="pull-quote">
           <p>"Every decision was filtered through one question: Does this help a busy IT professional get to what they need faster?"</p>
-          <cite>Design Principle — AT&T Collaborate</cite>
+          <cite>Design Principle, AT&T Collaborate</cite>
+        </div>
+      </div>
+    </div>
+    <div class="cs-media-row reveal">
+      <div class="cs-media-col">
+        <div class="gallery-sublabel">Wireframes</div>
+        <div class="gallery-grid g2">
+          <img src="images/att-collab-imgs/att-collab_website-desktop-wireframe-1.jpg" alt="Wireframe exploration 1" data-gallery="wireframes" data-idx="0" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-wireframe-2.jpg" alt="Wireframe exploration 2" data-gallery="wireframes" data-idx="1" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-wireframe-3.jpg" alt="Wireframe exploration 3" data-gallery="wireframes" data-idx="2" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-wireframe-4.jpg" alt="Wireframe exploration 4" data-gallery="wireframes" data-idx="3" />
+        </div>
+      </div>
+      <div class="cs-media-col">
+        <div class="gallery-sublabel">High-Fidelity Design</div>
+        <div class="gallery-grid g2">
+          <img src="images/att-collab-imgs/att-collab_website-desktop-high-fidelty-1.jpg" alt="High-fidelity design 1" data-gallery="hifi" data-idx="0" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-high-fidelty-2.jpg" alt="High-fidelity design 2" data-gallery="hifi" data-idx="1" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-high-fidelty-3.jpg" alt="High-fidelity design 3" data-gallery="hifi" data-idx="2" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-high-fidelty-4.png" alt="High-fidelity design 4" data-gallery="hifi" data-idx="3" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-high-fidelty-5.png" alt="High-fidelity design 5" data-gallery="hifi" data-idx="4" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-high-fidelty-6.png" alt="High-fidelity design 6" data-gallery="hifi" data-idx="5" />
+          <img src="images/att-collab-imgs/att-collab_website-desktop-high-fidelty-7.png" alt="High-fidelity design 7" data-gallery="hifi" data-idx="6" />
         </div>
       </div>
     </div>
@@ -590,8 +818,8 @@ footer {
 
   <!-- ─── Onboarding Experience ─── -->
   <div class="cs-section">
+    <div class="cs-label reveal">Onboarding Experience</div>
     <div class="cs-row reveal">
-      <div class="cs-label">Onboarding Experience</div>
       <div class="cs-body">
         <p>
           The onboarding flow centered on one of the most common administrator tasks: creating a user. Rather than overwhelming admins with options upfront, I designed a guided, step-by-step process that walked them through the task in a deliberate sequence.
@@ -616,48 +844,78 @@ footer {
           <div class="process-card">
             <div class="process-card-num">Step 04</div>
             <h4>Submit</h4>
-            <p>Confirm and activate — with clear feedback that the task completed successfully.</p>
+            <p>Confirm and activate, with clear feedback that the task completed successfully.</p>
           </div>
         </div>
 
-        <p style="margin-top: 28px;">
-          The goal was to make a technically complex task feel approachable — reducing errors, reducing calls to support, and building administrator confidence in the platform from day one.
+        <p style="margin-top: 24px;">
+          The goal was to make a technically complex task feel approachable, reducing errors, reducing calls to support, and building administrator confidence in the platform from day one.
         </p>
+      </div>
+      <div class="cs-media">
+        <div class="gallery-grid g2">
+          <img src="images/att-collab-imgs/att-collab_onboarding-1.png" alt="Onboarding screen 1" data-gallery="onboarding" data-idx="0" />
+          <img src="images/att-collab-imgs/att-collab_onboarding-2.png" alt="Onboarding screen 2" data-gallery="onboarding" data-idx="1" />
+          <img src="images/att-collab-imgs/att-collab_onboarding-3.png" alt="Onboarding screen 3" data-gallery="onboarding" data-idx="2" />
+          <img src="images/att-collab-imgs/att-collab_onboarding-4.png" alt="Onboarding screen 4" data-gallery="onboarding" data-idx="3" />
+          <img src="images/att-collab-imgs/att-collab_onboarding-5.png" alt="Onboarding screen 5" data-gallery="onboarding" data-idx="4" />
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ─── Storyboard & Video ─── -->
   <div class="cs-section">
-    <div class="cs-row reveal">
-      <div class="cs-label">Storyboard &amp; Demo Video</div>
+    <div class="cs-label reveal">Storyboard &amp; Demo Video</div>
+    <div class="cs-row full reveal">
       <div class="cs-body">
         <p>
-          Parallel to the interface work, I developed a storyboard for the Key System Emulation demonstration video — a resource aimed at business owners who wanted to configure Collaborate to function like a traditional key phone system.
+          Parallel to the interface work, I developed a storyboard for the Key System Emulation demonstration video, a resource aimed at business owners who wanted to configure Collaborate to function like a traditional key phone system.
         </p>
         <p>
           My approach fused two formats: the visual clarity of an infographic with the utility of a how-to guide. The storyboard was the tool I used to take every idea in my head and shape it into a single, disciplined narrative before a single frame was produced. Structure first, execution second.
         </p>
         <p>
-          The final video walked viewers through setting up call-handling lines in Collaborate step by step — translating a technical configuration process into something a non-technical business owner could follow and execute independently.
+          The final video walked viewers through setting up call-handling lines in Collaborate step by step, translating a technical configuration process into something a non-technical business owner could follow and execute independently.
         </p>
+      </div>
+    </div>
+    <div class="cs-media-row reveal">
+      <div class="cs-media-col">
+        <div class="gallery-sublabel">Storyboard Panels</div>
+        <div class="gallery-grid g2">
+          <img src="images/att-collab-imgs/att-collab_storyboard-1.png" alt="Storyboard panel 1" data-gallery="storyboard" data-idx="0" />
+          <img src="images/att-collab-imgs/att-collab_storyboard-2.png" alt="Storyboard panel 2" data-gallery="storyboard" data-idx="1" />
+          <img src="images/att-collab-imgs/att-collab_storyboard-3.png" alt="Storyboard panel 3" data-gallery="storyboard" data-idx="2" />
+          <img src="images/att-collab-imgs/att-collab_storyboard-4.png" alt="Storyboard panel 4" data-gallery="storyboard" data-idx="3" />
+          <img src="images/att-collab-imgs/att-collab_storyboard-5.png" alt="Storyboard panel 5" data-gallery="storyboard" data-idx="4" />
+          <img src="images/att-collab-imgs/att-collab_storyboard-6.png" alt="Storyboard panel 6" data-gallery="storyboard" data-idx="5" />
+          <img src="images/att-collab-imgs/att-collab_storyboard-7.png" alt="Storyboard panel 7" data-gallery="storyboard" data-idx="6" />
+          <img src="images/att-collab-imgs/att-collab_storyboard-8.png" alt="Storyboard panel 8" data-gallery="storyboard" data-idx="7" />
+        </div>
+      </div>
+      <div class="cs-media-col">
+        <div class="video-label">Demonstration Video</div>
+        <div class="video-wrap">
+          <iframe src="https://player.vimeo.com/video/327869656" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen title="AT&T Collaborate Key System Emulation"></iframe>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ─── Reflection ─── -->
   <div class="cs-section">
-    <div class="cs-row reveal">
-      <div class="cs-label">Reflection</div>
+    <div class="cs-label reveal">Reflection</div>
+    <div class="cs-row full reveal">
       <div class="cs-body">
         <p>
-          This project sat at the intersection of two disciplines I care deeply about: visual design and instructional communication. The challenge wasn't just making something look better — it was making something work better for the people who depended on it.
+          This project sat at the intersection of two disciplines I care deeply about: visual design and instructional communication. The challenge wasn't just making something look better. It was making something work better for the people who depended on it.
         </p>
         <p>
-          From a business impact standpoint, the work addressed a real cost center. When administrators can't independently learn and configure a platform, they turn to support channels. Every support ticket has a price. By creating a more intuitive onboarding experience and a self-serve demonstration video, the project contributed directly to reducing that dependency — lowering support overhead while increasing the likelihood that customers would fully leverage the features they were already paying for.
+          From a business impact standpoint, the work addressed a real cost center. When administrators can't independently learn and configure a platform, they turn to support channels. Every support ticket has a price. By creating a more intuitive onboarding experience and a self-serve demonstration video, the project contributed directly to reducing that dependency, lowering support overhead and increasing the likelihood that customers would fully leverage the features they were already paying for.
         </p>
         <p>
-          For AT&T's B2B division, a customer who understands the product is a customer who stays. The redesign and video weren't just UX improvements — they were retention tools.
+          For AT&T's B2B division, a customer who understands the product is a customer who stays. The redesign and video were more than UX improvements. They were retention tools.
         </p>
 
         <div class="pull-quote">
@@ -676,9 +934,18 @@ footer {
 </main>
 
 <footer>
-  <span>Raymond Spellen &mdash; Learning Experience Design / Creative Strategy</span>
+  <span>Raymond Spellen | Learning Experience Design / Creative Strategy</span>
   <span>&copy; 2026</span>
 </footer>
+
+<!-- ─── Lightbox ─── -->
+<div class="lb-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-nav-btn" id="lbPrev" aria-label="Previous">&#8592;</button>
+  <img class="lb-img" id="lbImg" src="" alt="" />
+  <button class="lb-nav-btn" id="lbNext" aria-label="Next">&#8594;</button>
+  <span class="lb-count" id="lbCount"></span>
+</div>
 
 <script>
 function toggleTheme() {
@@ -704,6 +971,72 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.1 });
 
   document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+
+  /* ─── Lightbox ─── */
+  const lb      = document.getElementById("lightbox");
+  const lbImg   = document.getElementById("lbImg");
+  const lbCount = document.getElementById("lbCount");
+  const lbClose = document.getElementById("lbClose");
+  const lbPrev  = document.getElementById("lbPrev");
+  const lbNext  = document.getElementById("lbNext");
+
+  let gallery = [];
+  let current = 0;
+
+  function buildGalleries() {
+    const groups = {};
+    document.querySelectorAll("img[data-gallery]").forEach(img => {
+      const g = img.dataset.gallery;
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(img);
+    });
+    return groups;
+  }
+
+  const galleries = buildGalleries();
+
+  function openAt(groupName, idx) {
+    gallery = galleries[groupName] || [];
+    current = idx;
+    show();
+    lb.classList.add("open");
+    document.body.style.overflow = "hidden";
+    lbClose.focus();
+  }
+
+  function show() {
+    const img = gallery[current];
+    lbImg.src  = img.src;
+    lbImg.alt  = img.alt;
+    lbCount.textContent = (current + 1) + " / " + gallery.length;
+    lbPrev.style.display = gallery.length > 1 ? "flex" : "none";
+    lbNext.style.display = gallery.length > 1 ? "flex" : "none";
+  }
+
+  function close() {
+    lb.classList.remove("open");
+    document.body.style.overflow = "";
+    lbImg.src = "";
+  }
+
+  function prev() { current = (current - 1 + gallery.length) % gallery.length; show(); }
+  function next() { current = (current + 1) % gallery.length; show(); }
+
+  document.querySelectorAll("img[data-gallery]").forEach(img => {
+    img.addEventListener("click", () => openAt(img.dataset.gallery, parseInt(img.dataset.idx, 10)));
+  });
+
+  lbClose.addEventListener("click", close);
+  lbPrev.addEventListener("click", prev);
+  lbNext.addEventListener("click", next);
+  lb.addEventListener("click", e => { if (e.target === lb) close(); });
+
+  document.addEventListener("keydown", e => {
+    if (!lb.classList.contains("open")) return;
+    if (e.key === "Escape")     close();
+    if (e.key === "ArrowLeft")  prev();
+    if (e.key === "ArrowRight") next();
+  });
 });
 </script>
 

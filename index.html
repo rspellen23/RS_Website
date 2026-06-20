@@ -484,6 +484,7 @@ h1 {
   text-decoration: none;
   color: inherit;
   display: block;
+  cursor: pointer;
   transition: border-color .3s, transform .3s, box-shadow .3s;
 }
 .work-item:hover {
@@ -883,7 +884,7 @@ footer {
     </a>
 
     <!-- Learn with AI — AI category -->
-    <a class="work-item reveal" data-category="ai" href="#">
+    <div class="work-item reveal" data-category="ai">
       <div class="work-thumb">
         <span class="thumb-lbl">Learn with AI</span>
       </div>
@@ -894,13 +895,13 @@ footer {
         </div>
         <h3>Learn with AI</h3>
         <p class="work-client">AI Literacy Learning Series &middot; Internal</p>
-        <p class="work-desc">A practical AI learning series for employees who need confidence, clarity, and responsible-use guidance — built around real workflows, not vendor demos.</p>
+        <p class="work-desc">A practical AI learning series for employees who need confidence, clarity, and responsible-use guidance built around real workflows, not vendor demos.</p>
         <span class="work-cta">Case Study Coming Soon</span>
       </div>
-    </a>
+    </div>
 
     <!-- UPP Workflow — E-Learning -->
-    <a class="work-item reveal" data-category="elearning" href="#">
+    <div class="work-item reveal" data-category="elearning">
       <div class="work-thumb">
         <span class="thumb-lbl">UPP Workflow Mindset</span>
       </div>
@@ -911,14 +912,14 @@ footer {
         </div>
         <h3>UPP Workflow Mindset</h3>
         <p class="work-client">Instructional Design &amp; Simulation &middot; Internal</p>
-        <p class="work-desc">A complex provisioning process turned into a guided learning path — walkthroughs, simulations, and decision-focused reinforcement across three role tracks.</p>
+        <p class="work-desc">A complex provisioning process turned into a guided learning path with walkthroughs, simulations, and decision-focused reinforcement across three role tracks.</p>
         <span class="work-cta">Case Study Coming Soon</span>
       </div>
-    </a>
+    </div>
 
     <!-- Empty state -->
     <div class="work-empty" id="workEmpty">
-      <span>No projects in this category yet &mdash; more coming soon.</span>
+      <span>No projects in this category yet. More coming soon.</span>
     </div>
 
   </div>
@@ -1003,9 +1004,10 @@ footer {
 
 <!-- ─── Footer ─── -->
 <footer>
-  <span>Raymond Spellen &mdash; Learning Experience Design / Creative Strategy</span>
+  <span>Raymond Spellen | Learning Experience Design / Creative Strategy</span>
   <span>&copy; 2026</span>
 </footer>
+
 
 <script>
 /* ─── Theme Toggle ─── */
