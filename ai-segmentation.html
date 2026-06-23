@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Customer Segmentation | Raymond Spellen</title>
+
+<!-- Run before CSS renders to prevent theme flash -->
+<script>
+(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;})();
+</script>
+
+<style>
+:root {
+  --bg:           #07090f;
+  --surface:      #0d1223;
+  --card:         rgba(13, 18, 35, 0.75);
+  --text:         #edf0ff;
+  --muted:        #6b7ca4;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.10);
+  --accent-mid:   rgba(2, 105, 237, 0.22);
+  --accent-glow:  rgba(2, 105, 237, 0.32);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.30);
+  --grid-line:    rgba(2, 105, 237, 0.045);
+  --orb-opacity:  0.11;
+  --nav-bg:       rgba(7, 9, 15, 0.65);
+  --green:        #00a651;
+  --purple:       #5c2eed;
+}
+[data-theme="light"] {
+  --bg:           #f1f4ff;
+  --surface:      #ffffff;
+  --card:         rgba(255, 255, 255, 0.82);
+  --text:         #07090f;
+  --muted:        #505d7e;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.07);
+  --accent-mid:   rgba(2, 105, 237, 0.15);
+  --accent-glow:  rgba(2, 105, 237, 0.22);
+  --border:       rgba(0, 0, 0, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.25);
+  --grid-line:    rgba(2, 105, 237, 0.04);
+  --orb-opacity:  0.05;
+  --nav-bg:       rgba(241, 244, 255, 0.72);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: Inter, -apple-system, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none; z-index: 0;
+  transition: background-image .4s ease;
+}
+
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px);
+  opacity: var(--orb-opacity);
+  pointer-events: none; z-index: 0;
+  will-change: transform;
+  transition: opacity .4s ease;
+}
+.orb-1 { width:600px;height:600px;background:#0269ed;top:-200px;right:-150px;animation:drift 12s ease-in-out infinite; }
+.orb-2 { width:400px;height:400px;background:#5c2eed;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
+
+@keyframes drift { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-36px)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+nav, main, footer { position: relative; z-index: 1; }
+
+/* ─── Nav ─── */
+nav {
+  position: fixed; top:0;left:0;right:0; z-index:200;
+  padding:16px 6vw;
+  display:flex; justify-content:space-between; align-items:center;
+  background:var(--nav-bg);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:background .4s ease;
+}
+.nav-logo-svg { width:72px; height:auto; display:block; }
+.nav-logo-svg .cls-1 { fill:#0269ed; }
+.nav-right { display:flex; align-items:center; gap:20px; }
+.back-link {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13px; color:var(--muted); text-decoration:none;
+  letter-spacing:.03em; transition:color .2s;
+}
+.back-link:hover { color:var(--text); }
+.back-link::before { content:'←'; }
+.theme-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 16px; border-radius:999px;
+  border:1px solid var(--border-hi);
+  background:var(--accent-lo); color:var(--muted);
+  font-size:13px; font-family:inherit; cursor:pointer;
+  transition:all .25s ease;
+}
+.theme-btn:hover { color:var(--text); border-color:var(--accent); }
+.icon-sun,.icon-moon { width:15px;height:15px;display:none; }
+[data-theme="dark"]  .icon-moon { display:block; }
+[data-theme="light"] .icon-sun  { display:block; }
+[data-theme="dark"]  .toggle-label::after { content:"Light"; }
+[data-theme="light"] .toggle-label::after { content:"Dark"; }
+
+/* ─── Hero ─── */
+.case-hero {
+  padding:140px 6vw 80px;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:60px; align-items:center;
+}
+.breadcrumb {
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:var(--muted); letter-spacing:.06em;
+  margin-bottom:40px;
+}
+.breadcrumb a { color:var(--muted); text-decoration:none; transition:color .2s; }
+.breadcrumb a:hover { color:var(--accent); }
+.breadcrumb span { color:var(--border-hi); }
+.case-cat {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); border:1px solid var(--border-hi);
+  padding:5px 14px; border-radius:999px; background:var(--accent-lo);
+  margin-bottom:28px;
+}
+.case-hero h1 {
+  font-size:clamp(34px,4.8vw,70px);
+  letter-spacing:-0.05em; line-height:.95; font-weight:800;
+  margin-bottom:24px;
+}
+.case-subtitle {
+  font-size:18px; color:var(--muted); line-height:1.6; margin-bottom:40px;
+}
+.meta-row {
+  display:flex; gap:0;
+  border:1px solid var(--border); border-radius:14px;
+  overflow:hidden; background:var(--card);
+  backdrop-filter:blur(12px);
+}
+.meta-cell { flex:1; padding:16px 18px; border-right:1px solid var(--border); }
+.meta-cell:last-child { border-right:none; }
+.meta-label {
+  font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:5px;
+}
+.meta-val { font-size:13px; font-weight:600; color:var(--text); }
+
+/* ─── Hero Dashboard Panel ─── */
+.hero-panel {
+  background:var(--card); backdrop-filter:blur(20px);
+  border:1px solid var(--border-hi); border-radius:20px;
+  padding:36px; position:relative; overflow:hidden;
+}
+.hero-panel::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg, var(--accent), var(--purple));
+}
+.panel-badge {
+  display:flex; align-items:center; gap:8px;
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:28px;
+}
+.panel-dot {
+  width:7px;height:7px; background:var(--accent); border-radius:50%;
+  box-shadow:0 0 8px var(--accent);
+  animation:pulse 2s ease-in-out infinite;
+}
+.panel-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-bottom:28px; }
+.panel-stat { text-align:center; padding:16px 8px; }
+.panel-stat-num {
+  display:block; font-size:42px; font-weight:800;
+  letter-spacing:-.05em; color:var(--text); line-height:1;
+}
+.panel-stat-desc {
+  display:block; font-size:11px; color:var(--muted); margin-top:6px; line-height:1.3;
+}
+.panel-divider { height:1px; background:var(--border); margin-bottom:24px; }
+.panel-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:9px 0; border-bottom:1px solid var(--border); font-size:13px;
+}
+.panel-row:last-child { border-bottom:none; }
+.panel-row-label { color:var(--muted); }
+.panel-row-val { color:var(--text); font-weight:600; }
+.panel-row-pill {
+  font-size:11px; padding:3px 10px;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  border-radius:999px; color:var(--accent); font-weight:600;
+}
+
+/* ─── Divider ─── */
+.case-divider { height:1px; background:var(--border); margin:0 6vw; }
+
+/* ─── Content layout ─── */
+main { padding-bottom:120px; }
+.cs-section { padding:64px 6vw 0; }
+.cs-row { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+.cs-row.full { grid-template-columns:1fr; }
+.cs-media { min-width:0; }
+.cs-media-row {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:48px; align-items:start; margin-top:40px;
+}
+.cs-media-col { min-width:0; }
+.cs-label {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent);
+  display:flex; align-items:center; gap:10px; margin-bottom:20px;
+}
+.cs-label::before {
+  content:''; width:18px; height:1px;
+  background:var(--accent); box-shadow:0 0 6px var(--accent);
+}
+.cs-body p { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
+.cs-body p:last-child { margin-bottom:0; }
+
+/* ─── Problem ─── */
+.problem-list { list-style:none; padding:0; margin:20px 0 28px; }
+.problem-list li {
+  font-size:16px; color:var(--muted); line-height:1.7;
+  padding:10px 0 10px 22px; border-bottom:1px solid var(--border); position:relative;
+}
+.problem-list li:last-child { border-bottom:none; }
+.problem-list li::before {
+  content:''; position:absolute; left:0; top:20px;
+  width:6px; height:6px; border:1px solid var(--accent); border-radius:50%;
+}
+.hmw-card {
+  margin-top:28px; padding:36px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(92,46,237,.07) 100%);
+  border:1px solid var(--border-hi); border-radius:16px;
+  position:relative; overflow:hidden;
+}
+.hmw-card::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+  box-shadow:0 0 12px var(--accent);
+}
+.hmw-eyebrow {
+  font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:14px;
+}
+.hmw-q { font-size:19px; font-weight:700; color:var(--text); line-height:1.45; letter-spacing:-.02em; }
+
+/* ─── Research ─── */
+.research-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.research-col {
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:16px; padding:28px 26px;
+}
+.research-col-title {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--border);
+}
+.research-col ul { list-style:none; padding:0; }
+.research-col ul li {
+  font-size:14px; color:var(--muted); line-height:1.55;
+  padding:7px 0; border-bottom:1px solid var(--border);
+}
+.research-col ul li:last-child { border-bottom:none; }
+.research-sublabel {
+  font-size:11px; font-weight:600; color:var(--text);
+  margin:14px 0 6px; letter-spacing:.04em;
+}
+.research-sublabel:first-child { margin-top:0; }
+
+/* ─── Solution stats ─── */
+.solution-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:32px; }
+.solution-stat {
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:14px;
+  padding:28px 20px; text-align:center; transition:border-color .2s;
+}
+.solution-stat:hover { border-color:var(--border-hi); }
+.solution-stat-num {
+  display:block; font-size:52px; font-weight:800;
+  letter-spacing:-.06em; color:var(--accent); line-height:1;
+}
+.solution-stat-label { display:block; font-size:12px; color:var(--muted); margin-top:8px; line-height:1.4; }
+
+/* ─── Phase subsections within Solution ─── */
+.phase-block { padding-top:48px; }
+.phase-header { margin-bottom:28px; }
+.phase-num {
+  display:inline-block; font-size:10px; font-weight:700;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--accent);
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  padding:4px 12px; border-radius:999px; margin-bottom:10px;
+}
+.phase-title {
+  font-size:24px; font-weight:800; letter-spacing:-.03em; color:var(--text);
+}
+.phase-divider { height:1px; background:var(--border); margin-top:48px; }
+
+/* ─── Creative phase visuals ─── */
+.phase-visual {
+  background:var(--card); backdrop-filter:blur(14px);
+  border:1px solid var(--border); border-radius:16px;
+  padding:28px; min-width:0;
+}
+.phase-visual-title {
+  font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:18px; padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+
+/* Persona card visual */
+.persona-name {
+  font-size:16px; font-weight:700; color:var(--text); margin-bottom:4px;
+}
+.persona-type {
+  font-size:11px; color:var(--muted); margin-bottom:18px;
+}
+.persona-attrs { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
+.persona-attr-col {}
+.persona-attr-label {
+  font-size:9px; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:8px;
+}
+.persona-attr-item {
+  display:flex; align-items:center; gap:6px;
+  font-size:12px; color:var(--text); padding:3px 0;
+}
+.persona-attr-item::before {
+  content:''; width:4px;height:4px; background:var(--accent);
+  border-radius:50%; flex-shrink:0;
+}
+.persona-style {
+  font-size:12px; color:var(--muted); line-height:1.6;
+  padding:12px 14px; background:rgba(2,105,237,.05);
+  border:1px solid var(--border-hi); border-radius:8px;
+}
+
+/* Chat visual */
+.chat-bubble-wrap { display:flex; flex-direction:column; gap:10px; }
+.chat-bubble {
+  max-width:85%; padding:10px 14px;
+  border-radius:14px; font-size:13px; line-height:1.5;
+}
+.chat-bubble.ai {
+  align-self:flex-start;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  color:var(--text); border-bottom-left-radius:4px;
+}
+.chat-bubble.seller {
+  align-self:flex-end;
+  background:rgba(255,255,255,.06); border:1px solid var(--border);
+  color:var(--text); border-bottom-right-radius:4px;
+}
+.chat-label {
+  font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:3px;
+}
+.chat-bubble.ai .chat-label { color:var(--accent); }
+
+/* Prompt block visual */
+.prompt-block {
+  font-family:'Courier New', monospace;
+  font-size:12px; line-height:1.75;
+  background:rgba(0,0,0,.3); border:1px solid var(--border);
+  border-radius:10px; padding:16px 18px;
+  color:var(--muted);
+}
+.prompt-comment { color:rgba(2,105,237,.7); }
+.prompt-key { color:var(--accent); font-weight:700; }
+.prompt-val { color:#c8d8f8; }
+.prompt-section { margin-top:12px; }
+
+/* Eval scores visual */
+.eval-row {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 0; border-bottom:1px solid var(--border);
+}
+.eval-row:last-child { border-bottom:none; }
+.eval-row-label { font-size:12px; color:var(--muted); flex:1; }
+.eval-bar-wrap { width:100px; height:6px; background:var(--border); border-radius:3px; flex-shrink:0; }
+.eval-bar { height:100%; border-radius:3px; background:var(--accent); }
+.eval-score { font-size:11px; color:var(--accent); font-weight:700; width:28px; text-align:right; flex-shrink:0; }
+
+/* ─── Experience Delivery ─── */
+.hub-intro {
+  font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:8px;
+}
+.hub-section-label {
+  font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:12px; margin-top:32px;
+}
+.hub-gallery { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.hub-gallery img {
+  width:100%; aspect-ratio:16/9; object-fit:cover;
+  border-radius:10px; border:1px solid var(--border);
+  cursor:zoom-in; display:block;
+  transition:opacity .2s, border-color .2s, transform .2s;
+}
+.hub-gallery img:hover { opacity:.88; border-color:var(--border-hi); transform:scale(1.01); }
+
+/* ─── Deliverables ─── */
+.deliverables-list {
+  list-style:none; padding:0;
+  display:grid; grid-template-columns:repeat(2,1fr); gap:10px;
+}
+.deliverables-list li {
+  display:flex; align-items:center; gap:10px;
+  padding:13px 16px;
+  background:var(--card); border:1px solid var(--border); border-radius:10px;
+  font-size:14px; color:var(--text); font-weight:500;
+}
+.deliverables-list li::before {
+  content:'✓'; flex-shrink:0;
+  width:20px;height:20px;
+  background:rgba(0,166,81,.12); border:1px solid rgba(0,166,81,.28);
+  border-radius:6px; display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; color:var(--green);
+  text-align:center; line-height:20px;
+}
+
+/* ─── Challenges ─── */
+.challenges-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.ai-challenge-card {
+  background:var(--card); backdrop-filter:blur(14px);
+  border:1px solid var(--border); border-radius:16px; overflow:hidden;
+}
+.challenge-head { padding:18px 24px; border-bottom:1px solid var(--border); }
+.challenge-eyebrow {
+  font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:4px;
+}
+.challenge-head h4 { font-size:15px; font-weight:700; color:var(--text); letter-spacing:-.01em; }
+.challenge-body { padding:20px 24px; }
+.challenge-body p { font-size:14px; color:var(--muted); line-height:1.65; margin-bottom:16px; }
+.solution-eyebrow {
+  font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:6px;
+}
+.solution-text { font-size:14px; color:var(--text); line-height:1.65; }
+
+/* ─── Results ─── */
+.results-metrics {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px;
+}
+.result-metric {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:16px 18px; background:var(--card);
+  border:1px solid var(--border); border-radius:12px;
+}
+.result-check {
+  flex-shrink:0; width:22px;height:22px;
+  background:rgba(0,166,81,.12); border:1px solid rgba(0,166,81,.28);
+  border-radius:6px; display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; color:var(--green);
+}
+.result-text { font-size:13px; color:var(--text); font-weight:500; line-height:1.4; }
+
+/* ─── Video embed ─── */
+.video-section-label {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:14px;
+}
+.video-wrap-outer {
+  border-radius:16px; overflow:hidden; border:1px solid var(--border); margin-bottom:32px;
+}
+
+/* ─── Stakeholder quote ─── */
+.stakeholder-quote-card {
+  padding:48px; background:var(--card); backdrop-filter:blur(14px);
+  border:1px solid var(--border-hi); border-radius:20px;
+  text-align:center; margin-bottom:32px;
+  position:relative; overflow:hidden;
+}
+.stakeholder-quote-card::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--purple));
+}
+.quote-mark {
+  font-size:72px; line-height:.7; color:var(--accent); opacity:.22;
+  font-family:Georgia,serif; display:block; margin-bottom:20px;
+}
+.q-text {
+  font-size:24px; font-weight:600; color:var(--text);
+  letter-spacing:-.02em; line-height:1.4; font-style:italic; margin-bottom:20px;
+}
+.stakeholder-quote-card cite {
+  font-size:11px; font-style:normal; color:var(--muted);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+
+/* ─── Impact ─── */
+.impact-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:32px; }
+.impact-item {
+  font-size:15px; color:var(--muted);
+  padding:14px 18px 14px 36px;
+  background:var(--card); border:1px solid var(--border); border-radius:10px;
+  position:relative; line-height:1.5;
+}
+.impact-item::before { content:'→'; position:absolute; left:14px; color:var(--accent); font-weight:700; }
+
+/* ─── ROI ─── */
+.roi-grid { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+.roi-col-label {
+  font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);
+}
+.roi-list { list-style:none; padding:0; }
+.roi-list li {
+  font-size:15px; color:var(--text);
+  padding:10px 0 10px 20px; border-bottom:1px solid var(--border); position:relative;
+}
+.roi-list li:last-child { border-bottom:none; }
+.roi-list li::before { content:'↗'; position:absolute; left:0;top:11px; color:var(--accent); font-size:12px; }
+
+/* ─── Reflection ─── */
+.principles-label {
+  font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:14px;
+}
+.skills-grid { display:flex; flex-wrap:wrap; gap:10px; margin:24px 0 32px; }
+.skill-pill {
+  padding:9px 18px; background:var(--card);
+  border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text);
+  transition:border-color .2s, color .2s;
+}
+.skill-pill:hover { border-color:var(--border-hi); color:var(--accent); }
+.future-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:24px; }
+.future-item {
+  padding:16px 18px; background:var(--card);
+  border:1px solid var(--border); border-radius:12px;
+  font-size:13px; color:var(--muted); line-height:1.4;
+  transition:border-color .2s;
+}
+.future-item:hover { border-color:var(--border-hi); }
+.future-item-icon { font-size:18px; display:block; margin-bottom:8px; }
+.reflection-close {
+  margin-top:32px; padding:32px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(92,46,237,.07) 100%);
+  border:1px solid var(--border-hi); border-radius:16px;
+  font-size:17px; color:var(--text); line-height:1.7; font-style:italic;
+}
+
+/* ─── Color palette circles ─── */
+.color-palette { display:flex; flex-wrap:wrap; gap:32px; margin-bottom:32px; }
+.color-swatch { display:flex; flex-direction:column; align-items:center; gap:12px; }
+.swatch-circle {
+  width:80px; height:80px; border-radius:50%;
+  border:3px solid var(--border);
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+.swatch-name { font-size:12px; font-weight:600; color:var(--text); text-align:center; }
+.swatch-hex { font-size:11px; color:var(--muted); font-family:'Courier New',monospace; }
+
+/* ─── Design principles ─── */
+.principles-grid { display:flex; flex-wrap:wrap; gap:10px; }
+.principle-pill {
+  padding:9px 18px; background:var(--accent-lo);
+  border:1px solid var(--border-hi); border-radius:999px;
+  font-size:13px; font-weight:600; color:var(--accent);
+}
+
+/* ─── Tools ─── */
+.tools-grid { display:flex; flex-wrap:wrap; gap:10px; }
+.tool-badge {
+  padding:10px 20px; background:var(--card);
+  border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text);
+  transition:border-color .2s, color .2s;
+}
+.tool-badge:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Back CTA ─── */
+.back-cta { padding:60px 6vw 0; text-align:center; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 32px; border:1px solid var(--border-hi); border-radius:999px;
+  background:var(--accent-lo); color:var(--accent);
+  text-decoration:none; font-size:14px; font-weight:600; letter-spacing:.04em;
+  transition:all .25s ease;
+}
+.back-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* ─── Footer ─── */
+footer {
+  padding:40px 6vw; display:flex; justify-content:space-between; align-items:center;
+  border-top:1px solid var(--border); font-size:13px; color:var(--muted); margin-top:80px;
+}
+
+/* ─── Lightbox ─── */
+.lb-overlay {
+  display:none; position:fixed; inset:0; z-index:999;
+  background:rgba(0,0,0,.95);
+  flex-direction:column; align-items:center; justify-content:center;
+}
+.lb-overlay.open { display:flex; }
+.lb-img { max-width:90vw; max-height:84vh; object-fit:contain; border-radius:6px; display:block; pointer-events:none; }
+.lb-close {
+  position:absolute; top:18px;right:20px;
+  background:none; border:1px solid rgba(255,255,255,.22); color:#fff;
+  width:38px;height:38px; border-radius:8px; font-size:20px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-family:inherit;
+  transition:border-color .2s; line-height:1;
+}
+.lb-close:hover { border-color:rgba(255,255,255,.5); }
+.lb-nav-btn {
+  position:absolute; top:50%; transform:translateY(-50%);
+  background:none; border:1px solid rgba(255,255,255,.22); color:#fff;
+  width:46px;height:46px; border-radius:8px; font-size:20px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-family:inherit;
+  transition:border-color .2s;
+}
+.lb-nav-btn:hover { border-color:rgba(255,255,255,.5); }
+#lbPrev { left:18px; }
+#lbNext { right:18px; }
+.lb-count {
+  position:absolute; bottom:18px; font-size:12px;
+  letter-spacing:.1em; color:rgba(255,255,255,.4);
+}
+
+/* ─── Reveal ─── */
+.reveal { opacity:0; transform:translateY(20px); }
+
+/* ─── Responsive ─── */
+@media (max-width:900px) {
+  .case-hero { grid-template-columns:1fr; gap:40px; }
+  .hero-panel { order:-1; }
+  .cs-row { grid-template-columns:1fr; gap:32px; }
+  .cs-media-row { grid-template-columns:1fr; }
+  .solution-stats { grid-template-columns:1fr 1fr; }
+  .research-grid { grid-template-columns:1fr; }
+  .challenges-grid { grid-template-columns:1fr; }
+  .results-metrics { grid-template-columns:repeat(2,1fr); }
+  .impact-grid { grid-template-columns:1fr; }
+  .roi-grid { grid-template-columns:1fr; }
+  .future-grid { grid-template-columns:repeat(2,1fr); }
+  .deliverables-list { grid-template-columns:1fr; }
+  .hub-gallery { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:560px) {
+  .solution-stats { grid-template-columns:1fr; }
+  .results-metrics { grid-template-columns:1fr; }
+  .future-grid { grid-template-columns:1fr; }
+  .hub-gallery { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- ─── Nav ─── -->
+<nav>
+  <svg class="nav-logo-svg" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
+    <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
+    <path class="cls-1" d="M746.52,170.11c-41.01-4.36-80.49-13.59-121.05-20.85-36.13-6.47-71.23-11.73-107.86-14.17-29.82-1.98-58.53-.9-87.3,6.82-17.5,4.69-33.44,12.44-48.13,22.68-16.47,11.48-29.41,26.01-38.27,43.81-15.53,31.22-13.31,71.85,15.78,92.76l-19.06-6.13c-14.24-4.58-26.38-13.5-36.01-24.84-24.78-29.19-21.93-66.45-5.73-99.88,10.49-21.65,25.46-40.45,43.13-56.59,4-3.65,7.99-5.99,12.07-9.19l6.69-5.24c19.83-13.56,40.91-23.45,64.21-29.67l37.31-7.76c42.07-5.44,84.1-2.69,125.65,5.95l70.61,18.24,15.09,4.57,59.17,16.35c79.18,25.2,121,41.06,189.66,34.63s85.92-17.17,88.58-18.08c28.8-9.76,45.96-21.68,65.62-31.13l43.32-22.01c-57.28,35.37-111.01,80.38-176.34,98.19-18.41,5.02-35.52,12.22-98.81,11.55-30.35-.32-68.17-6.8-98.32-10Z"/>
+    <path class="cls-1" d="M389.35,270.35c73.89-64.99,161.21-70.91,202.21-32.68,29.97,27.95,33,77.44,21.45,112.34-29.44,88.96-172.19,139.36-275.74,96.16-13.71-5.72-81.39-31.4-103.15-96.16-15.16-45.12-3.04-93.95,0-93.96,1.83,0,.04,17.59,5.11,34.72,16.6,56.14,105.76,102.1,188.94,86.81,55.87-10.27,110.69-33.31,96-80.68-8.28-26.7-49.24-41.07-52.09-41.87-42.02-11.91-77.17,11.49-82.72,15.32Z"/>
+    <path class="cls-1" d="M412.84.25c7.83-1.89,171,5.68,322.09,73.8,65.77,29.65,86.09,35.79,115.6,40.58,130.66,21.21,242.15-42.4,240.19-40.58-3.19,2.97-108.45,83.8-246.89,58.12-3.77-.7-8.42-1.26-17.36-3.77-90.03-25.29-136.85-61.04-287.14-81.85-90.42-12.52-159.1,30.61-157.17,26.37,1.71-3.75,29.14-72.29,30.69-72.66Z"/>
+  </svg>
+  <div class="nav-right">
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span class="toggle-label"></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ─── Hero ─── -->
+  <div class="case-hero">
+    <div class="hero-content">
+      <div class="breadcrumb reveal">
+        <a href="index.html">Portfolio</a><span>/</span>
+        <a href="index.html#work">Work</a><span>/</span>
+        AI Customer Segmentation
+      </div>
+      <div class="case-cat reveal">AI &middot; Learning Experience</div>
+      <h1 class="reveal">AI-Powered<br>Customer<br>Segmentation</h1>
+      <p class="case-subtitle reveal">Designing Conversational AI Experiences to Transform Sales Training at Cox Business</p>
+      <div class="meta-row reveal">
+        <div class="meta-cell">
+          <div class="meta-label">Client</div>
+          <div class="meta-val">Cox Business</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2025</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Platform</div>
+          <div class="meta-val">Surge9 AI</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Role</div>
+          <div class="meta-val">AI Experience Designer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-panel reveal">
+      <div class="panel-badge"><span class="panel-dot"></span> Simulation Suite Active</div>
+      <div class="panel-stats">
+        <div class="panel-stat">
+          <span class="panel-stat-num">9</span>
+          <span class="panel-stat-desc">AI Customer<br>Personas</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">27+</span>
+          <span class="panel-stat-desc">Industry<br>Conv. Paths</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">1.2K</span>
+          <span class="panel-stat-desc">Customers<br>Surveyed</span>
+        </div>
+      </div>
+      <div class="panel-divider"></div>
+      <div>
+        <div class="panel-row"><span class="panel-row-label">AI Engine</span><span class="panel-row-pill">Surge9</span></div>
+        <div class="panel-row"><span class="panel-row-label">Discipline</span><span class="panel-row-val">Conversation Design</span></div>
+        <div class="panel-row"><span class="panel-row-label">Evaluation</span><span class="panel-row-val">AI-Generated</span></div>
+        <div class="panel-row"><span class="panel-row-label">Environment</span><span class="panel-row-val">On-Demand, Scalable</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-divider"></div>
+
+  <!-- ─── Overview ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Overview</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>Cox Business launched a customer segmentation strategy designed to help sales representatives personalize conversations based on customer needs, motivations, and buying behaviors. However, traditional training methods lacked opportunities for sellers to practice these conversations in realistic environments.</p>
+        <p>As lead AI Experience Designer and Conversation Designer, I designed and developed a suite of nine AI-powered conversational simulations using Surge9. Each simulation featured dynamic AI personas capable of replicating authentic customer interactions across multiple industries, allowing sellers to safely practice consultative selling skills in a scalable, on-demand environment.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── The Problem ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">The Problem</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>Sales representatives needed a better way to practice customer conversations before engaging with real clients. Existing training solutions presented several challenges:</p>
+        <ul class="problem-list">
+          <li>Training focused heavily on knowledge transfer but offered limited opportunities for skill application.</li>
+          <li>Live role-play exercises were difficult to scale and often inconsistent.</li>
+          <li>Sellers struggled to adapt their communication styles to different customer personalities and buying behaviors.</li>
+          <li>Managers lacked scalable methods for providing consistent coaching and feedback.</li>
+          <li>The organization needed a way to reinforce customer segmentation strategy through realistic practice experiences.</li>
+        </ul>
+        <div class="hmw-card">
+          <div class="hmw-eyebrow">Design Challenge</div>
+          <p class="hmw-q">How might we use AI to create authentic, scalable customer conversations that improve seller confidence and performance?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Research & Discovery ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Research &amp; Discovery</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>This project was heavily research-driven. Findings revealed that successful sellers adapt not only their solutions, but also their communication style, pacing, technical depth, and relationship-building approach. Each customer segment demonstrated unique emotional drivers, fears, and decision criteria. These findings directly informed the AI behavior models.</p>
+      </div>
+    </div>
+    <div class="research-grid reveal" style="margin-top:28px;">
+      <div class="research-col">
+        <div class="research-col-title">Stakeholder Interviews</div>
+        <ul>
+          <li>Sales leaders</li>
+          <li>Customer segmentation experts</li>
+          <li>Subject matter experts</li>
+          <li>Change management teams</li>
+          <li>Sales enablement leaders</li>
+        </ul>
+      </div>
+      <div class="research-col">
+        <div class="research-col-title">Data Sources</div>
+        <ul>
+          <li>Customer segmentation research</li>
+          <li>Survey data from 1,200+ customers</li>
+          <li>National customer datasets</li>
+          <li>Existing customer personas</li>
+          <li>Sales performance insights</li>
+        </ul>
+      </div>
+      <div class="research-col">
+        <div class="research-col-title">Key Findings</div>
+        <div class="research-sublabel">Sellers must adapt:</div>
+        <ul>
+          <li>Communication style</li>
+          <li>Pacing and technical depth</li>
+          <li>Relationship-building approach</li>
+        </ul>
+        <div class="research-sublabel">Each segment has unique:</div>
+        <ul>
+          <li>Emotional drivers and fears</li>
+          <li>Decision criteria</li>
+          <li>Buying behaviors</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Solution ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Solution</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>I designed an AI-driven learning ecosystem consisting of nine customer personas, each representing a distinct business segment. The solution moved through four interconnected design phases, culminating in a fully integrated learning experience that extended beyond the simulations themselves into how learners discovered, accessed, and revisited the content.</p>
+      </div>
+    </div>
+
+    <div class="solution-stats reveal" style="margin-top:28px;">
+      <div class="solution-stat">
+        <span class="solution-stat-num">9</span>
+        <span class="solution-stat-label">AI Customer Personas</span>
+      </div>
+      <div class="solution-stat">
+        <span class="solution-stat-num">27+</span>
+        <span class="solution-stat-label">Industry Conv. Branches</span>
+      </div>
+      <div class="solution-stat">
+        <span class="solution-stat-num">100%</span>
+        <span class="solution-stat-label">AI-Generated Evaluations</span>
+      </div>
+    </div>
+
+    <!-- Phase 01: Persona Design -->
+    <div class="phase-block reveal">
+      <div class="phase-header">
+        <span class="phase-num">Phase 01</span>
+        <h3 class="phase-title">AI Persona Design</h3>
+      </div>
+      <div class="cs-row">
+        <div class="cs-body">
+          <p>Each of the nine AI personas was built as a fully realized character, not a template. I developed detailed behavioral profiles containing background stories, personality traits, emotional drivers, professional goals, pain points, buying behaviors, and conversation styles. The goal was for each persona to feel like a real person a seller might encounter in the field.</p>
+        </div>
+        <div class="cs-media">
+          <div class="phase-visual">
+            <div class="phase-visual-title">Example Persona Profile</div>
+            <div class="persona-name">Marcus T.</div>
+            <div class="persona-type">VP of Operations &middot; Mid-Market Manufacturing</div>
+            <div class="persona-attrs">
+              <div class="persona-attr-col">
+                <div class="persona-attr-label">Drivers</div>
+                <div class="persona-attr-item">Operational efficiency</div>
+                <div class="persona-attr-item">Cost reduction</div>
+                <div class="persona-attr-item">Team productivity</div>
+              </div>
+              <div class="persona-attr-col">
+                <div class="persona-attr-label">Fears</div>
+                <div class="persona-attr-item">Downtime risk</div>
+                <div class="persona-attr-item">Budget scrutiny</div>
+                <div class="persona-attr-item">Vendor reliability</div>
+              </div>
+            </div>
+            <div class="persona-style">Style: Direct and data-driven. Skeptical of vendor claims. Responds to ROI evidence over feature lists.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phase-divider"></div>
+
+    <!-- Phase 02: Conversation Design -->
+    <div class="phase-block reveal">
+      <div class="phase-header">
+        <span class="phase-num">Phase 02</span>
+        <h3 class="phase-title">Conversation Design</h3>
+      </div>
+      <div class="cs-row">
+        <div class="cs-body">
+          <p>I developed conversational frameworks that enabled AI personas to behave dynamically rather than following a script. Each simulation could ask realistic follow-up questions, challenge weak recommendations, demonstrate objections, adapt its tone based on the learner's responses, and simulate authentic customer behaviors. The conversations branched naturally based on seller performance.</p>
+        </div>
+        <div class="cs-media">
+          <div class="phase-visual">
+            <div class="phase-visual-title">Sample Conversation Exchange</div>
+            <div class="chat-bubble-wrap">
+              <div>
+                <div class="chat-label">AI Persona (Marcus)</div>
+                <div class="chat-bubble ai">"Before we go further, what makes you confident your solution handles the kind of call volume we're running across three shifts?"</div>
+              </div>
+              <div>
+                <div class="chat-label" style="text-align:right;">Seller</div>
+                <div class="chat-bubble seller">"Great question. Our platform scales dynamically, and we have clients in manufacturing running similar shift structures."</div>
+              </div>
+              <div>
+                <div class="chat-label">AI Persona (Marcus)</div>
+                <div class="chat-bubble ai">"I'd want to see some data on that. What does uptime look like during peak hours?"</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phase-divider"></div>
+
+    <!-- Phase 03: Prompt Engineering -->
+    <div class="phase-block reveal">
+      <div class="phase-header">
+        <span class="phase-num">Phase 03</span>
+        <h3 class="phase-title">Prompt Engineering</h3>
+      </div>
+      <div class="cs-row">
+        <div class="cs-body">
+          <p>Designing the AI personas was only half the work. Getting them to behave consistently required careful, iterative prompt engineering. I authored and continuously refined prompts to ensure each AI persona stayed in character, reflected segment-specific behaviors, avoided hallucinations, and delivered consistent evaluations. Multiple iterations were tested and refined based on stakeholder feedback.</p>
+        </div>
+        <div class="cs-media">
+          <div class="phase-visual">
+            <div class="phase-visual-title">Prompt Architecture</div>
+            <div class="prompt-block">
+<span class="prompt-comment">// PERSONA CONTEXT</span>
+<span class="prompt-section"><span class="prompt-key">You are:</span> <span class="prompt-val">Marcus, VP of Operations</span>
+<span class="prompt-key">Segment:</span>  <span class="prompt-val">Mid-Market Manufacturing</span></span>
+
+<span class="prompt-comment">// BEHAVIOR RULES</span>
+<span class="prompt-section"><span class="prompt-key">Rules:</span>
+  <span class="prompt-val">Stay in character at all times</span>
+  <span class="prompt-val">Challenge weak recommendations</span>
+  <span class="prompt-val">Ask follow-up questions naturally</span>
+  <span class="prompt-val">Never acknowledge AI identity</span></span>
+
+<span class="prompt-comment">// EVALUATION OUTPUT</span>
+<span class="prompt-section"><span class="prompt-key">Score:</span> <span class="prompt-val">discovery, empathy, alignment</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phase-divider"></div>
+
+    <!-- Phase 04: Evaluation Framework -->
+    <div class="phase-block reveal">
+      <div class="phase-header">
+        <span class="phase-num">Phase 04</span>
+        <h3 class="phase-title">Evaluation Framework</h3>
+      </div>
+      <div class="cs-row">
+        <div class="cs-body">
+          <p>Each simulation provided immediate, AI-generated performance feedback that evaluated learners across six consultative selling competencies. I developed custom scoring models that assessed not just whether sellers got the right answer, but how they engaged, how they listened, and how well they connected solutions to customer needs. This allowed for meaningful, consistent coaching at scale.</p>
+        </div>
+        <div class="cs-media">
+          <div class="phase-visual">
+            <div class="phase-visual-title">AI Evaluation Scoring</div>
+            <div class="eval-row">
+              <span class="eval-row-label">Discovery Skills</span>
+              <div class="eval-bar-wrap"><div class="eval-bar" style="width:80%"></div></div>
+              <span class="eval-score">8/10</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-label">Empathy</span>
+              <div class="eval-bar-wrap"><div class="eval-bar" style="width:60%"></div></div>
+              <span class="eval-score">6/10</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-label">Solution Alignment</span>
+              <div class="eval-bar-wrap"><div class="eval-bar" style="width:90%"></div></div>
+              <span class="eval-score">9/10</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-label">Industry Relevance</span>
+              <div class="eval-bar-wrap"><div class="eval-bar" style="width:70%"></div></div>
+              <span class="eval-score">7/10</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-label">Consultative Selling</span>
+              <div class="eval-bar-wrap"><div class="eval-bar" style="width:75%"></div></div>
+              <span class="eval-score">7.5</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-label">Communication</span>
+              <div class="eval-bar-wrap"><div class="eval-bar" style="width:85%"></div></div>
+              <span class="eval-score">8.5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phase-divider"></div>
+
+    <!-- Experience Delivery & Adoption -->
+    <div class="phase-block reveal">
+      <div class="phase-header">
+        <span class="phase-num">Experience Delivery &amp; Adoption</span>
+        <h3 class="phase-title">Learning Hub Design</h3>
+      </div>
+      <div class="cs-row full">
+        <div class="cs-body">
+          <p>To ensure learners could easily discover, access, and revisit the AI simulations, I designed a SharePoint-based learning hub that served as the central entry point for all segmentation resources. The hub housed the AI simulations, explainer videos, segment reference materials, and supporting documentation in a single, easy-to-navigate experience. The design prioritized clarity, low friction, and visual consistency with Cox Business brand standards.</p>
+          <div class="hub-section-label" style="margin-top:28px;">Brand Color System</div>
+          <div class="color-palette">
+            <div class="color-swatch">
+              <div class="swatch-circle" style="background:#00AAF4; border-color:rgba(0,170,244,.4);"></div>
+              <span class="swatch-name">Cox Sky Blue</span>
+              <span class="swatch-hex">#00AAF4</span>
+            </div>
+            <div class="color-swatch">
+              <div class="swatch-circle" style="background:#002F87; border-color:rgba(0,47,135,.5);"></div>
+              <span class="swatch-name">Cox Business Dark Blue</span>
+              <span class="swatch-hex">#002F87</span>
+            </div>
+            <div class="color-swatch">
+              <div class="swatch-circle" style="background:#FFFFFF; border-color:rgba(255,255,255,.3);"></div>
+              <span class="swatch-name">White</span>
+              <span class="swatch-hex">#FFFFFF</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cs-media-row" style="margin-top:28px;">
+        <div class="cs-media-col">
+          <div class="hub-section-label" style="margin-top:0;">CB Skills Gym</div>
+          <div class="hub-gallery">
+            <img src="images/ai-segmentation-imgs/CB_SKills_Gym_1.png" alt="CB Skills Gym screen 1" data-gallery="cb-skills" data-idx="0" />
+            <img src="images/ai-segmentation-imgs/CB_SKills_Gym_2.png" alt="CB Skills Gym screen 2" data-gallery="cb-skills" data-idx="1" />
+            <img src="images/ai-segmentation-imgs/CB_SKills_Gym_3.png" alt="CB Skills Gym screen 3" data-gallery="cb-skills" data-idx="2" />
+            <img src="images/ai-segmentation-imgs/CB_SKills_Gym_4.png" alt="CB Skills Gym screen 4" data-gallery="cb-skills" data-idx="3" />
+          </div>
+        </div>
+        <div class="cs-media-col">
+          <div class="hub-section-label" style="margin-top:0;">Seize AI Gym</div>
+          <div class="hub-gallery">
+            <img src="images/ai-segmentation-imgs/Seize_AI_Gym_1.png" alt="Seize AI Gym screen 1" data-gallery="seize-ai" data-idx="0" />
+            <img src="images/ai-segmentation-imgs/Seize_AI_Gym_2.png" alt="Seize AI Gym screen 2" data-gallery="seize-ai" data-idx="1" />
+            <img src="images/ai-segmentation-imgs/Seize_AI_Gym_3.png" alt="Seize AI Gym screen 3" data-gallery="seize-ai" data-idx="2" />
+            <img src="images/ai-segmentation-imgs/Seize_AI_Gym_4.png" alt="Seize AI Gym screen 4" data-gallery="seize-ai" data-idx="3" />
+            <img src="images/ai-segmentation-imgs/Seize_AI_Gym_5.png" alt="Seize AI Gym screen 5" data-gallery="seize-ai" data-idx="4" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end Solution section -->
+
+  <!-- ─── Challenges ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Challenges</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>Every phase of this project surfaced real constraints that required creative problem-solving and iterative refinement.</p>
+      </div>
+    </div>
+    <div class="challenges-grid reveal" style="margin-top:24px;">
+      <div class="ai-challenge-card">
+        <div class="challenge-head">
+          <div class="challenge-eyebrow">Challenge</div>
+          <h4>AI Evaluation Accuracy</h4>
+        </div>
+        <div class="challenge-body">
+          <p>Early testing revealed inconsistencies in AI scoring and feedback. Learners occasionally received high scores despite missing critical customer needs.</p>
+          <div class="solution-eyebrow">Solution</div>
+          <p class="solution-text">Refined evaluation prompts and introduced stricter performance criteria through multiple testing cycles.</p>
+        </div>
+      </div>
+      <div class="ai-challenge-card">
+        <div class="challenge-head">
+          <div class="challenge-eyebrow">Challenge</div>
+          <h4>Stakeholder Alignment</h4>
+        </div>
+        <div class="challenge-body">
+          <p>Multiple stakeholders across sales and enablement teams required ongoing feedback and sign-off throughout development.</p>
+          <div class="solution-eyebrow">Solution</div>
+          <p class="solution-text">Established recurring review sessions and iterative testing cycles to maintain alignment at every stage.</p>
+        </div>
+      </div>
+      <div class="ai-challenge-card">
+        <div class="challenge-head">
+          <div class="challenge-eyebrow">Challenge</div>
+          <h4>Evolving Requirements</h4>
+        </div>
+        <div class="challenge-body">
+          <p>Industry assignments changed late in development as new customer data became available, threatening the existing architecture.</p>
+          <div class="solution-eyebrow">Solution</div>
+          <p class="solution-text">Built a modular conversation architecture that allowed industries to be swapped without rebuilding entire simulations.</p>
+        </div>
+      </div>
+      <div class="ai-challenge-card">
+        <div class="challenge-head">
+          <div class="challenge-eyebrow">Challenge</div>
+          <h4>Balancing Complexity</h4>
+        </div>
+        <div class="challenge-body">
+          <p>The simulations needed to support both novice and experienced sellers without creating dead-ends or oversimplified conversations.</p>
+          <div class="solution-eyebrow">Solution</div>
+          <p class="solution-text">Designed AI conversations to scale naturally in difficulty while avoiding technical dead-ends for any skill level.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Results & ROI ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Results &amp; ROI</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>The project delivered a complete, scalable AI-powered training ecosystem that the organization had never had before. Although formal business metrics are still being collected, the immediate value and organizational impact were clear.</p>
+      </div>
+    </div>
+
+    <div class="results-metrics reveal" style="margin-top:28px;">
+      <div class="result-metric"><div class="result-check">✓</div><div class="result-text">9 AI customer personas designed and deployed</div></div>
+      <div class="result-metric"><div class="result-check">✓</div><div class="result-text">27+ industry-specific conversation paths</div></div>
+      <div class="result-metric"><div class="result-check">✓</div><div class="result-text">AI-generated performance feedback at scale</div></div>
+      <div class="result-metric"><div class="result-check">✓</div><div class="result-text">On-demand, scalable practice environment</div></div>
+      <div class="result-metric"><div class="result-check">✓</div><div class="result-text">Full performance support ecosystem</div></div>
+      <div class="result-metric"><div class="result-check">✓</div><div class="result-text">Modular architecture built for expansion</div></div>
+    </div>
+
+    <div class="reveal" style="margin-top:0;">
+      <div class="video-section-label">See It In Action &middot; Simulation Demo</div>
+      <div class="video-wrap-outer">
+        <div style="padding:53.97% 0 0 0;position:relative;">
+          <iframe src="https://player.vimeo.com/video/1203701491?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;"
+            title="Knowledge Networks Demo Run">
+          </iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="stakeholder-quote-card reveal">
+      <span class="quote-mark">"</span>
+      <p class="q-text">The next best thing to a live customer conversation.</p>
+      <cite>Stakeholder Feedback &middot; Cox Business Sales Enablement</cite>
+    </div>
+
+    <div class="impact-grid reveal">
+      <div class="impact-item">Reduced dependence on facilitator-led role plays</div>
+      <div class="impact-item">Enabled consistent sales practice experiences at scale</div>
+      <div class="impact-item">Increased stakeholder confidence in AI-enabled learning</div>
+      <div class="impact-item">Sparked expansion discussions across additional business units</div>
+    </div>
+
+    <div class="roi-grid reveal" style="margin-top:32px;">
+      <div class="roi-col">
+        <div class="roi-col-label">Expected Business Outcomes</div>
+        <ul class="roi-list">
+          <li>Faster seller ramp time</li>
+          <li>Improved customer conversations</li>
+          <li>Increased seller confidence</li>
+          <li>Reduced coaching time</li>
+          <li>Scalable practice opportunities</li>
+          <li>Lower training delivery costs</li>
+        </ul>
+      </div>
+      <div class="roi-col">
+        <div class="roi-col-label">Long-Term Architecture Value</div>
+        <ul class="roi-list">
+          <li>Outside Sales expansion</li>
+          <li>Indirect Sales applications</li>
+          <li>Additional customer segments</li>
+          <li>Future AI coaching initiatives</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Reflection ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Reflection</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>This project fundamentally changed how I think about learning design. Rather than designing content, I was designing conversations. Success depended not on information delivery, but on creating authentic interactions between humans and AI.</p>
+
+        <div class="principles-label" style="margin-top:28px;">Skills Strengthened</div>
+        <div class="skills-grid">
+          <span class="skill-pill">AI Experience Design</span>
+          <span class="skill-pill">Prompt Engineering</span>
+          <span class="skill-pill">Conversation Design</span>
+          <span class="skill-pill">Human-AI Interaction Design</span>
+          <span class="skill-pill">Systems Thinking</span>
+          <span class="skill-pill">UX Research</span>
+        </div>
+
+        <div class="principles-label">If I Were to Continue Iterating</div>
+        <div class="future-grid">
+          <div class="future-item"><span class="future-item-icon">⚡</span>Adaptive AI difficulty levels</div>
+          <div class="future-item"><span class="future-item-icon">📊</span>Enhanced analytics dashboards</div>
+          <div class="future-item"><span class="future-item-icon">🎙</span>Voice-first interactions</div>
+          <div class="future-item"><span class="future-item-icon">🤖</span>AI coaching recommendations</div>
+          <div class="future-item"><span class="future-item-icon">🔗</span>CRM and LMS integrations</div>
+        </div>
+
+        <div class="reflection-close">
+          Ultimately, this project demonstrated how AI can move learning beyond content consumption and into authentic skill development through practice.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Tools ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Tools &amp; Technologies</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <div class="tools-grid">
+          <span class="tool-badge">Surge9</span>
+          <span class="tool-badge">Microsoft Copilot</span>
+          <span class="tool-badge">Adobe Photoshop</span>
+          <span class="tool-badge">Synthesia</span>
+          <span class="tool-badge">SharePoint</span>
+          <span class="tool-badge">Microsoft Office Suite</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Back CTA ─── -->
+  <div class="back-cta reveal">
+    <a href="index.html#work" class="back-btn">Back to Work</a>
+  </div>
+
+</main>
+
+<footer>
+  <span>Raymond Spellen | Learning Experience Design / Creative Strategy</span>
+  <span>&copy; 2026</span>
+</footer>
+
+<!-- ─── Lightbox ─── -->
+<div class="lb-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-nav-btn" id="lbPrev" aria-label="Previous">&#8592;</button>
+  <img class="lb-img" id="lbImg" src="" alt="" />
+  <button class="lb-nav-btn" id="lbNext" aria-label="Next">&#8594;</button>
+  <span class="lb-count" id="lbCount"></span>
+</div>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+function toggleTheme() {
+  var html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("rs-theme", html.dataset.theme);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  /* ─── Scroll reveal ─── */
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.style.transition = "opacity .75s ease, transform .75s ease";
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = "translateY(0)";
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll(".reveal").forEach(function(el) { obs.observe(el); });
+
+  /* ─── Lightbox ─── */
+  var lb      = document.getElementById("lightbox");
+  var lbImg   = document.getElementById("lbImg");
+  var lbCount = document.getElementById("lbCount");
+  var lbClose = document.getElementById("lbClose");
+  var lbPrev  = document.getElementById("lbPrev");
+  var lbNext  = document.getElementById("lbNext");
+  var gallery = [], current = 0;
+
+  function buildGalleries() {
+    var groups = {};
+    document.querySelectorAll("img[data-gallery]").forEach(function(img) {
+      var g = img.dataset.gallery;
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(img);
+    });
+    return groups;
+  }
+  var galleries = buildGalleries();
+
+  function openAt(groupName, idx) {
+    gallery = galleries[groupName] || [];
+    current = idx;
+    show();
+    lb.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function show() {
+    var img = gallery[current];
+    lbImg.src = img.src; lbImg.alt = img.alt;
+    lbCount.textContent = (current + 1) + " / " + gallery.length;
+    lbPrev.style.display = gallery.length > 1 ? "flex" : "none";
+    lbNext.style.display = gallery.length > 1 ? "flex" : "none";
+  }
+  function close() {
+    lb.classList.remove("open");
+    document.body.style.overflow = "";
+    lbImg.src = "";
+  }
+  function prev() { current = (current - 1 + gallery.length) % gallery.length; show(); }
+  function next() { current = (current + 1) % gallery.length; show(); }
+
+  document.querySelectorAll("img[data-gallery]").forEach(function(img) {
+    img.addEventListener("click", function() {
+      openAt(img.dataset.gallery, parseInt(img.dataset.idx, 10));
+    });
+  });
+  lbClose.addEventListener("click", close);
+  lbPrev.addEventListener("click", prev);
+  lbNext.addEventListener("click", next);
+  lb.addEventListener("click", function(e) { if (e.target === lb) close(); });
+  document.addEventListener("keydown", function(e) {
+    if (!lb.classList.contains("open")) return;
+    if (e.key === "Escape")     close();
+    if (e.key === "ArrowLeft")  prev();
+    if (e.key === "ArrowRight") next();
+  });
+});
+</script>
+
+</body>
+</html>
