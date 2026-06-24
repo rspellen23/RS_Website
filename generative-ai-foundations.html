@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Generative AI Foundations | Raymond Spellen</title>
+
+<!-- Run before CSS renders to prevent theme flash -->
+<script>
+(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;})();
+</script>
+
+<style>
+:root {
+  --bg:           #07090f;
+  --surface:      #0d1223;
+  --card:         rgba(13, 18, 35, 0.75);
+  --text:         #edf0ff;
+  --muted:        #6b7ca4;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.10);
+  --accent-mid:   rgba(2, 105, 237, 0.22);
+  --accent-glow:  rgba(2, 105, 237, 0.32);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.30);
+  --grid-line:    rgba(2, 105, 237, 0.045);
+  --orb-opacity:  0.11;
+  --nav-bg:       rgba(7, 9, 15, 0.65);
+  --green:        #00a651;
+  --purple:       #5c2eed;
+}
+[data-theme="light"] {
+  --bg:           #f1f4ff;
+  --surface:      #ffffff;
+  --card:         rgba(255, 255, 255, 0.82);
+  --text:         #07090f;
+  --muted:        #505d7e;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.07);
+  --accent-mid:   rgba(2, 105, 237, 0.15);
+  --accent-glow:  rgba(2, 105, 237, 0.22);
+  --border:       rgba(0, 0, 0, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.25);
+  --grid-line:    rgba(2, 105, 237, 0.04);
+  --orb-opacity:  0.05;
+  --nav-bg:       rgba(241, 244, 255, 0.72);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: Inter, -apple-system, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none; z-index: 0;
+  transition: background-image .4s ease;
+}
+
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px);
+  opacity: var(--orb-opacity);
+  pointer-events: none; z-index: 0;
+  will-change: transform;
+  transition: opacity .4s ease;
+}
+.orb-1 { width:600px;height:600px;background:#0269ed;top:-200px;right:-150px;animation:drift 12s ease-in-out infinite; }
+.orb-2 { width:400px;height:400px;background:#5c2eed;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
+
+@keyframes drift { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-36px)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+@keyframes tick  { 0%{opacity:0} 40%{opacity:1} 100%{opacity:1} }
+
+nav, main, footer { position: relative; z-index: 1; }
+
+/* ─── Nav ─── */
+nav {
+  position: fixed; top:0;left:0;right:0; z-index:200;
+  padding:16px 6vw;
+  display:flex; justify-content:space-between; align-items:center;
+  background:var(--nav-bg);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:background .4s ease;
+}
+.nav-logo-svg { width:72px; height:auto; display:block; }
+.nav-logo-svg .cls-1 { fill:#0269ed; }
+.nav-right { display:flex; align-items:center; gap:20px; }
+.back-link {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13px; color:var(--muted); text-decoration:none;
+  letter-spacing:.03em; transition:color .2s;
+}
+.back-link:hover { color:var(--text); }
+.back-link::before { content:'←'; }
+.theme-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 16px; border-radius:999px;
+  border:1px solid var(--border-hi);
+  background:var(--accent-lo); color:var(--muted);
+  font-size:13px; font-family:inherit; cursor:pointer;
+  transition:all .25s ease;
+}
+.theme-btn:hover { color:var(--text); border-color:var(--accent); }
+.icon-sun,.icon-moon { width:15px;height:15px;display:none; }
+[data-theme="dark"]  .icon-moon { display:block; }
+[data-theme="light"] .icon-sun  { display:block; }
+[data-theme="dark"]  .toggle-label::after { content:"Light"; }
+[data-theme="light"] .toggle-label::after { content:"Dark"; }
+
+/* ─── Hero ─── */
+.case-hero {
+  padding:140px 6vw 80px;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:60px; align-items:center;
+}
+.breadcrumb {
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:var(--muted); letter-spacing:.06em;
+  margin-bottom:40px;
+}
+.breadcrumb a { color:var(--muted); text-decoration:none; transition:color .2s; }
+.breadcrumb a:hover { color:var(--accent); }
+.breadcrumb span { color:var(--border-hi); }
+.case-cat {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); border:1px solid var(--border-hi);
+  padding:5px 14px; border-radius:999px; background:var(--accent-lo);
+  margin-bottom:28px;
+}
+.case-hero h1 {
+  font-size:clamp(32px,4.4vw,64px);
+  letter-spacing:-0.05em; line-height:.95; font-weight:800;
+  margin-bottom:24px;
+}
+.case-subtitle {
+  font-size:18px; color:var(--muted); line-height:1.6; margin-bottom:40px;
+}
+.meta-row {
+  display:flex; gap:0;
+  border:1px solid var(--border); border-radius:14px;
+  overflow:hidden; background:var(--card);
+  backdrop-filter:blur(12px);
+}
+.meta-cell { flex:1; padding:16px 18px; border-right:1px solid var(--border); }
+.meta-cell:last-child { border-right:none; }
+.meta-label {
+  font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:5px;
+}
+.meta-val { font-size:13px; font-weight:600; color:var(--text); }
+
+/* ─── Hero Course Panel ─── */
+.hero-panel {
+  background:var(--card); backdrop-filter:blur(20px);
+  border:1px solid var(--border-hi); border-radius:20px;
+  padding:36px; position:relative; overflow:hidden;
+}
+.hero-panel::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg, var(--accent), var(--purple));
+}
+.panel-badge {
+  display:flex; align-items:center; gap:8px;
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:28px;
+}
+.panel-dot {
+  width:7px;height:7px; background:var(--accent); border-radius:50%;
+  box-shadow:0 0 8px var(--accent);
+  animation:pulse 2s ease-in-out infinite;
+}
+.panel-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-bottom:28px; }
+.panel-stat { text-align:center; padding:16px 8px; }
+.panel-stat-num {
+  display:block; font-size:40px; font-weight:800;
+  letter-spacing:-.05em; color:var(--text); line-height:1;
+}
+.panel-stat-desc {
+  display:block; font-size:11px; color:var(--muted); margin-top:6px; line-height:1.3;
+}
+.panel-divider { height:1px; background:var(--border); margin-bottom:20px; }
+.course-module-list { display:flex; flex-direction:column; gap:4px; }
+.course-module {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 14px; border-radius:8px;
+  background:rgba(2,105,237,.04); border:1px solid var(--border);
+  font-size:12px; color:var(--text); font-weight:500;
+  transition:border-color .2s, background .2s;
+}
+.module-num {
+  font-size:9px; font-weight:700; letter-spacing:.12em;
+  color:var(--accent); min-width:22px;
+}
+.module-dot {
+  width:5px;height:5px; border-radius:50%; flex-shrink:0;
+  background:var(--green);
+  box-shadow:0 0 5px var(--green);
+}
+
+/* ─── Divider ─── */
+.case-divider { height:1px; background:var(--border); margin:0 6vw; }
+
+/* ─── Content layout ─── */
+main { padding-bottom:120px; }
+.cs-section { padding:64px 6vw 0; }
+.cs-row { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+.cs-row.full { grid-template-columns:1fr; }
+.cs-label {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent);
+  display:flex; align-items:center; gap:10px; margin-bottom:20px;
+}
+.cs-label::before {
+  content:''; width:18px; height:1px;
+  background:var(--accent); box-shadow:0 0 6px var(--accent);
+}
+.cs-body p { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
+.cs-body p:last-child { margin-bottom:0; }
+
+/* ─── Challenge ─── */
+.challenge-cols { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:28px; }
+.challenge-col {
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:16px; padding:28px 26px;
+}
+.challenge-col-title {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);
+}
+.gap-list, .need-list { list-style:none; padding:0; }
+.gap-list li, .need-list li {
+  font-size:14px; color:var(--muted); line-height:1.6;
+  padding:8px 0 8px 20px; border-bottom:1px solid var(--border);
+  position:relative;
+}
+.gap-list li:last-child, .need-list li:last-child { border-bottom:none; }
+.gap-list li::before {
+  content:''; position:absolute; left:0; top:17px;
+  width:6px;height:6px; border:1px solid var(--muted); border-radius:50%;
+}
+.need-list li::before {
+  content:''; position:absolute; left:0; top:17px;
+  width:6px;height:6px; background:var(--accent); border-radius:50%;
+}
+
+/* ─── HMW ─── */
+.hmw-card {
+  margin-top:28px; padding:36px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(92,46,237,.07) 100%);
+  border:1px solid var(--border-hi); border-radius:16px;
+  position:relative; overflow:hidden;
+}
+.hmw-card::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+  box-shadow:0 0 12px var(--accent);
+}
+.hmw-eyebrow {
+  font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:14px;
+}
+.hmw-q { font-size:19px; font-weight:700; color:var(--text); line-height:1.45; letter-spacing:-.02em; }
+
+/* ─── My Role ─── */
+.role-title {
+  font-size:26px; font-weight:800; letter-spacing:-.03em; color:var(--text);
+  margin-bottom:16px;
+}
+.responsibility-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.responsibility-pill {
+  padding:8px 16px;
+  background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text);
+  transition:border-color .2s, color .2s;
+}
+.responsibility-pill:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Research ─── */
+.research-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:28px; }
+.research-tag {
+  padding:14px 16px; background:var(--card);
+  border:1px solid var(--border); border-radius:10px;
+  font-size:13px; color:var(--muted); line-height:1.4;
+  transition:border-color .2s, color .2s;
+}
+.research-tag:hover { border-color:var(--border-hi); color:var(--text); }
+.research-tag-icon { font-size:18px; display:block; margin-bottom:8px; }
+
+/* ─── Solution stats ─── */
+.solution-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:32px; }
+.solution-stat {
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:14px;
+  padding:28px 20px; text-align:center;
+}
+.solution-stat-num {
+  display:block; font-size:52px; font-weight:800;
+  letter-spacing:-.06em; color:var(--accent); line-height:1;
+}
+.solution-stat-label { display:block; font-size:12px; color:var(--muted); margin-top:8px; line-height:1.4; }
+
+/* ─── Topic cards ─── */
+.topics-grid {
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:16px; margin-top:28px;
+}
+.topic-card {
+  background:var(--card); backdrop-filter:blur(14px);
+  border:1px solid var(--border); border-radius:16px; overflow:hidden;
+  transition:border-color .2s;
+}
+.topic-card:hover { border-color:var(--border-hi); }
+.topic-card-head {
+  padding:20px 24px; border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(2,105,237,.06) 0%,transparent 100%);
+}
+.topic-card-num {
+  font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:6px;
+}
+.topic-card-title { font-size:16px; font-weight:700; color:var(--text); letter-spacing:-.01em; }
+.topic-card-body { padding:20px 24px; }
+.topic-card-body p { font-size:13px; color:var(--muted); line-height:1.65; margin-bottom:12px; }
+.topic-tag-row { display:flex; flex-wrap:wrap; gap:6px; }
+.topic-tag {
+  font-size:11px; padding:3px 10px;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  border-radius:999px; color:var(--accent); font-weight:500;
+}
+.topic-card.full-width { grid-column:1 / -1; }
+
+/* ─── Prompt example ─── */
+.prompt-demo {
+  background:rgba(0,0,0,.3); border:1px solid var(--border);
+  border-radius:10px; padding:18px 20px;
+  font-family:'Courier New', monospace; font-size:13px; line-height:1.75;
+  color:var(--muted); margin-top:16px;
+}
+.prompt-label { font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+.prompt-role  { color:var(--accent); font-weight:700; }
+.prompt-task  { color:#c8d8f8; }
+.prompt-ctx   { color:rgba(200,216,248,.6); }
+
+/* ─── View course CTA ─── */
+.course-cta {
+  display:inline-flex; align-items:center; gap:8px;
+  margin-top:28px; padding:13px 28px;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  border-radius:999px; color:var(--accent);
+  font-size:14px; font-weight:600; letter-spacing:.04em;
+  text-decoration:none; transition:all .25s ease;
+}
+.course-cta:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+.course-cta::after { content:'→'; }
+
+/* ─── Approach cards ─── */
+.approach-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:28px; }
+.approach-card {
+  padding:28px 26px; background:var(--card);
+  border:1px solid var(--border); border-radius:16px;
+  transition:border-color .2s;
+}
+.approach-card:hover { border-color:var(--border-hi); }
+.approach-card-icon { font-size:28px; display:block; margin-bottom:14px; }
+.approach-card-title { font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; letter-spacing:-.01em; }
+.approach-card-body { font-size:14px; color:var(--muted); line-height:1.65; }
+.approach-tag-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+.approach-tag {
+  font-size:11px; padding:3px 10px;
+  background:rgba(92,46,237,.1); border:1px solid rgba(92,46,237,.3);
+  border-radius:999px; color:#9d76ff; font-weight:500;
+}
+
+/* ─── Impact ─── */
+.impact-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:28px; }
+.impact-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:16px 18px; background:var(--card);
+  border:1px solid var(--border); border-radius:12px;
+  transition:border-color .2s;
+}
+.impact-item:hover { border-color:var(--border-hi); }
+.impact-check {
+  flex-shrink:0; width:22px;height:22px;
+  background:rgba(0,166,81,.12); border:1px solid rgba(0,166,81,.28);
+  border-radius:6px; display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; color:var(--green); line-height:22px;
+}
+.impact-text { font-size:14px; color:var(--text); font-weight:500; line-height:1.45; }
+
+/* ─── ROI ─── */
+.roi-grid { display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:28px; }
+.roi-col-label {
+  font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);
+}
+.roi-list { list-style:none; padding:0; }
+.roi-list li {
+  font-size:15px; color:var(--text);
+  padding:10px 0 10px 20px; border-bottom:1px solid var(--border); position:relative;
+}
+.roi-list li:last-child { border-bottom:none; }
+.roi-list li::before { content:'↗'; position:absolute; left:0;top:11px; color:var(--accent); font-size:12px; }
+
+/* ─── Skills ─── */
+.skills-grid { display:flex; flex-wrap:wrap; gap:10px; margin:24px 0 0; }
+.skill-pill {
+  padding:9px 18px; background:var(--card);
+  border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text);
+  transition:border-color .2s, color .2s;
+}
+.skill-pill:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Reflection close ─── */
+.reflection-close {
+  margin-top:32px; padding:32px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(92,46,237,.07) 100%);
+  border:1px solid var(--border-hi); border-radius:16px;
+  font-size:17px; color:var(--text); line-height:1.7; font-style:italic;
+}
+
+/* ─── Tools ─── */
+.tools-grid { display:flex; flex-wrap:wrap; gap:10px; }
+.tool-badge {
+  padding:10px 20px; background:var(--card);
+  border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text);
+  transition:border-color .2s, color .2s;
+}
+.tool-badge:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Back CTA ─── */
+.back-cta { padding:60px 6vw 0; text-align:center; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 32px; border:1px solid var(--border-hi); border-radius:999px;
+  background:var(--accent-lo); color:var(--accent);
+  text-decoration:none; font-size:14px; font-weight:600; letter-spacing:.04em;
+  transition:all .25s ease;
+}
+.back-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* ─── Footer ─── */
+footer {
+  padding:40px 6vw; display:flex; justify-content:space-between; align-items:center;
+  border-top:1px solid var(--border); font-size:13px; color:var(--muted); margin-top:80px;
+}
+
+/* ─── Reveal ─── */
+.reveal { opacity:0; transform:translateY(20px); }
+
+/* ─── Responsive ─── */
+@media (max-width:900px) {
+  .case-hero { grid-template-columns:1fr; gap:40px; }
+  .cs-row { grid-template-columns:1fr; gap:32px; }
+  .challenge-cols { grid-template-columns:1fr; }
+  .research-grid { grid-template-columns:repeat(2,1fr); }
+  .topics-grid { grid-template-columns:1fr; }
+  .approach-grid { grid-template-columns:1fr; }
+  .impact-grid { grid-template-columns:1fr; }
+  .roi-grid { grid-template-columns:1fr; }
+  .solution-stats { grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:560px) {
+  .research-grid { grid-template-columns:1fr 1fr; }
+  .solution-stats { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- ─── Nav ─── -->
+<nav>
+  <svg class="nav-logo-svg" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
+    <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
+    <path class="cls-1" d="M746.52,170.11c-41.01-4.36-80.49-13.59-121.05-20.85-36.13-6.47-71.23-11.73-107.86-14.17-29.82-1.98-58.53-.9-87.3,6.82-17.5,4.69-33.44,12.44-48.13,22.68-16.47,11.48-29.41,26.01-38.27,43.81-15.53,31.22-13.31,71.85,15.78,92.76l-19.06-6.13c-14.24-4.58-26.38-13.5-36.01-24.84-24.78-29.19-21.93-66.45-5.73-99.88,10.49-21.65,25.46-40.45,43.13-56.59,4-3.65,7.99-5.99,12.07-9.19l6.69-5.24c19.83-13.56,40.91-23.45,64.21-29.67l37.31-7.76c42.07-5.44,84.1-2.69,125.65,5.95l70.61,18.24,15.09,4.57,59.17,16.35c79.18,25.2,121,41.06,189.66,34.63s85.92-17.17,88.58-18.08c28.8-9.76,45.96-21.68,65.62-31.13l43.32-22.01c-57.28,35.37-111.01,80.38-176.34,98.19-18.41,5.02-35.52,12.22-98.81,11.55-30.35-.32-68.17-6.8-98.32-10Z"/>
+    <path class="cls-1" d="M389.35,270.35c73.89-64.99,161.21-70.91,202.21-32.68,29.97,27.95,33,77.44,21.45,112.34-29.44,88.96-172.19,139.36-275.74,96.16-13.71-5.72-81.39-31.4-103.15-96.16-15.16-45.12-3.04-93.95,0-93.96,1.83,0,.04,17.59,5.11,34.72,16.6,56.14,105.76,102.1,188.94,86.81,55.87-10.27,110.69-33.31,96-80.68-8.28-26.7-49.24-41.07-52.09-41.87-42.02-11.91-77.17,11.49-82.72,15.32Z"/>
+    <path class="cls-1" d="M412.84.25c7.83-1.89,171,5.68,322.09,73.8,65.77,29.65,86.09,35.79,115.6,40.58,130.66,21.21,242.15-42.4,240.19-40.58-3.19,2.97-108.45,83.8-246.89,58.12-3.77-.7-8.42-1.26-17.36-3.77-90.03-25.29-136.85-61.04-287.14-81.85-90.42-12.52-159.1,30.61-157.17,26.37,1.71-3.75,29.14-72.29,30.69-72.66Z"/>
+  </svg>
+  <div class="nav-right">
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span class="toggle-label"></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ─── Hero ─── -->
+  <div class="case-hero">
+    <div class="hero-content">
+      <div class="breadcrumb reveal">
+        <a href="index.html">Portfolio</a><span>/</span>
+        <a href="index.html#work">Work</a><span>/</span>
+        Generative AI Foundations
+      </div>
+      <div class="case-cat reveal">AI &middot; Learning Strategy</div>
+      <h1 class="reveal">Generative AI<br>Foundations</h1>
+      <p class="case-subtitle reveal">Safe and Effective Use at First Tech Federal Credit Union</p>
+      <div class="meta-row reveal">
+        <div class="meta-cell">
+          <div class="meta-label">Client</div>
+          <div class="meta-val">First Tech FCU</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2025</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Format</div>
+          <div class="meta-val">Self-Paced</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Role</div>
+          <div class="meta-val">Lead ID</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-panel reveal">
+      <div class="panel-badge"><span class="panel-dot"></span> Course Overview</div>
+      <div class="panel-stats">
+        <div class="panel-stat">
+          <span class="panel-stat-num">15</span>
+          <span class="panel-stat-desc">Lessons</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">5</span>
+          <span class="panel-stat-desc">Core<br>Topics</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">1</span>
+          <span class="panel-stat-desc">Org-wide<br>Program</span>
+        </div>
+      </div>
+      <div class="panel-divider"></div>
+      <div class="course-module-list">
+        <div class="course-module"><span class="module-num">01</span><span class="module-dot"></span>Understanding Generative AI</div>
+        <div class="course-module"><span class="module-num">02</span><span class="module-dot"></span>AI in the Workplace</div>
+        <div class="course-module"><span class="module-num">03</span><span class="module-dot"></span>Responsible AI Usage</div>
+        <div class="course-module"><span class="module-num">04</span><span class="module-dot"></span>AI Bias Awareness</div>
+        <div class="course-module"><span class="module-num">05</span><span class="module-dot"></span>Prompt Engineering</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-divider"></div>
+
+  <!-- ─── Overview ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Overview</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>As Generative AI tools rapidly entered the workplace, First Tech Federal Credit Union needed a way to help employees understand what AI is, how it can be used responsibly, and how to apply it effectively in their daily work.</p>
+        <p>I partnered with stakeholders to design and develop a foundational learning experience that introduced employees to Generative AI concepts, practical workplace applications, prompt-writing techniques, AI risks, and responsible usage guidelines.</p>
+        <p>The result was a scalable learning solution that helped establish a shared understanding of AI across the organization while supporting broader digital transformation initiatives.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── The Challenge ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">The Challenge</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>Artificial Intelligence was evolving faster than most employees could keep up with. While many team members had heard of tools like Copilot and ChatGPT, there was significant variation across the organization.</p>
+      </div>
+    </div>
+    <div class="challenge-cols reveal">
+      <div class="challenge-col">
+        <div class="challenge-col-title">Gaps Identified</div>
+        <ul class="gap-list">
+          <li>Uneven AI knowledge levels</li>
+          <li>Low confidence using AI tools</li>
+          <li>Limited understanding of AI risks</li>
+          <li>Inconsistent prompt-writing skills</li>
+          <li>Lack of responsible AI awareness</li>
+        </ul>
+      </div>
+      <div class="challenge-col">
+        <div class="challenge-col-title">What the Organization Needed</div>
+        <ul class="need-list">
+          <li>Demystify AI for beginners</li>
+          <li>Encourage adoption without fear</li>
+          <li>Promote responsible usage</li>
+          <li>Align AI with organizational goals</li>
+          <li>Build confidence in AI workflows</li>
+          <li>Design for content that evolves over time</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hmw-card reveal">
+      <div class="hmw-eyebrow">Design Challenge</div>
+      <p class="hmw-q">How might we help every employee understand and apply Generative AI responsibly, regardless of their starting level of knowledge?</p>
+    </div>
+  </div>
+
+  <!-- ─── My Role ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">My Role</div>
+    <div class="cs-row reveal">
+      <div class="cs-body">
+        <p class="role-title">Lead Instructional Designer</p>
+        <p>I was responsible for the full scope of this project, from learning strategy through final course development. I worked closely with business stakeholders to ensure content remained practical, relevant, and aligned with organizational objectives.</p>
+      </div>
+      <div>
+        <div class="responsibility-grid">
+          <span class="responsibility-pill">Learning Strategy</span>
+          <span class="responsibility-pill">Curriculum Design</span>
+          <span class="responsibility-pill">Storyboarding</span>
+          <span class="responsibility-pill">Instructional Writing</span>
+          <span class="responsibility-pill">AI Content Research</span>
+          <span class="responsibility-pill">Visual Learning Design</span>
+          <span class="responsibility-pill">Scenario Creation</span>
+          <span class="responsibility-pill">Knowledge Checks</span>
+          <span class="responsibility-pill">UX Design</span>
+          <span class="responsibility-pill">Stakeholder Collaboration</span>
+          <span class="responsibility-pill">Course Development</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Discovery & Research ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Discovery &amp; Research</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>Before development began, I conducted foundational research to identify the most important learning gaps employees would need to address before successfully adopting AI tools. This research directly shaped the course architecture, topic sequence, and content depth across all 15 lessons.</p>
+      </div>
+    </div>
+    <div class="research-grid reveal">
+      <div class="research-tag"><span class="research-tag-icon">🤖</span>Generative AI fundamentals</div>
+      <div class="research-tag"><span class="research-tag-icon">💼</span>Microsoft Copilot capabilities</div>
+      <div class="research-tag"><span class="research-tag-icon">⚡</span>Workplace AI use cases</div>
+      <div class="research-tag"><span class="research-tag-icon">🏛</span>AI governance frameworks</div>
+      <div class="research-tag"><span class="research-tag-icon">✅</span>Responsible AI principles</div>
+      <div class="research-tag"><span class="research-tag-icon">❌</span>Common AI misconceptions</div>
+      <div class="research-tag"><span class="research-tag-icon">⚠️</span>Emerging AI risks</div>
+      <div class="research-tag"><span class="research-tag-icon">🔒</span>Data privacy considerations</div>
+    </div>
+  </div>
+
+  <!-- ─── The Solution ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">The Solution</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>I designed a 15-lesson self-paced learning experience that progressively guided learners from foundational knowledge to practical application. Rather than overwhelming employees with technical jargon, the curriculum was structured to build understanding incrementally, with every concept grounded in real workplace scenarios.</p>
+      </div>
+    </div>
+
+    <div class="solution-stats reveal" style="margin-top:28px;">
+      <div class="solution-stat">
+        <span class="solution-stat-num">15</span>
+        <span class="solution-stat-label">Lessons Designed</span>
+      </div>
+      <div class="solution-stat">
+        <span class="solution-stat-num">5</span>
+        <span class="solution-stat-label">Core Topic Areas</span>
+      </div>
+      <div class="solution-stat">
+        <span class="solution-stat-num">100%</span>
+        <span class="solution-stat-label">Self-Paced Delivery</span>
+      </div>
+    </div>
+
+    <div class="topics-grid reveal">
+
+      <div class="topic-card">
+        <div class="topic-card-head">
+          <div class="topic-card-num">Topic 01</div>
+          <div class="topic-card-title">Understanding Generative AI</div>
+        </div>
+        <div class="topic-card-body">
+          <p>Introduced employees to the core concepts behind Generative AI and how it differs from traditional AI systems, giving all learners a shared foundation regardless of prior knowledge.</p>
+          <div class="topic-tag-row">
+            <span class="topic-tag">What is AI?</span>
+            <span class="topic-tag">How LLMs work</span>
+            <span class="topic-tag">AI vs. traditional software</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card">
+        <div class="topic-card-head">
+          <div class="topic-card-num">Topic 02</div>
+          <div class="topic-card-title">AI in the Workplace</div>
+        </div>
+        <div class="topic-card-body">
+          <p>Connected AI capabilities directly to real business scenarios and productivity improvements, helping learners see immediate practical applications rather than viewing AI as abstract technology.</p>
+          <div class="topic-tag-row">
+            <span class="topic-tag">Email drafting</span>
+            <span class="topic-tag">Summarization</span>
+            <span class="topic-tag">Data analysis</span>
+            <span class="topic-tag">Content creation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card">
+        <div class="topic-card-head">
+          <div class="topic-card-num">Topic 03</div>
+          <div class="topic-card-title">Responsible AI Usage</div>
+        </div>
+        <div class="topic-card-body">
+          <p>Helped learners understand AI limitations, hallucinations, data privacy concerns, verification requirements, and human oversight responsibilities, establishing guardrails alongside capability.</p>
+          <div class="topic-tag-row">
+            <span class="topic-tag">Hallucinations</span>
+            <span class="topic-tag">Data privacy</span>
+            <span class="topic-tag">Human oversight</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card">
+        <div class="topic-card-head">
+          <div class="topic-card-num">Topic 04</div>
+          <div class="topic-card-title">AI Bias Awareness</div>
+        </div>
+        <div class="topic-card-body">
+          <p>Explained how bias originates from both training data and model design, emphasizing the importance of critical thinking when evaluating AI outputs and the responsibility to question results.</p>
+          <div class="topic-tag-row">
+            <span class="topic-tag">Training data bias</span>
+            <span class="topic-tag">Model limitations</span>
+            <span class="topic-tag">Critical evaluation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card full-width">
+        <div class="topic-card-head">
+          <div class="topic-card-num">Topic 05</div>
+          <div class="topic-card-title">Prompt Engineering</div>
+        </div>
+        <div class="topic-card-body">
+          <p>Designed lessons focused on effective prompting, the foundational skill that separates employees who struggle with AI from those who get results. Learners were taught how prompt quality directly influences output quality and how to structure prompts for better results.</p>
+          <div class="prompt-demo">
+            <div class="prompt-label">Prompt Structure Example</div>
+            <span class="prompt-role">[Role]</span>     <span class="prompt-ctx">You are a credit union member service specialist.</span>
+<span class="prompt-role">[Task]</span>     <span class="prompt-task">Write a professional email responding to a member inquiry about account fees.</span>
+<span class="prompt-role">[Context]</span>  <span class="prompt-ctx">The member is asking why they were charged a $12 overdraft fee last Tuesday.</span>
+<span class="prompt-role">[Format]</span>   <span class="prompt-ctx">Keep it under 150 words. Empathetic tone. Offer a one-time courtesy waiver.</span>
+          </div>
+          <div class="topic-tag-row" style="margin-top:14px;">
+            <span class="topic-tag">Role + Task + Context + Format</span>
+            <span class="topic-tag">Iteration techniques</span>
+            <span class="topic-tag">Output evaluation</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <a href="#" class="course-cta reveal">View Course</a>
+  </div>
+
+  <!-- ─── Instructional Design Approach ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Instructional Design Approach</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>Rather than overwhelming learners with technical jargon, the design approach prioritized clarity, relevance, and progressive skill development throughout the learning experience.</p>
+      </div>
+    </div>
+    <div class="approach-grid reveal">
+      <div class="approach-card">
+        <span class="approach-card-icon">📶</span>
+        <div class="approach-card-title">Progressive Learning</div>
+        <div class="approach-card-body">Complex concepts were broken into manageable lessons that built upon one another, reducing cognitive overload and supporting knowledge retention across 15 lessons.</div>
+        <div class="approach-tag-row">
+          <span class="approach-tag">Scaffolded design</span>
+          <span class="approach-tag">Short focused lessons</span>
+        </div>
+      </div>
+      <div class="approach-card">
+        <span class="approach-card-icon">💼</span>
+        <div class="approach-card-title">Real-World Application</div>
+        <div class="approach-card-body">Every major concept was tied to realistic workplace scenarios reflecting actual employee workflows and business challenges, not theoretical AI concepts.</div>
+        <div class="approach-tag-row">
+          <span class="approach-tag">Scenario-based</span>
+          <span class="approach-tag">Contextual examples</span>
+        </div>
+      </div>
+      <div class="approach-card">
+        <span class="approach-card-icon">⚡</span>
+        <div class="approach-card-title">Practical Skill Development</div>
+        <div class="approach-card-body">Learners were encouraged to immediately apply concepts through prompt examples, workplace use cases, and guided practice activities that built transferable skills.</div>
+        <div class="approach-tag-row">
+          <span class="approach-tag">Practice activities</span>
+          <span class="approach-tag">Immediate application</span>
+        </div>
+      </div>
+      <div class="approach-card">
+        <span class="approach-card-icon">🛡</span>
+        <div class="approach-card-title">Balanced Risk Awareness</div>
+        <div class="approach-card-body">Enthusiasm for AI innovation was balanced with practical discussions around bias, privacy, accuracy, and human accountability, ensuring employees understood both opportunity and responsibility.</div>
+        <div class="approach-tag-row">
+          <span class="approach-tag">Risk framing</span>
+          <span class="approach-tag">Human accountability</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Business Impact ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Business Impact</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>This learning solution helped First Tech establish a foundational AI literacy program that supported broader organizational goals. The course provided employees with a shared framework for understanding and applying AI responsibly across the organization.</p>
+      </div>
+    </div>
+    <div class="impact-grid reveal">
+      <div class="impact-item"><div class="impact-check">✓</div><div class="impact-text">Improving member experiences through better AI-assisted workflows</div></div>
+      <div class="impact-item"><div class="impact-check">✓</div><div class="impact-text">Increasing workplace productivity through confident AI adoption</div></div>
+      <div class="impact-item"><div class="impact-check">✓</div><div class="impact-text">Encouraging innovation across teams and departments</div></div>
+      <div class="impact-item"><div class="impact-check">✓</div><div class="impact-text">Supporting data-informed decision making at the employee level</div></div>
+      <div class="impact-item"><div class="impact-check">✓</div><div class="impact-text">Reducing confusion and fear around AI adoption</div></div>
+      <div class="impact-item"><div class="impact-check">✓</div><div class="impact-text">Building a scalable foundation for future AI training programs</div></div>
+    </div>
+  </div>
+
+  <!-- ─── Reflection & ROI ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Reflection &amp; ROI</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <p>This project showed how instructional design can support AI adoption beyond simple tool training. The value was not only in explaining what Generative AI is, but in helping employees understand how to use it responsibly in real workplace situations.</p>
+      </div>
+    </div>
+    <div class="roi-grid reveal">
+      <div class="roi-col">
+        <div class="roi-col-label">ROI Outcomes</div>
+        <ul class="roi-list">
+          <li>Reduced confusion around AI usage</li>
+          <li>Built employee confidence with emerging tools</li>
+          <li>Supported responsible adoption before misuse became a risk</li>
+          <li>Created a scalable foundation for future AI training</li>
+          <li>Time savings through better prompting, summarization, drafting, and research</li>
+        </ul>
+      </div>
+      <div class="roi-col">
+        <div class="roi-col-label">Key Skills Demonstrated</div>
+        <ul class="roi-list">
+          <li>Translating emerging AI concepts into business-friendly learning</li>
+          <li>Learner-centered design balancing education and performance</li>
+          <li>Helping employees adopt AI tools safely and effectively</li>
+          <li>Designing intuitive journeys that simplify complex concepts</li>
+          <li>Aligning learning objectives with organizational AI strategy</li>
+        </ul>
+      </div>
+    </div>
+    <div class="reflection-close reveal">
+      AI training needs to balance excitement with accountability. Employees should feel empowered to experiment, but they also need clear guardrails around privacy, accuracy, bias, and human review.
+    </div>
+
+    <div style="margin-top:36px;" class="reveal">
+      <div class="cs-label" style="margin-bottom:16px;">Skills Demonstrated</div>
+      <div class="skills-grid">
+        <span class="skill-pill">AI Learning Strategy</span>
+        <span class="skill-pill">Instructional Design</span>
+        <span class="skill-pill">AI Enablement</span>
+        <span class="skill-pill">UX Design</span>
+        <span class="skill-pill">Stakeholder Management</span>
+        <span class="skill-pill">Curriculum Architecture</span>
+        <span class="skill-pill">Scenario Design</span>
+        <span class="skill-pill">Content Strategy</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Tools ─── -->
+  <div class="cs-section">
+    <div class="cs-label reveal">Tools &amp; Technologies</div>
+    <div class="cs-row full reveal">
+      <div class="cs-body">
+        <div class="tools-grid">
+          <span class="tool-badge">Microsoft Copilot</span>
+          <span class="tool-badge">ChatGPT</span>
+          <span class="tool-badge">Pega Knowledge Buddy</span>
+          <span class="tool-badge">Articulate Storyline</span>
+          <span class="tool-badge">SharePoint</span>
+          <span class="tool-badge">Microsoft Office Suite</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Back CTA ─── -->
+  <div class="back-cta reveal">
+    <a href="index.html#work" class="back-btn">Back to Work</a>
+  </div>
+
+</main>
+
+<footer>
+  <span>Raymond Spellen | Learning Experience Design / Creative Strategy</span>
+  <span>&copy; 2026</span>
+</footer>
+
+<script>
+function toggleTheme() {
+  var html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("rs-theme", html.dataset.theme);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.style.transition = "opacity .75s ease, transform .75s ease";
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = "translateY(0)";
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll(".reveal").forEach(function(el) { obs.observe(el); });
+});
+</script>
+
+</body>
+</html>
