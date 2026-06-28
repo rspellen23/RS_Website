@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Raymond Spellen | Learning Experience Portfolio</title>
+<link rel="stylesheet" href="footer.css" />
 
 <style>
 /* ─── Tokens ─── */
@@ -678,6 +679,70 @@ footer {
   .stat { border-right: none; border-bottom: 1px solid var(--border); }
   .stat:last-child { border-bottom: none; }
 }
+
+/* ─── Audio Player ─── */
+@keyframes ap-spin { to { transform: rotate(360deg); } }
+
+.audio-player {
+  position: fixed; bottom: 28px; right: 28px; z-index: 300;
+  background: var(--card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-hi); border-radius: 18px;
+  padding: 18px 22px; min-width: 248px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.28), 0 0 0 1px var(--border);
+  transition: background .4s ease, border-color .4s ease;
+}
+.audio-player::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), #5c2eed);
+  border-radius: 18px 18px 0 0;
+}
+.ap-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.ap-icon {
+  width: 30px; height: 30px; flex-shrink: 0;
+  background: var(--accent-lo); border: 1px solid var(--border-hi); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+.ap-icon svg { width: 14px; height: 14px; }
+.ap-track {
+  flex: 1; min-width: 0;
+}
+.ap-title {
+  display: block; font-size: 12px; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: .01em;
+}
+.ap-label {
+  display: block; font-size: 10px; color: var(--muted);
+  letter-spacing: .06em; text-transform: uppercase; margin-top: 1px;
+}
+.ap-controls {
+  display: flex; align-items: center; gap: 10px;
+}
+.ap-play-btn {
+  flex-shrink: 0; width: 34px; height: 34px;
+  border-radius: 50%; border: 1px solid var(--border-hi);
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-family: inherit; transition: background .2s, transform .15s;
+}
+.ap-play-btn:hover { background: #0253c4; transform: scale(1.08); }
+.ap-play-btn svg { width: 13px; height: 13px; }
+.ap-progress-wrap {
+  flex: 1; height: 4px; background: var(--border); border-radius: 2px;
+  cursor: pointer; position: relative; overflow: hidden;
+}
+.ap-progress-bar {
+  height: 100%; width: 0%; background: var(--accent); border-radius: 2px;
+  transition: width .1s linear;
+}
+.ap-time {
+  font-size: 10px; font-weight: 600; color: var(--muted);
+  letter-spacing: .05em; min-width: 30px; text-align: right;
+  font-family: 'Courier New', monospace;
+}
 </style>
 </head>
 
@@ -749,7 +814,7 @@ footer {
 
     <div class="eyebrow reveal">
       <span class="eyebrow-dot"></span>
-      Executive Creative Portfolio
+      AI Learning Experience Designer
     </div>
 
     <h1 class="reveal">
@@ -773,11 +838,11 @@ footer {
 <!-- ─── Stats ─── -->
 <div class="stats-bar">
   <div class="stat">
-    <div class="stat-val">8<em>+</em></div>
+    <div class="stat-val">15<em>+</em></div>
     <div class="stat-lbl">Years Experience</div>
   </div>
   <div class="stat">
-    <div class="stat-val">50<em>+</em></div>
+    <div class="stat-val">100<em>+</em></div>
     <div class="stat-lbl">Courses Built</div>
   </div>
   <div class="stat">
@@ -785,7 +850,7 @@ footer {
     <div class="stat-lbl">Tools Mastered</div>
   </div>
   <div class="stat">
-    <div class="stat-val">4</div>
+    <div class="stat-val">7</div>
     <div class="stat-lbl">Industries</div>
   </div>
 </div>
@@ -1020,9 +1085,30 @@ footer {
 </section>
 
 <!-- ─── Footer ─── -->
-<footer>
-  <span>Raymond Spellen | Learning Experience Design / Creative Strategy</span>
-  <span>&copy; 2026</span>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-name">Raymond Spellen</span>
+      <span class="footer-tagline">AI Learning Experience Designer</span>
+      <span class="footer-copy">&copy; 2026 &mdash; Made in ATL</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Pages</span>
+      <a href="index.html">Home</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Elsewhere</span>
+      <a href="https://www.linkedin.com/in/rspellen/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+      <a href="https://github.com/rspellen23" target="_blank" rel="noopener">GitHub &#8599;</a>
+      <a href="#" target="_blank" rel="noopener">RSS &#8599;</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Contact</span>
+      <a href="mailto:rspellen23@gmail.com">rspellen23@gmail.com</a>
+    </div>
+  </div>
 </footer>
 
 
@@ -1152,6 +1238,83 @@ document.addEventListener("DOMContentLoaded", () => {
   const skillList = document.querySelector(".skill-list");
   if (skillList) barObs.observe(skillList);
 });
+</script>
+
+<!-- ─── Audio Player ─── -->
+<div class="audio-player" id="audioPlayer">
+  <audio id="audioEl" src="audio/me+you-peace.mp3" preload="metadata"></audio>
+  <div class="ap-header">
+    <div class="ap-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+      </svg>
+    </div>
+    <div class="ap-track">
+      <span class="ap-title">me + you — peace</span>
+      <span class="ap-label">Now Playing</span>
+    </div>
+  </div>
+  <div class="ap-controls">
+    <button class="ap-play-btn" id="apPlayBtn" aria-label="Play">
+      <svg id="apPlayIcon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+    </button>
+    <div class="ap-progress-wrap" id="apProgressWrap" role="slider" aria-label="Seek">
+      <div class="ap-progress-bar" id="apBar"></div>
+    </div>
+    <span class="ap-time" id="apTime">0:00</span>
+  </div>
+</div>
+
+<script>
+(function() {
+  var audio   = document.getElementById('audioEl');
+  var playBtn = document.getElementById('apPlayBtn');
+  var icon    = document.getElementById('apPlayIcon');
+  var bar     = document.getElementById('apBar');
+  var timeEl  = document.getElementById('apTime');
+  var wrap    = document.getElementById('apProgressWrap');
+
+  var PLAY_PATH  = '<polygon points="5,3 19,12 5,21"/>';
+  var PAUSE_PATH = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+
+  function fmt(s) {
+    var m = Math.floor(s / 60);
+    var sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  playBtn.addEventListener('click', function() {
+    if (audio.paused) { audio.play(); } else { audio.pause(); }
+  });
+
+  audio.addEventListener('play', function() {
+    icon.innerHTML = PAUSE_PATH;
+    playBtn.setAttribute('aria-label', 'Pause');
+  });
+
+  audio.addEventListener('pause', function() {
+    icon.innerHTML = PLAY_PATH;
+    playBtn.setAttribute('aria-label', 'Play');
+  });
+
+  audio.addEventListener('ended', function() {
+    icon.innerHTML = PLAY_PATH;
+    bar.style.width = '0%';
+    timeEl.textContent = '0:00';
+  });
+
+  audio.addEventListener('timeupdate', function() {
+    if (!audio.duration) return;
+    bar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+    timeEl.textContent = fmt(audio.currentTime);
+  });
+
+  wrap.addEventListener('click', function(e) {
+    if (!audio.duration) return;
+    var rect = wrap.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+  });
+})();
 </script>
 
 </body>
