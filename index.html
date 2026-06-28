@@ -743,6 +743,27 @@ footer {
   letter-spacing: .05em; min-width: 30px; text-align: right;
   font-family: 'Courier New', monospace;
 }
+
+/* ─── Site Footer ─── */
+.site-footer { display:block !important; background:linear-gradient(135deg,#0b0f22 0%,#10152b 55%,#0e1020 100%); border-top:1px solid rgba(2,105,237,.28); padding:64px 6vw 52px; margin-top:80px; position:relative; z-index:1; overflow:hidden; }
+[data-theme="light"] .site-footer { background:linear-gradient(135deg,#e4eaff 0%,#eef1ff 55%,#dde6ff 100%); border-top:1px solid rgba(2,105,237,.18); }
+.footer-inner { display:grid !important; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:56px; align-items:start; }
+.footer-brand { display:flex !important; flex-direction:column !important; }
+.footer-name { font-size:13px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#fff; margin-bottom:8px; }
+[data-theme="light"] .footer-name { color:#07090f; }
+.footer-tagline { font-family:'Courier New',monospace; font-size:12px; color:rgba(255,255,255,.48); line-height:1.6; margin-bottom:24px; }
+[data-theme="light"] .footer-tagline { color:#505d7e; }
+.footer-copy { font-size:11px; color:rgba(255,255,255,.28); letter-spacing:.04em; }
+[data-theme="light"] .footer-copy { color:#7a89b0; }
+.footer-col { display:flex !important; flex-direction:column !important; gap:11px; }
+.footer-col-label { display:block; font-size:9px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:8px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.07); }
+[data-theme="light"] .footer-col-label { color:#7a89b0; border-bottom-color:rgba(0,0,0,.07); }
+.footer-col a { font-size:13px; color:rgba(255,255,255,.65); text-decoration:none; transition:color .2s; }
+.footer-col a:hover { color:#0269ed; }
+[data-theme="light"] .footer-col a { color:#07090f; }
+[data-theme="light"] .footer-col a:hover { color:#0269ed; }
+@media(max-width:780px){.footer-inner{grid-template-columns:1fr 1fr !important;gap:36px;}.footer-brand{grid-column:1/-1;margin-bottom:8px;}}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr !important;}}
 </style>
 </head>
 
