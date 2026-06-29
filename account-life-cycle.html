@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Account Life Cycle | Raymond Spellen</title>
+<link rel="stylesheet" href="footer.css" />
+
+<!-- Run before CSS renders to prevent theme flash -->
+<script>
+(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;})();
+</script>
+
+<style>
+:root {
+  --bg:           #07090f;
+  --surface:      #0d1223;
+  --card:         rgba(13, 18, 35, 0.75);
+  --text:         #edf0ff;
+  --muted:        #6b7ca4;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.10);
+  --accent-mid:   rgba(2, 105, 237, 0.22);
+  --accent-glow:  rgba(2, 105, 237, 0.32);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.30);
+  --grid-line:    rgba(2, 105, 237, 0.045);
+  --orb-opacity:  0.11;
+  --nav-bg:       rgba(7, 9, 15, 0.65);
+  --green:        #00a651;
+  --purple:       #5c2eed;
+}
+[data-theme="light"] {
+  --bg:           #f1f4ff;
+  --surface:      #ffffff;
+  --card:         rgba(255, 255, 255, 0.82);
+  --text:         #07090f;
+  --muted:        #505d7e;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.07);
+  --accent-mid:   rgba(2, 105, 237, 0.15);
+  --accent-glow:  rgba(2, 105, 237, 0.22);
+  --border:       rgba(0, 0, 0, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.25);
+  --grid-line:    rgba(2, 105, 237, 0.04);
+  --orb-opacity:  0.05;
+  --nav-bg:       rgba(241, 244, 255, 0.72);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: Inter, -apple-system, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none; z-index: 0;
+  transition: background-image .4s ease;
+}
+
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px);
+  opacity: var(--orb-opacity);
+  pointer-events: none; z-index: 0;
+  will-change: transform;
+  transition: opacity .4s ease;
+}
+.orb-1 { width:600px;height:600px;background:#0269ed;top:-200px;right:-150px;animation:drift 12s ease-in-out infinite; }
+.orb-2 { width:400px;height:400px;background:#5c2eed;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
+
+@keyframes drift { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-36px)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+@keyframes glow-pulse { 0%,100%{box-shadow:0 0 20px rgba(2,105,237,.55)} 50%{box-shadow:0 0 36px rgba(2,105,237,.9)} }
+
+nav, main, footer { position: relative; z-index: 1; }
+
+/* ─── Nav ─── */
+nav {
+  position: fixed; top:0;left:0;right:0; z-index:200;
+  padding:16px 6vw;
+  display:flex; justify-content:space-between; align-items:center;
+  background:var(--nav-bg);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:background .4s ease;
+}
+.nav-logo-svg { width:72px; height:auto; display:block; }
+.nav-logo-svg .cls-1 { fill:#0269ed; }
+.nav-right { display:flex; align-items:center; gap:20px; }
+.back-link {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13px; color:var(--muted); text-decoration:none;
+  letter-spacing:.03em; transition:color .2s;
+}
+.back-link:hover { color:var(--text); }
+.back-link::before { content:'←'; }
+.theme-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 16px; border-radius:999px;
+  border:1px solid var(--border-hi);
+  background:var(--accent-lo); color:var(--muted);
+  font-size:13px; font-family:inherit; cursor:pointer;
+  transition:all .25s ease;
+}
+.theme-btn:hover { color:var(--text); border-color:var(--accent); }
+.icon-sun,.icon-moon { width:15px;height:15px;display:none; }
+[data-theme="dark"]  .icon-moon { display:block; }
+[data-theme="light"] .icon-sun  { display:block; }
+[data-theme="dark"]  .toggle-label::after { content:"Light"; }
+[data-theme="light"] .toggle-label::after { content:"Dark"; }
+
+/* ─── Hero ─── */
+.case-hero {
+  padding:140px 6vw 80px;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:60px; align-items:center;
+}
+.breadcrumb {
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:var(--muted); letter-spacing:.06em;
+  margin-bottom:40px;
+}
+.breadcrumb a { color:var(--muted); text-decoration:none; transition:color .2s; }
+.breadcrumb a:hover { color:var(--accent); }
+.breadcrumb span { color:var(--border-hi); }
+.case-cat {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); border:1px solid var(--border-hi);
+  padding:5px 14px; border-radius:999px; background:var(--accent-lo);
+  margin-bottom:28px;
+}
+.case-hero h1 {
+  font-size:clamp(32px,4.4vw,64px);
+  letter-spacing:-0.05em; line-height:.95; font-weight:800;
+  margin-bottom:24px;
+}
+.case-subtitle { font-size:18px; color:var(--muted); line-height:1.6; margin-bottom:40px; }
+.meta-row {
+  display:flex; gap:0;
+  border:1px solid var(--border); border-radius:14px;
+  overflow:hidden; background:var(--card); backdrop-filter:blur(12px);
+}
+.meta-cell { flex:1; padding:16px 18px; border-right:1px solid var(--border); }
+.meta-cell:last-child { border-right:none; }
+.meta-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+.meta-val { font-size:13px; font-weight:600; color:var(--text); }
+
+/* ─── Hero Panel ─── */
+.hero-panel {
+  background:var(--card); backdrop-filter:blur(20px);
+  border:1px solid var(--border-hi); border-radius:20px;
+  padding:36px; position:relative; overflow:hidden;
+}
+.hero-panel::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg, var(--accent), var(--green));
+}
+.panel-badge {
+  display:flex; align-items:center; gap:8px;
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:24px;
+}
+.panel-dot {
+  width:7px;height:7px; background:var(--accent); border-radius:50%;
+  box-shadow:0 0 8px var(--accent);
+  animation:pulse 2s ease-in-out infinite;
+}
+.panel-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-bottom:24px; }
+.panel-stat { text-align:center; padding:14px 8px; }
+.panel-stat-num { display:block; font-size:36px; font-weight:800; letter-spacing:-.05em; color:var(--text); line-height:1; }
+.panel-stat-desc { display:block; font-size:11px; color:var(--muted); margin-top:6px; line-height:1.3; }
+.panel-divider { height:1px; background:var(--border); margin-bottom:20px; }
+
+/* Journey flow pipeline */
+.journey-flow { display:flex; flex-direction:column; }
+.journey-stage {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px;
+  background:rgba(2,105,237,.04); border:1px solid var(--border);
+  border-radius:10px;
+  font-size:12px; color:var(--text); font-weight:500;
+  transition:border-color .2s;
+}
+.journey-stage:hover { border-color:var(--border-hi); }
+.journey-num {
+  width:26px; height:26px; border-radius:50%;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700; color:var(--accent); flex-shrink:0;
+}
+.journey-connector {
+  height:16px;
+  padding-left:13px;
+  display:flex; align-items:center;
+}
+.journey-connector::before {
+  content:''; width:1px; height:16px;
+  background:linear-gradient(180deg, var(--border-hi), transparent);
+  display:block;
+}
+.journey-sub { font-size:10px; color:var(--muted); margin-left:auto; white-space:nowrap; }
+
+/* ─── Case Divider ─── */
+.case-divider { height:1px; background:var(--border); margin:0 6vw; }
+
+/* ─── Content layout ─── */
+main { padding-bottom:120px; }
+.cs-section { padding:64px 6vw 0; }
+.cs-row { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+.cs-row.full { grid-template-columns:1fr; }
+.cs-label {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent);
+  display:flex; align-items:center; gap:10px; margin-bottom:20px;
+}
+.cs-label::before {
+  content:''; width:18px; height:1px;
+  background:var(--accent); box-shadow:0 0 6px var(--accent);
+}
+.cs-body p { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
+.cs-body p:last-child { margin-bottom:0; }
+
+/* ─── Challenge ─── */
+.challenge-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:28px; }
+.silo-label { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+.silo-list { list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.silo-list li {
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:12px;
+  padding:16px 20px 16px 36px;
+  font-size:14px; color:var(--muted); line-height:1.5; position:relative;
+}
+.silo-list li::before {
+  content:''; position:absolute; left:16px; top:22px;
+  width:6px; height:6px; border:1.5px solid var(--accent); border-radius:50%;
+}
+
+/* ─── HMW ─── */
+.hmw-card {
+  margin-top:32px; padding:36px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(92,46,237,.07) 100%);
+  border:1px solid var(--border-hi); border-radius:16px;
+  position:relative; overflow:hidden;
+}
+.hmw-card::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+  box-shadow:0 0 12px var(--accent);
+}
+.hmw-eyebrow { font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+.hmw-q { font-size:19px; font-weight:700; color:var(--text); line-height:1.45; letter-spacing:-.02em; }
+
+/* ─── Color Palette ─── */
+.color-palette { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; margin-top:16px; }
+.color-swatch { display:flex; flex-direction:column; align-items:center; gap:12px; }
+.swatch-circle { width:80px; height:80px; border-radius:50%; border:3px solid var(--border); box-shadow:0 4px 20px rgba(0,0,0,.2); }
+.swatch-name { font-size:12px; font-weight:600; color:var(--text); text-align:center; }
+.swatch-hex { font-size:11px; color:var(--muted); font-family:'Courier New',monospace; }
+
+/* ─── My Role ─── */
+.role-title { font-size:26px; font-weight:800; letter-spacing:-.03em; color:var(--text); margin-bottom:16px; }
+.role-desc { font-size:17px; color:var(--muted); line-height:1.8; }
+.responsibility-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.responsibility-pill {
+  padding:8px 16px;
+  background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text);
+  transition:border-color .2s, color .2s;
+}
+.responsibility-pill:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Solution stages ─── */
+.solution-stages { display:flex; flex-direction:column; gap:32px; margin-top:28px; }
+.stage-block {
+  display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start;
+  padding:36px; background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:20px; position:relative; overflow:hidden;
+}
+.stage-block::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:var(--accent); box-shadow:0 0 8px var(--accent-glow);
+}
+.stage-num-label { font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+.stage-title { font-size:20px; font-weight:700; letter-spacing:-.03em; color:var(--text); margin-bottom:12px; }
+.stage-body { font-size:15px; color:var(--muted); line-height:1.8; }
+.stage-items { list-style:none; margin-top:16px; display:flex; flex-direction:column; gap:6px; }
+.stage-items li {
+  font-size:14px; color:var(--muted); padding:8px 14px 8px 30px;
+  background:rgba(2,105,237,.03); border:1px solid var(--border); border-radius:8px; position:relative;
+}
+.stage-items li::before {
+  content:''; position:absolute; left:12px; top:15px;
+  width:5px; height:5px; background:var(--accent); border-radius:50%;
+}
+
+/* Stage visuals */
+.stage-visual {
+  background:rgba(2,105,237,.04); border:1px solid var(--border);
+  border-radius:14px; padding:24px;
+}
+.stage-visual-label { font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+.source-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.source-chip {
+  padding:10px 12px; background:var(--card); border:1px solid var(--border);
+  border-radius:8px; font-size:12px; color:var(--text);
+  display:flex; align-items:center; gap:8px;
+}
+.source-chip::before { content:''; width:6px;height:6px; background:var(--accent); border-radius:50%; flex-shrink:0; }
+.process-flow { display:flex; flex-direction:column; gap:4px; }
+.process-step {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; background:var(--card); border:1px solid var(--border);
+  border-radius:8px; font-size:12px; color:var(--text);
+}
+.step-num {
+  width:20px; height:20px; border-radius:4px;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700; color:var(--accent); flex-shrink:0;
+}
+.process-arrow { font-size:10px; color:var(--muted); text-align:center; padding-left:30px; }
+.team-grid { display:flex; flex-wrap:wrap; gap:6px; }
+.team-badge {
+  padding:7px 12px; background:var(--card); border:1px solid var(--border);
+  border-radius:999px; font-size:11px; color:var(--text); font-weight:500;
+}
+
+/* ─── Design Decisions ─── */
+.decision-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:12px; }
+.decision-card {
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:16px;
+  padding:28px 24px; transition:border-color .2s; position:relative; overflow:hidden;
+}
+.decision-card::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg, var(--accent), transparent);
+  opacity:0; transition:opacity .2s;
+}
+.decision-card:hover { border-color:var(--border-hi); }
+.decision-card:hover::before { opacity:1; }
+.decision-icon {
+  width:44px; height:44px; border-radius:10px;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--accent); margin-bottom:18px;
+}
+.decision-title { font-size:16px; font-weight:700; color:var(--text); margin-bottom:10px; letter-spacing:-.02em; }
+.decision-desc { font-size:14px; color:var(--muted); line-height:1.7; }
+
+/* ─── Final Result ─── */
+.results-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:28px; max-width:800px; }
+.results-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.result-item {
+  display:flex; align-items:flex-start; gap:14px;
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:14px;
+  padding:20px 22px; transition:border-color .2s;
+}
+.result-item:hover { border-color:var(--border-hi); }
+.result-check {
+  width:22px; height:22px; border-radius:6px;
+  background:rgba(0,166,81,.12); border:1px solid rgba(0,166,81,.3);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:1px;
+}
+.result-check::after { content:'✓'; font-size:11px; color:var(--green); font-weight:700; }
+.result-text { font-size:14px; color:var(--text); line-height:1.6; }
+.view-course-wrap { margin-top:36px; text-align:center; }
+.view-course-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 40px; border-radius:999px; border:1px solid var(--accent);
+  background:var(--accent); color:#fff;
+  text-decoration:none; font-size:15px; font-weight:700; letter-spacing:.04em;
+  box-shadow:0 0 20px rgba(2,105,237,.55);
+  animation:glow-pulse 2.5s ease-in-out infinite;
+  transition:transform .2s ease;
+}
+.view-course-btn:hover { transform:translateY(-2px); }
+
+/* ─── Reflection / ROI ─── */
+.roi-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:32px; }
+.roi-heading { font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+.roi-list { list-style:none; display:flex; flex-direction:column; gap:8px; margin-bottom:40px; }
+.roi-list li {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 18px; background:var(--card); border:1px solid var(--border);
+  border-radius:12px; font-size:14px; color:var(--muted);
+}
+.roi-dot { width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:5px; }
+.takeaway-block {
+  padding:36px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(0,166,81,.05) 100%);
+  border:1px solid var(--border-hi); border-radius:16px;
+  position:relative; overflow:hidden;
+}
+.takeaway-block::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--accent),var(--green));
+  box-shadow:0 0 10px var(--accent);
+}
+.takeaway-label { font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.takeaway-quote { font-size:17px; color:var(--text); line-height:1.7; font-style:italic; }
+
+/* ─── Tools ─── */
+.tools-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+.tool-badge {
+  padding:10px 20px;
+  background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text);
+  transition:border-color .2s, color .2s;
+}
+.tool-badge:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Back CTA ─── */
+.back-cta { padding:60px 6vw 0; text-align:center; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 32px; border:1px solid var(--border-hi); border-radius:999px;
+  background:var(--accent-lo); color:var(--accent);
+  text-decoration:none; font-size:14px; font-weight:600; letter-spacing:.04em;
+  transition:all .25s ease;
+}
+.back-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* ─── Reveal ─── */
+.reveal { opacity:0; transform:translateY(20px); }
+
+/* ─── Responsive ─── */
+@media (max-width:900px) {
+  .case-hero { grid-template-columns:1fr; gap:40px; }
+  .cs-row { grid-template-columns:1fr; gap:32px; }
+  .silo-list { grid-template-columns:1fr; }
+  .stage-block { grid-template-columns:1fr; gap:24px; }
+  .decision-grid { grid-template-columns:1fr; }
+  .results-grid { grid-template-columns:1fr; }
+}
+@media (max-width:560px) {
+  .source-grid { grid-template-columns:1fr; }
+  .panel-stats { grid-template-columns:repeat(3,1fr); }
+}
+
+/* ─── Site Footer ─── */
+.site-footer { display:block !important; background:linear-gradient(135deg,#0b0f22 0%,#10152b 55%,#0e1020 100%); border-top:1px solid rgba(2,105,237,.28); padding:64px 6vw 52px; margin-top:80px; position:relative; z-index:1; overflow:hidden; }
+[data-theme="light"] .site-footer { background:linear-gradient(135deg,#e4eaff 0%,#eef1ff 55%,#dde6ff 100%); border-top:1px solid rgba(2,105,237,.18); }
+.footer-inner { display:grid !important; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:56px; align-items:start; }
+.footer-brand { display:flex !important; flex-direction:column !important; }
+.footer-name { font-size:13px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#fff; margin-bottom:8px; }
+[data-theme="light"] .footer-name { color:#07090f; }
+.footer-tagline { font-family:'Courier New',monospace; font-size:12px; color:rgba(255,255,255,.48); line-height:1.6; margin-bottom:24px; }
+[data-theme="light"] .footer-tagline { color:#505d7e; }
+.footer-copy { font-size:12px; color:rgba(255,255,255,.28); }
+[data-theme="light"] .footer-copy { color:#9aa5c4; }
+.footer-col { display:flex !important; flex-direction:column !important; gap:11px; }
+.footer-col-label { display:block; font-size:9px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:8px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.07); }
+[data-theme="light"] .footer-col-label { color:#7a89b0; border-bottom-color:rgba(0,0,0,.07); }
+.footer-col a { font-size:13px; color:rgba(255,255,255,.65); text-decoration:none; transition:color .2s; }
+.footer-col a:hover { color:#0269ed; }
+[data-theme="light"] .footer-col a { color:#07090f; }
+[data-theme="light"] .footer-col a:hover { color:#0269ed; }
+@media(max-width:780px){.footer-inner{grid-template-columns:1fr 1fr !important;gap:36px;}.footer-brand{grid-column:1/-1;margin-bottom:8px;}}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr !important;}}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav>
+  <svg class="nav-logo-svg" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
+    <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
+    <path class="cls-1" d="M746.52,170.11c-41.01-4.36-80.49-13.59-121.05-20.85-36.13-6.47-71.23-11.73-107.86-14.17-29.82-1.98-58.53-.9-87.3,6.82-17.5,4.69-33.44,12.44-48.13,22.68-16.47,11.48-29.41,26.01-38.27,43.81-15.53,31.22-13.31,71.85,15.78,92.76l-19.06-6.13c-14.24-4.58-26.38-13.5-36.01-24.84-24.78-29.19-21.93-66.45-5.73-99.88,10.49-21.65,25.46-40.45,43.13-56.59,4-3.65,7.99-5.99,12.07-9.19l6.69-5.24c19.83-13.56,40.91-23.45,64.21-29.67l37.31-7.76c42.07-5.44,84.1-2.69,125.65,5.95l70.61,18.24,15.09,4.57,59.17,16.35c79.18,25.2,121,41.06,189.66,34.63s85.92-17.17,88.58-18.08c28.8-9.76,45.96-21.68,65.62-31.13l43.32-22.01c-57.28,35.37-111.01,80.38-176.34,98.19-18.41,5.02-35.52,12.22-98.81,11.55-30.35-.32-68.17-6.8-98.32-10Z"/>
+    <path class="cls-1" d="M389.35,270.35c73.89-64.99,161.21-70.91,202.21-32.68,29.97,27.95,33,77.44,21.45,112.34-29.44,88.96-172.19,139.36-275.74,96.16-13.71-5.72-81.39-31.4-103.15-96.16-15.16-45.12-3.04-93.95,0-93.96,1.83,0,.04,17.59,5.11,34.72,16.6,56.14,105.76,102.1,188.94,86.81,55.87-10.27,110.69-33.31,96-80.68-8.28-26.7-49.24-41.07-52.09-41.87-42.02-11.91-77.17,11.49-82.72,15.32Z"/>
+    <path class="cls-1" d="M412.84.25c7.83-1.89,171,5.68,322.09,73.8,65.77,29.65,86.09,35.79,115.6,40.58,130.66,21.21,242.15-42.4,240.19-40.58-3.19,2.97-108.45,83.8-246.89,58.12-3.77-.7-8.42-1.26-17.36-3.77-90.03-25.29-136.85-61.04-287.14-81.85-90.42-12.52-159.1,30.61-157.17,26.37,1.71-3.75,29.14-72.29,30.69-72.66Z"/>
+  </svg>
+  <div class="nav-right">
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span class="toggle-label"></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ─── Hero ─── -->
+  <div class="case-hero">
+    <div class="hero-content">
+      <div class="breadcrumb reveal">
+        <a href="index.html">Portfolio</a><span>/</span>
+        <a href="index.html#work">Work</a><span>/</span>
+        Account Life Cycle
+      </div>
+      <div class="case-cat reveal">E-Learning &middot; Instructional Design</div>
+      <h1 class="reveal">Account<br>Life Cycle</h1>
+      <p class="case-subtitle reveal">Helping employees understand how the entire customer journey works at Veeam</p>
+      <div class="meta-row reveal">
+        <div class="meta-cell">
+          <div class="meta-label">Client</div>
+          <div class="meta-val">Veeam</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2023</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Format</div>
+          <div class="meta-val">Self-Paced</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Role</div>
+          <div class="meta-val">Learning Experience Designer</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Panel: Customer Journey Pipeline -->
+    <div class="hero-panel reveal">
+      <div class="panel-badge"><span class="panel-dot"></span> Customer Journey</div>
+      <div class="panel-stats">
+        <div class="panel-stat">
+          <span class="panel-stat-num">3</span>
+          <span class="panel-stat-desc">Journey<br>Stages</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">6</span>
+          <span class="panel-stat-desc">Cross-Functional<br>Teams</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">1</span>
+          <span class="panel-stat-desc">Onboarding<br>Experience</span>
+        </div>
+      </div>
+      <div class="panel-divider"></div>
+      <div class="journey-flow">
+        <div class="journey-stage">
+          <div class="journey-num">01</div>
+          Marketing Generates Leads
+          <span class="journey-sub">Awareness</span>
+        </div>
+        <div class="journey-connector"></div>
+        <div class="journey-stage">
+          <div class="journey-num">02</div>
+          Account Creation
+          <span class="journey-sub">Salesforce</span>
+        </div>
+        <div class="journey-connector"></div>
+        <div class="journey-stage">
+          <div class="journey-num">03</div>
+          Opportunity Development
+          <span class="journey-sub">Cross-Functional</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-divider"></div>
+
+  <!-- ─── Overview ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Overview</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>When new employees join an organization, they often understand their own role but struggle to see how other departments contribute to the customer experience.</p>
+        <p>At Veeam, multiple teams including Marketing, Sales, Channel Partners, System Engineers, Customer Success, and Support play a role in moving a prospect from initial awareness to long-term customer success. To help employees understand this complex ecosystem, I designed and developed an interactive eLearning experience that mapped the entire account life cycle from lead generation through customer engagement and retention.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── The Challenge ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">The Challenge</div>
+    <p class="challenge-intro">Employees frequently worked within departmental silos. While Marketing understood lead generation and Sales understood opportunity management, many employees lacked visibility into how the broader organization worked together to support customers.</p>
+    <p class="silo-label">This created challenges such as:</p>
+    <ul class="silo-list">
+      <li>Limited understanding of cross-functional dependencies</li>
+      <li>Difficulty seeing where individual roles fit into the customer journey</li>
+      <li>Reduced collaboration between departments</li>
+      <li>Longer onboarding times for new employees</li>
+    </ul>
+    <div class="hmw-card">
+      <div class="hmw-eyebrow">Design Challenge</div>
+      <div class="hmw-q">The business needed a scalable way to provide employees with a high-level understanding of how customer accounts move through the organization.</div>
+    </div>
+  </div>
+
+  <!-- ─── My Role ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">My Role</div>
+    <div class="cs-row">
+      <div>
+        <div class="role-title">Learning Experience Designer</div>
+        <p class="role-desc">I was responsible for the full scope of the learning experience, from initial content analysis through final delivery and testing.</p>
+      </div>
+      <div>
+        <div class="responsibility-grid">
+          <span class="responsibility-pill">Conducting content analysis</span>
+          <span class="responsibility-pill">Organizing the account life cycle into a learner-friendly structure</span>
+          <span class="responsibility-pill">Designing the instructional strategy</span>
+          <span class="responsibility-pill">Creating visual assets and interactions</span>
+          <span class="responsibility-pill">Developing the course</span>
+          <span class="responsibility-pill">Collaborating with stakeholders and SMEs</span>
+          <span class="responsibility-pill">Testing and refining the learning experience</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Color Palette ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Color Palette</div>
+    <div class="color-palette">
+      <div class="color-swatch">
+        <div class="swatch-circle" style="background:#00D15F;"></div>
+        <span class="swatch-name">Green</span>
+        <span class="swatch-hex">#00D15F</span>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-circle" style="background:#169f98;"></div>
+        <span class="swatch-name">Teal</span>
+        <span class="swatch-hex">#169F98</span>
+      </div>
+<div class="color-swatch">
+        <div class="swatch-circle" style="background:#A7E94F;"></div>
+        <span class="swatch-name">Lime</span>
+        <span class="swatch-hex">#A7E94F</span>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-circle" style="background:#FFFFFF;"></div>
+        <span class="swatch-name">White</span>
+        <span class="swatch-hex">#FFFFFF</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Understanding the Problem ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Understanding the Problem</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>The source material contained multiple departments, workflows, and role responsibilities. Rather than presenting information as a static organizational chart, I wanted learners to understand the account life cycle as a connected journey.</p>
+      </div>
+    </div>
+    <div class="hmw-card">
+      <div class="hmw-eyebrow">Key Design Question</div>
+      <div class="hmw-q">How do we help employees understand the entire customer journey without overwhelming them with process-heavy content?</div>
+    </div>
+  </div>
+
+  <!-- ─── The Solution ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">The Solution</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>I designed a guided learning experience that followed the same path a customer would take through the organization. The course was divided into three logical stages.</p>
+      </div>
+    </div>
+
+    <div class="solution-stages">
+
+      <div class="stage-block reveal">
+        <div>
+          <div class="stage-num-label">Stage 01</div>
+          <div class="stage-title">Marketing Generates Leads</div>
+          <p class="stage-body">Learners explored how prospects enter the funnel through a variety of marketing activities. Interactive activities helped learners identify potential customers versus non-potential customers.</p>
+          <ul class="stage-items">
+            <li>Webinars</li>
+            <li>Whitepaper downloads</li>
+            <li>Free trials</li>
+            <li>Marketing campaigns</li>
+          </ul>
+        </div>
+        <div class="stage-visual">
+          <div class="stage-visual-label">Lead Sources</div>
+          <div class="source-grid">
+            <div class="source-chip">Webinars</div>
+            <div class="source-chip">Whitepaper Downloads</div>
+            <div class="source-chip">Free Trials</div>
+            <div class="source-chip">Marketing Campaigns</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-block reveal">
+        <div>
+          <div class="stage-num-label">Stage 02</div>
+          <div class="stage-title">Account Creation</div>
+          <p class="stage-body">Learners followed the process of converting prospects into accounts, understanding how potential customers move into active sales engagement.</p>
+          <ul class="stage-items">
+            <li>Salesforce account creation</li>
+            <li>Team assignment</li>
+            <li>Opportunity creation</li>
+            <li>White-space account management</li>
+          </ul>
+        </div>
+        <div class="stage-visual">
+          <div class="stage-visual-label">Salesforce Process</div>
+          <div class="process-flow">
+            <div class="process-step"><span class="step-num">1</span>Salesforce Account Creation</div>
+            <div class="process-arrow">&#8595;</div>
+            <div class="process-step"><span class="step-num">2</span>Team Assignment</div>
+            <div class="process-arrow">&#8595;</div>
+            <div class="process-step"><span class="step-num">3</span>Opportunity Creation</div>
+            <div class="process-arrow">&#8595;</div>
+            <div class="process-step"><span class="step-num">4</span>White-Space Management</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-block reveal">
+        <div>
+          <div class="stage-num-label">Stage 03</div>
+          <div class="stage-title">Opportunity Development &amp; Account Nurturing</div>
+          <p class="stage-body">Rather than presenting departments independently, the experience showed how teams work together throughout the account lifecycle. This systems-based approach helped learners see the bigger picture behind customer interactions.</p>
+        </div>
+        <div class="stage-visual">
+          <div class="stage-visual-label">Teams Involved</div>
+          <div class="team-grid">
+            <div class="team-badge">Marketing</div>
+            <div class="team-badge">Sales</div>
+            <div class="team-badge">Channel Partners</div>
+            <div class="team-badge">System Engineers</div>
+            <div class="team-badge">Customer Success</div>
+            <div class="team-badge">Support</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── Design Decisions ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Design Decisions</div>
+    <div class="decision-grid">
+
+      <div class="decision-card">
+        <div class="decision-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="22" height="22">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div class="decision-title">Visual Storytelling</div>
+        <div class="decision-desc">I used Veeam-branded illustrations and a consistent visual language to transform what could have been a dry business process into a more approachable learning experience.</div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="22" height="22">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+            <polyline points="2 17 12 22 22 17"/>
+            <polyline points="2 12 12 17 22 12"/>
+          </svg>
+        </div>
+        <div class="decision-title">Progressive Learning</div>
+        <div class="decision-desc">Information was revealed in stages rather than all at once. This reduced cognitive overload and helped learners focus on one phase of the account journey at a time.</div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="22" height="22">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="decision-title">Interactive Learning</div>
+        <div class="decision-desc">Instead of relying solely on informational slides, activities encouraged learners to categorize prospects, apply decision-making skills, and connect business processes together.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── Final Result ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Final Result</div>
+    <p class="results-intro">The final product was an interactive onboarding course that provided employees with a clear understanding of how customer accounts move through the organization. Learners were able to:</p>
+    <div class="results-grid">
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Understand the full customer journey</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Recognize how departments interact</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Identify key roles and responsibilities</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Improve cross-functional awareness</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Build stronger organizational knowledge during onboarding</span>
+      </div>
+    </div>
+    <div class="view-course-wrap">
+      <a href="https://360.articulate.com/review/content/32b1e605-e56c-4a96-addf-2f847feb166e/review" target="_blank" rel="noopener" class="view-course-btn">View Course &#8599;</a>
+    </div>
+  </div>
+
+  <!-- ─── Reflection / ROI ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Reflection &amp; ROI</div>
+    <p class="roi-intro">This project reinforced the importance of systems thinking in instructional design. The challenge was not teaching individual job tasks -- it was helping learners understand how an entire organization works together to support customers. By focusing on process visualization, progressive disclosure, and meaningful interactions, the course helped employees see beyond their immediate responsibilities and understand their role within the larger customer ecosystem.</p>
+    <div class="roi-heading">Business Value</div>
+    <ul class="roi-list">
+      <li><span class="roi-dot"></span>Faster onboarding for new employees</li>
+      <li><span class="roi-dot"></span>Improved cross-functional awareness</li>
+      <li><span class="roi-dot"></span>Greater understanding of customer touchpoints</li>
+      <li><span class="roi-dot"></span>Reduced confusion around departmental responsibilities</li>
+      <li><span class="roi-dot"></span>Stronger alignment across teams supporting customer success</li>
+    </ul>
+    <div class="takeaway-block">
+      <div class="takeaway-label">Key Takeaway</div>
+      <div class="takeaway-quote">One of the most valuable lessons from this project was learning how to simplify complex business systems without oversimplifying them. When employees understand the "why" behind a process -- not just the steps -- they are better equipped to collaborate, make decisions, and contribute to business outcomes.</div>
+    </div>
+  </div>
+
+  <!-- ─── Tools ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Tools &amp; Technologies</div>
+    <div class="tools-grid">
+      <span class="tool-badge">Articulate Rise 360</span>
+      <span class="tool-badge">Adobe Illustrator</span>
+      <span class="tool-badge">Adobe Photoshop</span>
+      <span class="tool-badge">Adobe After Effects</span>
+      <span class="tool-badge">SME Interviews</span>
+    </div>
+  </div>
+
+  <!-- ─── Back CTA ─── -->
+  <div class="back-cta reveal">
+    <a href="index.html#work" class="back-btn">Back to Work</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-name">Raymond Spellen</span>
+      <span class="footer-tagline">AI Learning Experience Designer</span>
+      <span class="footer-copy">&copy; 2026 &mdash; Made in ATL</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Pages</span>
+      <a href="index.html">Home</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Afar</span>
+      <a href="https://www.linkedin.com/in/rspellen/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+      <a href="https://github.com/rspellen23" target="_blank" rel="noopener">GitHub &#8599;</a>
+      <a href="#" target="_blank" rel="noopener">RSS &#8599;</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Contact</span>
+      <a href="mailto:rspellen23@gmail.com">rspellen23@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleTheme() {
+  var html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("rs-theme", html.dataset.theme);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.style.transition = "opacity .75s ease, transform .75s ease";
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = "translateY(0)";
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll(".reveal").forEach(function(el) { obs.observe(el); });
+});
+</script>
+
+</body>
+</html>

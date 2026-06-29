@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Intapp DMS | Raymond Spellen</title>
+<link rel="stylesheet" href="footer.css" />
+
+<!-- Run before CSS renders to prevent theme flash -->
+<script>
+(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;})();
+</script>
+
+<style>
+:root {
+  --bg:           #07090f;
+  --surface:      #0d1223;
+  --card:         rgba(13, 18, 35, 0.75);
+  --text:         #edf0ff;
+  --muted:        #6b7ca4;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.10);
+  --accent-mid:   rgba(2, 105, 237, 0.22);
+  --accent-glow:  rgba(2, 105, 237, 0.32);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.30);
+  --grid-line:    rgba(2, 105, 237, 0.045);
+  --orb-opacity:  0.11;
+  --nav-bg:       rgba(7, 9, 15, 0.65);
+  --green:        #00a651;
+  --purple:       #5c2eed;
+}
+[data-theme="light"] {
+  --bg:           #f1f4ff;
+  --surface:      #ffffff;
+  --card:         rgba(255, 255, 255, 0.82);
+  --text:         #07090f;
+  --muted:        #505d7e;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.07);
+  --accent-mid:   rgba(2, 105, 237, 0.15);
+  --accent-glow:  rgba(2, 105, 237, 0.22);
+  --border:       rgba(0, 0, 0, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.25);
+  --grid-line:    rgba(2, 105, 237, 0.04);
+  --orb-opacity:  0.05;
+  --nav-bg:       rgba(241, 244, 255, 0.72);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: Inter, -apple-system, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none; z-index: 0;
+  transition: background-image .4s ease;
+}
+
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px);
+  opacity: var(--orb-opacity);
+  pointer-events: none; z-index: 0;
+  will-change: transform;
+  transition: opacity .4s ease;
+}
+.orb-1 { width:600px;height:600px;background:#0269ed;top:-200px;right:-150px;animation:drift 12s ease-in-out infinite; }
+.orb-2 { width:400px;height:400px;background:#5c2eed;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
+
+@keyframes drift { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-36px)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+@keyframes glow-pulse { 0%,100%{box-shadow:0 0 20px rgba(2,105,237,.55)} 50%{box-shadow:0 0 36px rgba(2,105,237,.9)} }
+
+nav, main, footer { position: relative; z-index: 1; }
+
+/* ─── Nav ─── */
+nav {
+  position: fixed; top:0;left:0;right:0; z-index:200;
+  padding:16px 6vw;
+  display:flex; justify-content:space-between; align-items:center;
+  background:var(--nav-bg);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:background .4s ease;
+}
+.nav-logo-svg { width:72px; height:auto; display:block; }
+.nav-logo-svg .cls-1 { fill:#0269ed; }
+.nav-right { display:flex; align-items:center; gap:20px; }
+.back-link {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13px; color:var(--muted); text-decoration:none;
+  letter-spacing:.03em; transition:color .2s;
+}
+.back-link:hover { color:var(--text); }
+.back-link::before { content:'←'; }
+.theme-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 16px; border-radius:999px;
+  border:1px solid var(--border-hi);
+  background:var(--accent-lo); color:var(--muted);
+  font-size:13px; font-family:inherit; cursor:pointer;
+  transition:all .25s ease;
+}
+.theme-btn:hover { color:var(--text); border-color:var(--accent); }
+.icon-sun,.icon-moon { width:15px;height:15px;display:none; }
+[data-theme="dark"]  .icon-moon { display:block; }
+[data-theme="light"] .icon-sun  { display:block; }
+[data-theme="dark"]  .toggle-label::after { content:"Light"; }
+[data-theme="light"] .toggle-label::after { content:"Dark"; }
+
+/* ─── Hero ─── */
+.case-hero {
+  padding:140px 6vw 80px;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:60px; align-items:center;
+}
+.breadcrumb {
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:var(--muted); letter-spacing:.06em; margin-bottom:40px;
+}
+.breadcrumb a { color:var(--muted); text-decoration:none; transition:color .2s; }
+.breadcrumb a:hover { color:var(--accent); }
+.breadcrumb span { color:var(--border-hi); }
+.case-cat {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); border:1px solid var(--border-hi);
+  padding:5px 14px; border-radius:999px; background:var(--accent-lo);
+  margin-bottom:28px;
+}
+.case-hero h1 {
+  font-size:clamp(32px,4.4vw,64px);
+  letter-spacing:-0.05em; line-height:.95; font-weight:800; margin-bottom:20px;
+}
+.case-subtitle { font-size:18px; color:var(--muted); line-height:1.6; margin-bottom:20px; }
+
+/* Project type tags */
+.type-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:32px; }
+.type-pill {
+  font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:5px 12px; border-radius:999px;
+  background:rgba(255,255,255,.05); border:1px solid var(--border);
+  color:var(--muted);
+}
+[data-theme="light"] .type-pill { background:rgba(0,0,0,.04); }
+
+.meta-row {
+  display:flex; gap:0;
+  border:1px solid var(--border); border-radius:14px;
+  overflow:hidden; background:var(--card); backdrop-filter:blur(12px);
+}
+.meta-cell { flex:1; padding:16px 18px; border-right:1px solid var(--border); }
+.meta-cell:last-child { border-right:none; }
+.meta-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+.meta-val { font-size:13px; font-weight:600; color:var(--text); }
+
+/* ─── Hero Panel ─── */
+.hero-panel {
+  background:var(--card); backdrop-filter:blur(20px);
+  border:1px solid var(--border-hi); border-radius:20px;
+  padding:36px; position:relative; overflow:hidden;
+}
+.hero-panel::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg, var(--accent), var(--purple));
+}
+.panel-badge {
+  display:flex; align-items:center; gap:8px;
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:24px;
+}
+.panel-dot {
+  width:7px;height:7px; background:var(--accent); border-radius:50%;
+  box-shadow:0 0 8px var(--accent); animation:pulse 2s ease-in-out infinite;
+}
+.panel-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-bottom:24px; }
+.panel-stat { text-align:center; padding:14px 8px; }
+.panel-stat-num { display:block; font-size:36px; font-weight:800; letter-spacing:-.05em; color:var(--text); line-height:1; }
+.panel-stat-desc { display:block; font-size:11px; color:var(--muted); margin-top:6px; line-height:1.3; }
+.panel-divider { height:1px; background:var(--border); margin-bottom:20px; }
+
+/* Practice tracks */
+.practice-tracks { display:flex; flex-direction:column; gap:8px; }
+.practice-track {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px;
+  background:rgba(2,105,237,.04); border:1px solid var(--border);
+  border-radius:10px; font-size:12px; color:var(--text); font-weight:500;
+  transition:border-color .2s;
+}
+.practice-track:hover { border-color:var(--border-hi); }
+.track-num {
+  width:26px; height:26px; border-radius:50%;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700; color:var(--accent); flex-shrink:0;
+}
+
+/* ─── Case Divider ─── */
+.case-divider { height:1px; background:var(--border); margin:0 6vw; }
+
+/* ─── Content layout ─── */
+main { padding-bottom:120px; }
+.cs-section { padding:64px 6vw 0; }
+.cs-row { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+.cs-row.full { grid-template-columns:1fr; }
+.cs-label {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); display:flex; align-items:center; gap:10px; margin-bottom:20px;
+}
+.cs-label::before {
+  content:''; width:18px; height:1px; background:var(--accent); box-shadow:0 0 6px var(--accent);
+}
+.cs-body p { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
+.cs-body p:last-child { margin-bottom:0; }
+
+/* ─── Section intro text ─── */
+.section-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:28px; }
+.section-sublabel { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+
+/* ─── Challenge question grid ─── */
+.question-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:28px; }
+.question-card {
+  padding:16px 20px; background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:12px;
+  font-size:14px; color:var(--text); line-height:1.5;
+  position:relative; padding-left:36px;
+  transition:border-color .2s;
+}
+.question-card:hover { border-color:var(--border-hi); }
+.question-card::before {
+  content:'?'; position:absolute; left:14px; top:15px;
+  font-size:11px; font-weight:700; color:var(--accent); opacity:.7;
+}
+
+/* ─── Workflow callout ─── */
+.workflow-callout {
+  padding:28px 32px; margin-bottom:28px;
+  background:linear-gradient(135deg,rgba(92,46,237,.07) 0%,rgba(2,105,237,.07) 100%);
+  border:1px solid var(--border-hi); border-radius:14px;
+  position:relative; overflow:hidden;
+}
+.workflow-callout::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--purple),var(--accent));
+  box-shadow:0 0 12px var(--accent);
+}
+.workflow-callout p { font-size:16px; color:var(--text); line-height:1.7; margin-bottom:8px; font-style:italic; }
+.workflow-callout p:last-child { margin-bottom:0; }
+
+/* ─── Impact pills ─── */
+.impact-pills { display:flex; flex-wrap:wrap; gap:8px; }
+.impact-pill {
+  padding:8px 16px; border-radius:999px;
+  background:var(--card); border:1px solid var(--border);
+  font-size:13px; color:var(--muted); font-weight:500;
+  transition:border-color .2s, color .2s;
+}
+.impact-pill:hover { border-color:var(--border-hi); color:var(--text); }
+
+/* ─── HMW / insight cards ─── */
+.hmw-card {
+  margin-top:28px; padding:36px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(92,46,237,.07) 100%);
+  border:1px solid var(--border-hi); border-radius:16px;
+  position:relative; overflow:hidden;
+}
+.hmw-card::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+  box-shadow:0 0 12px var(--accent);
+}
+.hmw-eyebrow { font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+.hmw-q { font-size:19px; font-weight:700; color:var(--text); line-height:1.45; letter-spacing:-.02em; }
+
+/* ─── Insight block ─── */
+.insight-block {
+  margin-top:28px; padding:32px 36px;
+  background:rgba(2,105,237,.05); border:1px solid var(--border-hi); border-radius:16px;
+  position:relative; overflow:hidden;
+}
+.insight-block::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:var(--accent); box-shadow:0 0 8px var(--accent);
+}
+.insight-block p { font-size:17px; color:var(--text); line-height:1.7; margin-bottom:12px; }
+.insight-block p:last-child { margin-bottom:0; color:var(--muted); font-size:15px; }
+
+/* Uncertainty list */
+.uncertainty-list { list-style:none; display:flex; flex-direction:column; gap:6px; margin:20px 0; }
+.uncertainty-list li {
+  font-size:14px; color:var(--muted); padding:10px 14px 10px 32px;
+  background:rgba(92,46,237,.04); border:1px solid var(--border); border-radius:8px;
+  position:relative;
+}
+.uncertainty-list li::before {
+  content:''; position:absolute; left:13px; top:16px;
+  width:5px; height:5px; border:1.5px solid var(--purple); border-radius:50%;
+}
+
+/* ─── My Role ─── */
+.role-title { font-size:26px; font-weight:800; letter-spacing:-.03em; color:var(--text); margin-bottom:16px; }
+.role-desc { font-size:17px; color:var(--muted); line-height:1.8; }
+.responsibility-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.responsibility-pill {
+  padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text); transition:border-color .2s, color .2s;
+}
+.responsibility-pill:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Principle highlight ─── */
+.principle-card {
+  padding:48px 40px; margin-bottom:28px;
+  background:linear-gradient(135deg,rgba(2,105,237,.1) 0%,rgba(92,46,237,.08) 100%);
+  border:1px solid var(--border-hi); border-radius:20px;
+  text-align:center; position:relative; overflow:hidden;
+}
+.principle-card::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--purple));
+}
+.principle-eyebrow { font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+.principle-text { font-size:clamp(28px,4vw,52px); font-weight:800; letter-spacing:-.04em; color:var(--text); line-height:1; }
+
+/* Lesson examples */
+.lesson-examples { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:24px; }
+.lesson-example {
+  padding:16px 18px 16px 32px; background:var(--card);
+  border:1px solid var(--border); border-radius:12px;
+  font-size:13px; color:var(--text); line-height:1.5;
+  position:relative; transition:border-color .2s;
+}
+.lesson-example:hover { border-color:var(--border-hi); }
+.lesson-example::before {
+  content:''; position:absolute; left:14px; top:20px;
+  width:6px; height:6px; background:var(--accent); border-radius:50%;
+}
+
+/* ─── Module grid ─── */
+.module-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:24px; }
+.module-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.module-row {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; background:var(--card); border:1px solid var(--border);
+  border-radius:10px; font-size:13px; color:var(--text); font-weight:500;
+  transition:border-color .2s;
+}
+.module-row:hover { border-color:var(--border-hi); }
+.module-num {
+  width:24px; height:24px; border-radius:6px;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700; color:var(--accent); flex-shrink:0;
+}
+
+/* ─── UX Comparison ─── */
+.ux-compare { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
+.compare-col {
+  padding:24px 28px; border-radius:14px;
+  background:var(--card); border:1px solid var(--border);
+}
+.compare-col.bad { border-color:rgba(255,80,80,.2); background:rgba(255,80,80,.04); }
+.compare-col.good { border-color:rgba(0,166,81,.25); background:rgba(0,166,81,.05); }
+.compare-label {
+  font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border);
+}
+.compare-col.bad .compare-label { color:rgba(255,100,100,.7); }
+.compare-col.good .compare-label { color:rgba(0,166,81,.8); }
+.compare-q { font-size:16px; font-weight:600; color:var(--text); line-height:1.4; }
+
+/* ─── Reinforce pills / technique pills ─── */
+.pill-flex { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.pill-item {
+  padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--muted); transition:border-color .2s, color .2s;
+}
+.pill-item:hover { border-color:var(--border-hi); color:var(--text); }
+
+/* ─── Design choices list ─── */
+.design-choices { list-style:none; display:flex; flex-direction:column; gap:6px; margin-top:20px; }
+.design-choices li {
+  font-size:14px; color:var(--muted); padding:10px 14px 10px 32px;
+  background:var(--card); border:1px solid var(--border); border-radius:8px;
+  position:relative; transition:border-color .2s;
+}
+.design-choices li:hover { border-color:var(--border-hi); }
+.design-choices li::before {
+  content:''; position:absolute; left:13px; top:16px;
+  width:5px; height:5px; background:var(--accent); border-radius:50%;
+}
+
+/* ─── Results grid ─── */
+.results-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.result-item {
+  display:flex; align-items:flex-start; gap:14px;
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:14px;
+  padding:20px 22px; transition:border-color .2s;
+}
+.result-item:hover { border-color:var(--border-hi); }
+.result-check {
+  width:22px; height:22px; border-radius:6px;
+  background:rgba(0,166,81,.12); border:1px solid rgba(0,166,81,.3);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+}
+.result-check::after { content:'✓'; font-size:11px; color:var(--green); font-weight:700; }
+.result-text { font-size:14px; color:var(--text); line-height:1.6; }
+
+/* ─── Tools ─── */
+.tools-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+.tool-badge {
+  padding:10px 20px; background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text); transition:border-color .2s, color .2s;
+}
+.tool-badge:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Takeaway / Reflection ─── */
+.takeaway-block {
+  margin-top:32px; padding:36px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(92,46,237,.06) 100%);
+  border:1px solid var(--border-hi); border-radius:16px;
+  position:relative; overflow:hidden;
+}
+.takeaway-block::before {
+  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+  box-shadow:0 0 10px var(--accent);
+}
+.takeaway-block p { font-size:17px; color:var(--text); line-height:1.75; margin-bottom:16px; font-style:italic; }
+.takeaway-block p:last-child { margin-bottom:0; color:var(--muted); font-style:normal; font-size:15px; }
+
+/* ─── View Course ─── */
+.view-course-wrap { margin-top:44px; text-align:center; }
+.view-course-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 40px; border-radius:999px; border:1px solid var(--accent);
+  background:var(--accent); color:#fff;
+  text-decoration:none; font-size:15px; font-weight:700; letter-spacing:.04em;
+  box-shadow:0 0 20px rgba(2,105,237,.55);
+  animation:glow-pulse 2.5s ease-in-out infinite;
+  transition:transform .2s ease;
+}
+.view-course-btn:hover { transform:translateY(-2px); }
+
+/* ─── Back CTA ─── */
+.back-cta { padding:60px 6vw 0; text-align:center; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 32px; border:1px solid var(--border-hi); border-radius:999px;
+  background:var(--accent-lo); color:var(--accent);
+  text-decoration:none; font-size:14px; font-weight:600; letter-spacing:.04em;
+  transition:all .25s ease;
+}
+.back-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* ─── Reveal ─── */
+.reveal { opacity:0; transform:translateY(20px); }
+
+/* ─── Responsive ─── */
+@media (max-width:900px) {
+  .case-hero { grid-template-columns:1fr; gap:40px; }
+  .cs-row { grid-template-columns:1fr; gap:32px; }
+  .question-grid { grid-template-columns:1fr; }
+  .lesson-examples { grid-template-columns:1fr 1fr; }
+  .module-grid { grid-template-columns:1fr; }
+  .ux-compare { grid-template-columns:1fr; }
+  .results-grid { grid-template-columns:1fr; }
+}
+@media (max-width:560px) {
+  .lesson-examples { grid-template-columns:1fr; }
+}
+
+/* ─── Site Footer ─── */
+.site-footer { display:block !important; background:linear-gradient(135deg,#0b0f22 0%,#10152b 55%,#0e1020 100%); border-top:1px solid rgba(2,105,237,.28); padding:64px 6vw 52px; margin-top:80px; position:relative; z-index:1; overflow:hidden; }
+[data-theme="light"] .site-footer { background:linear-gradient(135deg,#e4eaff 0%,#eef1ff 55%,#dde6ff 100%); border-top:1px solid rgba(2,105,237,.18); }
+.footer-inner { display:grid !important; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:56px; align-items:start; }
+.footer-brand { display:flex !important; flex-direction:column !important; }
+.footer-name { font-size:13px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#fff; margin-bottom:8px; }
+[data-theme="light"] .footer-name { color:#07090f; }
+.footer-tagline { font-family:'Courier New',monospace; font-size:12px; color:rgba(255,255,255,.48); line-height:1.6; margin-bottom:24px; }
+[data-theme="light"] .footer-tagline { color:#505d7e; }
+.footer-copy { font-size:12px; color:rgba(255,255,255,.28); }
+[data-theme="light"] .footer-copy { color:#9aa5c4; }
+.footer-col { display:flex !important; flex-direction:column !important; gap:11px; }
+.footer-col-label { display:block; font-size:9px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:8px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.07); }
+[data-theme="light"] .footer-col-label { color:#7a89b0; border-bottom-color:rgba(0,0,0,.07); }
+.footer-col a { font-size:13px; color:rgba(255,255,255,.65); text-decoration:none; transition:color .2s; }
+.footer-col a:hover { color:#0269ed; }
+[data-theme="light"] .footer-col a { color:#07090f; }
+[data-theme="light"] .footer-col a:hover { color:#0269ed; }
+@media(max-width:780px){.footer-inner{grid-template-columns:1fr 1fr !important;gap:36px;}.footer-brand{grid-column:1/-1;margin-bottom:8px;}}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr !important;}}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav>
+  <svg class="nav-logo-svg" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
+    <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
+    <path class="cls-1" d="M746.52,170.11c-41.01-4.36-80.49-13.59-121.05-20.85-36.13-6.47-71.23-11.73-107.86-14.17-29.82-1.98-58.53-.9-87.3,6.82-17.5,4.69-33.44,12.44-48.13,22.68-16.47,11.48-29.41,26.01-38.27,43.81-15.53,31.22-13.31,71.85,15.78,92.76l-19.06-6.13c-14.24-4.58-26.38-13.5-36.01-24.84-24.78-29.19-21.93-66.45-5.73-99.88,10.49-21.65,25.46-40.45,43.13-56.59,4-3.65,7.99-5.99,12.07-9.19l6.69-5.24c19.83-13.56,40.91-23.45,64.21-29.67l37.31-7.76c42.07-5.44,84.1-2.69,125.65,5.95l70.61,18.24,15.09,4.57,59.17,16.35c79.18,25.2,121,41.06,189.66,34.63s85.92-17.17,88.58-18.08c28.8-9.76,45.96-21.68,65.62-31.13l43.32-22.01c-57.28,35.37-111.01,80.38-176.34,98.19-18.41,5.02-35.52,12.22-98.81,11.55-30.35-.32-68.17-6.8-98.32-10Z"/>
+    <path class="cls-1" d="M389.35,270.35c73.89-64.99,161.21-70.91,202.21-32.68,29.97,27.95,33,77.44,21.45,112.34-29.44,88.96-172.19,139.36-275.74,96.16-13.71-5.72-81.39-31.4-103.15-96.16-15.16-45.12-3.04-93.95,0-93.96,1.83,0,.04,17.59,5.11,34.72,16.6,56.14,105.76,102.1,188.94,86.81,55.87-10.27,110.69-33.31,96-80.68-8.28-26.7-49.24-41.07-52.09-41.87-42.02-11.91-77.17,11.49-82.72,15.32Z"/>
+    <path class="cls-1" d="M412.84.25c7.83-1.89,171,5.68,322.09,73.8,65.77,29.65,86.09,35.79,115.6,40.58,130.66,21.21,242.15-42.4,240.19-40.58-3.19,2.97-108.45,83.8-246.89,58.12-3.77-.7-8.42-1.26-17.36-3.77-90.03-25.29-136.85-61.04-287.14-81.85-90.42-12.52-159.1,30.61-157.17,26.37,1.71-3.75,29.14-72.29,30.69-72.66Z"/>
+  </svg>
+  <div class="nav-right">
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span class="toggle-label"></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ─── Hero ─── -->
+  <div class="case-hero">
+    <div class="hero-content">
+      <div class="breadcrumb reveal">
+        <a href="index.html">Portfolio</a><span>/</span>
+        <a href="index.html#work">Work</a><span>/</span>
+        Intapp DMS
+      </div>
+      <div class="case-cat reveal">E-Learning &middot; Systems Training</div>
+      <h1 class="reveal">Intapp<br>DMS</h1>
+      <p class="case-subtitle reveal">Tax, BSG &amp; A&amp;A Practice-Specific Training</p>
+      <div class="type-tags reveal">
+        <span class="type-pill">Instructional Design</span>
+        <span class="type-pill">Information Architecture</span>
+        <span class="type-pill">UX for Learning</span>
+        <span class="type-pill">Systems Training</span>
+        <span class="type-pill">Visual Design</span>
+      </div>
+      <div class="meta-row reveal">
+        <div class="meta-cell">
+          <div class="meta-label">Client</div>
+          <div class="meta-val">PKF O'Connor Davies</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2026</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Duration</div>
+          <div class="meta-val">60 min</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Role</div>
+          <div class="meta-val">Learning Experience Designer</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Panel: Practice Areas -->
+    <div class="hero-panel reveal">
+      <div class="panel-badge"><span class="panel-dot"></span> Practice-Specific Training</div>
+      <div class="panel-stats">
+        <div class="panel-stat">
+          <span class="panel-stat-num">60</span>
+          <span class="panel-stat-desc">Minute<br>Course</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">3</span>
+          <span class="panel-stat-desc">Practice<br>Areas</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">11</span>
+          <span class="panel-stat-desc">Course<br>Modules</span>
+        </div>
+      </div>
+      <div class="panel-divider"></div>
+      <div class="practice-tracks">
+        <div class="practice-track">
+          <div class="track-num">01</div>
+          Tax
+        </div>
+        <div class="practice-track">
+          <div class="track-num">02</div>
+          Business Services Group (BSG)
+        </div>
+        <div class="practice-track">
+          <div class="track-num">03</div>
+          Assurance &amp; Advisory (A&amp;A)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-divider"></div>
+
+  <!-- ─── Executive Summary ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Executive Summary</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>Following PKF O'Connor Davies' migration to Intapp DMS, employees had already completed foundational system training. However, Tax, Business Services Group (BSG), and Assurance &amp; Advisory (A&amp;A) teams were still encountering real-world questions once they began using the platform on actual client engagements.</p>
+        <p>Rather than reteaching the software, I designed a practice-specific reinforcement course that addressed the situations employees experienced after the baseline training ended.</p>
+        <p>The result was a 60-minute eLearning course focused on decision-making, document governance, retention policies, and practice-specific workflows across Tax, BSG, and A&amp;A.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── The Challenge ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">The Challenge</div>
+    <p class="section-intro">Baseline training successfully introduced Intapp DMS. The problem was what happened after employees started doing real work. Users struggled with questions like:</p>
+    <div class="question-grid">
+      <div class="question-card">Which system should I use?</div>
+      <div class="question-card">Where should this document live?</div>
+      <div class="question-card">Which document type should I select?</div>
+      <div class="question-card">What happens if I save it incorrectly?</div>
+      <div class="question-card">When should something remain in Intapp?</div>
+      <div class="question-card">When should it move to another system?</div>
+      <div class="question-card">What changes because of migration?</div>
+      <div class="question-card">Which situations require special handling?</div>
+    </div>
+    <div class="workflow-callout">
+      <p>These weren't software questions.</p>
+      <p>They were workflow questions.</p>
+    </div>
+    <p class="section-sublabel">Those questions directly impacted:</p>
+    <div class="impact-pills">
+      <span class="impact-pill">Compliance</span>
+      <span class="impact-pill">Retention</span>
+      <span class="impact-pill">Audit Readiness</span>
+      <span class="impact-pill">Collaboration</span>
+      <span class="impact-pill">Document Lifecycle Management</span>
+    </div>
+  </div>
+
+  <!-- ─── My Role ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">My Role</div>
+    <div class="cs-row">
+      <div>
+        <div class="role-title">Learning Experience Designer</div>
+        <p class="role-desc">I owned the learning experience from beginning to end.</p>
+      </div>
+      <div>
+        <div class="responsibility-grid">
+          <span class="responsibility-pill">Learning analysis</span>
+          <span class="responsibility-pill">SME collaboration</span>
+          <span class="responsibility-pill">Content organization</span>
+          <span class="responsibility-pill">Instructional strategy</span>
+          <span class="responsibility-pill">UX design</span>
+          <span class="responsibility-pill">Visual design</span>
+          <span class="responsibility-pill">Information architecture</span>
+          <span class="responsibility-pill">Storyboarding</span>
+          <span class="responsibility-pill">Rise 360 development</span>
+          <span class="responsibility-pill">Audio scripting</span>
+          <span class="responsibility-pill">Knowledge reinforcement</span>
+          <span class="responsibility-pill">Final QA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Understanding the Problem ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Understanding the Problem</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>While reviewing SME interviews, I realized something important. The software wasn't difficult. The rules surrounding the software were. Employees weren't forgetting buttons. They were unsure about:</p>
+      </div>
+    </div>
+    <ul class="uncertainty-list">
+      <li>System boundaries</li>
+      <li>Document ownership</li>
+      <li>Retention rules</li>
+      <li>Practice differences</li>
+      <li>Exceptions</li>
+      <li>Migration changes</li>
+    </ul>
+    <div class="insight-block">
+      <p>That changed my entire instructional strategy.</p>
+      <p>Instead of creating another software tutorial, I created a decision-support course.</p>
+    </div>
+  </div>
+
+  <!-- ─── Design Strategy ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Design Strategy</div>
+    <div class="principle-card">
+      <div class="principle-eyebrow">Guiding Principle</div>
+      <div class="principle-text">Reduce Uncertainty</div>
+    </div>
+    <p class="section-intro">Rather than overwhelming learners with every feature of Intapp DMS, I focused on the highest-risk decisions employees make every day. Each lesson answers one practical question. Examples include:</p>
+    <div class="lesson-examples">
+      <div class="lesson-example">Which portal should I use?</div>
+      <div class="lesson-example">Where should this document live?</div>
+      <div class="lesson-example">Which document type is correct?</div>
+      <div class="lesson-example">What changes after migration?</div>
+      <div class="lesson-example">What should happen with late returns?</div>
+      <div class="lesson-example">Why do PDFs require different handling?</div>
+    </div>
+    <div class="hmw-card" style="margin-top:24px;">
+      <div class="hmw-eyebrow">Design Intent</div>
+      <div class="hmw-q">This creates a workflow that mirrors the learner's actual job instead of the software's navigation.</div>
+    </div>
+  </div>
+
+  <!-- ─── Information Architecture ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Information Architecture</div>
+    <p class="module-intro">The course follows a logical progression from broad concepts to increasingly specific scenarios. Rather than organizing by software feature, I organized content around the mental models employees use while working.</p>
+    <div class="module-grid">
+      <div class="module-row"><span class="module-num">01</span>A&amp;A Portals (Suralink vs. Intapp DMS)</div>
+      <div class="module-row"><span class="module-num">02</span>System Boundaries</div>
+      <div class="module-row"><span class="module-num">03</span>Printing &amp; Admin Handoffs</div>
+      <div class="module-row"><span class="module-num">04</span>SafeSend Signatures</div>
+      <div class="module-row"><span class="module-num">05</span>Where Tax &amp; BSG Work Lives</div>
+      <div class="module-row"><span class="module-num">06</span>Document Types</div>
+      <div class="module-row"><span class="module-num">07</span>Process-Specific Scenarios</div>
+      <div class="module-row"><span class="module-num">08</span>PDF Expectations</div>
+      <div class="module-row"><span class="module-num">09</span>Auto-Sweeps</div>
+      <div class="module-row"><span class="module-num">10</span>Tips &amp; Tricks</div>
+      <div class="module-row"><span class="module-num">11</span>Course Completion</div>
+    </div>
+  </div>
+
+  <!-- ─── UX Decisions ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">UX Decisions</div>
+    <p class="section-intro">One of my favorite design decisions in this project is something most people never notice. Every lesson answers a single question. That subtle shift dramatically reduces cognitive load. Learners leave each lesson with one clear takeaway before moving to the next.</p>
+    <div class="ux-compare">
+      <div class="compare-col bad">
+        <div class="compare-label">Instead of this</div>
+        <div class="compare-q">Here's everything about portals.</div>
+      </div>
+      <div class="compare-col good">
+        <div class="compare-label">Every lesson asks this</div>
+        <div class="compare-q">Which portal should I use?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Reinforcement Instead of Retraining ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Reinforcement Instead of Retraining</div>
+    <p class="section-intro">Another intentional decision was respecting learner experience. The audience had already completed baseline training. I avoided repeating information they already knew. Instead, the course reinforced:</p>
+    <div class="pill-flex">
+      <span class="pill-item">Edge cases</span>
+      <span class="pill-item">Exceptions</span>
+      <span class="pill-item">Practice-specific workflows</span>
+      <span class="pill-item">Migration changes</span>
+      <span class="pill-item">Retention policies</span>
+      <span class="pill-item">Organizational expectations</span>
+    </div>
+    <div class="hmw-card" style="margin-top:28px;">
+      <div class="hmw-eyebrow">Outcome</div>
+      <div class="hmw-q">That kept the experience focused and respectful of experienced professionals' time.</div>
+    </div>
+  </div>
+
+  <!-- ─── Visual Design ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Visual Design</div>
+    <p class="section-intro">Visually, I kept the interface clean and professional. The interface supports comprehension instead of competing for attention.</p>
+    <ul class="design-choices">
+      <li>Large typography</li>
+      <li>Generous white space</li>
+      <li>Consistent lesson layouts</li>
+      <li>Blue branding aligned with the firm's visual identity</li>
+      <li>High contrast for readability</li>
+      <li>Simple diagrams instead of dense documentation</li>
+      <li>Optional narration for accessibility</li>
+    </ul>
+  </div>
+
+  <!-- ─── Learning Strategy ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Learning Strategy</div>
+    <p class="section-intro">Rather than memorization, learners build confidence through repeated exposure to realistic decisions. The course combines several instructional techniques:</p>
+    <div class="pill-flex">
+      <span class="pill-item">Progressive disclosure</span>
+      <span class="pill-item">Scenario-based explanations</span>
+      <span class="pill-item">Contextual reinforcement</span>
+      <span class="pill-item">Visual hierarchy</span>
+      <span class="pill-item">Repetition of high-risk concepts</span>
+      <span class="pill-item">Chunked learning</span>
+      <span class="pill-item">Optional narration</span>
+      <span class="pill-item">Practice-specific examples</span>
+    </div>
+  </div>
+
+  <!-- ─── Business Impact ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Business Impact</div>
+    <p class="section-intro">This course helped bridge the gap between system training and real-world application. Instead of increasing feature knowledge, it increased confidence in:</p>
+    <div class="results-grid">
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Document classification</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">System selection</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Retention decisions</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Workflow consistency</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Collaboration between departments</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Compliance with firm standards</span>
+      </div>
+    </div>
+    <div class="hmw-card" style="margin-top:28px;">
+      <div class="hmw-eyebrow">Outcome</div>
+      <div class="hmw-q">Ultimately, the course reduced ambiguity during one of the firm's largest document management transitions.</div>
+    </div>
+  </div>
+
+  <!-- ─── Tools ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Tools &amp; Technologies</div>
+    <div class="tools-grid">
+      <span class="tool-badge">Articulate Rise 360</span>
+      <span class="tool-badge">Adobe Illustrator</span>
+      <span class="tool-badge">Adobe After Effects</span>
+      <span class="tool-badge">Adobe Photoshop</span>
+    </div>
+  </div>
+
+  <!-- ─── Reflection ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Reflection</div>
+    <div class="takeaway-block">
+      <p>This project reinforced an important lesson for me as a learning experience designer: The hardest part of learning isn't understanding software. It's understanding the decisions people must make while using it.</p>
+      <p>By shifting the focus from "how Intapp works" to "how work flows through Intapp," I created an experience that supported employees long after their initial onboarding was complete.</p>
+    </div>
+    <div class="view-course-wrap">
+      <a href="https://360.articulate.com/review/content/375f741f-0b5a-4cef-96e0-9c134999bd3e/review" target="_blank" rel="noopener" class="view-course-btn">View Course &#8599;</a>
+    </div>
+  </div>
+
+  <!-- ─── Back CTA ─── -->
+  <div class="back-cta reveal">
+    <a href="index.html#work" class="back-btn">Back to Work</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-name">Raymond Spellen</span>
+      <span class="footer-tagline">AI Learning Experience Designer</span>
+      <span class="footer-copy">&copy; 2026 &mdash; Made in ATL</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Pages</span>
+      <a href="index.html">Home</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Afar</span>
+      <a href="https://www.linkedin.com/in/rspellen/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+      <a href="https://github.com/rspellen23" target="_blank" rel="noopener">GitHub &#8599;</a>
+      <a href="#" target="_blank" rel="noopener">RSS &#8599;</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Contact</span>
+      <a href="mailto:rspellen23@gmail.com">rspellen23@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleTheme() {
+  var html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("rs-theme", html.dataset.theme);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.style.transition = "opacity .75s ease, transform .75s ease";
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = "translateY(0)";
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll(".reveal").forEach(function(el) { obs.observe(el); });
+});
+</script>
+
+</body>
+</html>
