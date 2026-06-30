@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Intapp DMS | Raymond Spellen</title>
+<title>Technical Discovery and Next Steps | Raymond Spellen</title>
 <link rel="stylesheet" href="footer.css" />
 
 <!-- Run before CSS renders to prevent theme flash -->
@@ -77,7 +77,7 @@ body::before {
   transition: opacity .4s ease;
 }
 .orb-1 { width:600px;height:600px;background:#0269ed;top:-200px;right:-150px;animation:drift 12s ease-in-out infinite; }
-.orb-2 { width:400px;height:400px;background:#5c2eed;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
+.orb-2 { width:400px;height:400px;background:#003738;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
 
 @keyframes drift { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-36px)} }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
@@ -141,7 +141,7 @@ nav {
   margin-bottom:28px;
 }
 .case-hero h1 {
-  font-size:clamp(32px,4.4vw,64px);
+  font-size:clamp(28px,3.8vw,58px);
   letter-spacing:-0.05em; line-height:.95; font-weight:800; margin-bottom:20px;
 }
 .case-subtitle { font-size:18px; color:var(--muted); line-height:1.6; margin-bottom:20px; }
@@ -151,8 +151,7 @@ nav {
 .type-pill {
   font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
   padding:5px 12px; border-radius:999px;
-  background:rgba(255,255,255,.05); border:1px solid var(--border);
-  color:var(--muted);
+  background:rgba(255,255,255,.05); border:1px solid var(--border); color:var(--muted);
 }
 [data-theme="light"] .type-pill { background:rgba(0,0,0,.04); }
 
@@ -174,7 +173,7 @@ nav {
 }
 .hero-panel::before {
   content:''; position:absolute; top:0;left:0;right:0; height:2px;
-  background:linear-gradient(90deg, var(--accent), var(--purple));
+  background:linear-gradient(90deg, #003738, #00E296);
 }
 .panel-badge {
   display:flex; align-items:center; gap:8px;
@@ -191,17 +190,17 @@ nav {
 .panel-stat-desc { display:block; font-size:11px; color:var(--muted); margin-top:6px; line-height:1.3; }
 .panel-divider { height:1px; background:var(--border); margin-bottom:20px; }
 
-/* Practice tracks */
-.practice-tracks { display:flex; flex-direction:column; gap:8px; }
-.practice-track {
+/* Engagement phases */
+.engagement-phases { display:flex; flex-direction:column; gap:8px; }
+.engagement-phase {
   display:flex; align-items:center; gap:12px;
   padding:12px 16px;
   background:rgba(2,105,237,.04); border:1px solid var(--border);
   border-radius:10px; font-size:12px; color:var(--text); font-weight:500;
   transition:border-color .2s;
 }
-.practice-track:hover { border-color:var(--border-hi); }
-.track-num {
+.engagement-phase:hover { border-color:var(--border-hi); }
+.phase-num {
   width:26px; height:26px; border-radius:50%;
   background:var(--accent-lo); border:1px solid var(--border-hi);
   display:flex; align-items:center; justify-content:center;
@@ -225,50 +224,45 @@ main { padding-bottom:120px; }
 }
 .cs-body p { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
 .cs-body p:last-child { margin-bottom:0; }
+.section-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:24px; }
+.section-sublabel { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; margin-top:28px; }
 
-/* ─── Section intro text ─── */
-.section-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:28px; }
-.section-sublabel { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
-
-/* ─── Challenge question grid ─── */
-.question-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:28px; }
-.question-card {
-  padding:16px 20px; background:var(--card); backdrop-filter:blur(12px);
-  border:1px solid var(--border); border-radius:12px;
-  font-size:14px; color:var(--text); line-height:1.5;
-  position:relative; padding-left:36px;
-  transition:border-color .2s;
+/* ─── Goal / bullet lists ─── */
+.goal-list { list-style:none; display:flex; flex-direction:column; gap:6px; }
+.goal-list li {
+  font-size:14px; color:var(--muted); padding:10px 14px 10px 32px;
+  background:var(--card); border:1px solid var(--border); border-radius:8px; position:relative;
 }
-.question-card:hover { border-color:var(--border-hi); }
-.question-card::before {
-  content:'?'; position:absolute; left:14px; top:15px;
-  font-size:11px; font-weight:700; color:var(--accent); opacity:.7;
+.goal-list li::before {
+  content:''; position:absolute; left:13px; top:16px;
+  width:5px; height:5px; background:var(--accent); border-radius:50%;
 }
 
-/* ─── Workflow callout ─── */
-.workflow-callout {
-  padding:28px 32px; margin-bottom:28px;
-  background:linear-gradient(135deg,rgba(92,46,237,.07) 0%,rgba(2,105,237,.07) 100%);
-  border:1px solid var(--border-hi); border-radius:14px;
-  position:relative; overflow:hidden;
+/* ─── My Role ─── */
+.role-title { font-size:26px; font-weight:800; letter-spacing:-.03em; color:var(--text); margin-bottom:16px; }
+.role-desc { font-size:17px; color:var(--muted); line-height:1.8; }
+.responsibility-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.responsibility-pill {
+  padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text); transition:border-color .2s, color .2s;
 }
-.workflow-callout::before {
-  content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
-  background:linear-gradient(180deg,var(--purple),var(--accent));
-  box-shadow:0 0 12px var(--accent);
-}
-.workflow-callout p { font-size:16px; color:var(--text); line-height:1.7; margin-bottom:8px; font-style:italic; }
-.workflow-callout p:last-child { margin-bottom:0; }
+.responsibility-pill:hover { border-color:var(--border-hi); color:var(--accent); }
 
-/* ─── Impact pills ─── */
-.impact-pills { display:flex; flex-wrap:wrap; gap:8px; }
-.impact-pill {
-  padding:8px 16px; border-radius:999px;
-  background:var(--card); border:1px solid var(--border);
-  font-size:13px; color:var(--muted); font-weight:500;
-  transition:border-color .2s, color .2s;
+/* ─── Color Palette ─── */
+.color-palette { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; margin-top:16px; }
+.color-swatch { display:flex; flex-direction:column; align-items:center; gap:12px; }
+.swatch-circle { width:80px; height:80px; border-radius:50%; border:3px solid var(--border); box-shadow:0 4px 20px rgba(0,0,0,.2); }
+.swatch-name { font-size:12px; font-weight:600; color:var(--text); text-align:center; }
+.swatch-hex { font-size:11px; color:var(--muted); font-family:'Courier New',monospace; }
+.design-choices { list-style:none; display:flex; flex-direction:column; gap:6px; margin-top:16px; }
+.design-choices li {
+  font-size:14px; color:var(--muted); padding:10px 14px 10px 32px;
+  background:var(--card); border:1px solid var(--border); border-radius:8px; position:relative;
 }
-.impact-pill:hover { border-color:var(--border-hi); color:var(--text); }
+.design-choices li::before {
+  content:''; position:absolute; left:13px; top:16px;
+  width:5px; height:5px; background:var(--accent); border-radius:50%;
+}
 
 /* ─── HMW / insight cards ─── */
 .hmw-card {
@@ -285,131 +279,54 @@ main { padding-bottom:120px; }
 .hmw-eyebrow { font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
 .hmw-q { font-size:19px; font-weight:700; color:var(--text); line-height:1.45; letter-spacing:-.02em; }
 
-/* ─── Insight block ─── */
-.insight-block {
-  margin-top:28px; padding:32px 36px;
-  background:rgba(2,105,237,.05); border:1px solid var(--border-hi); border-radius:16px;
+/* ─── Understanding the Problem questions ─── */
+.question-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:24px; }
+.question-card {
+  padding:16px 20px 16px 36px; background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:12px;
+  font-size:14px; color:var(--text); line-height:1.5; position:relative; transition:border-color .2s;
+}
+.question-card:hover { border-color:var(--border-hi); }
+.question-card::before {
+  content:'?'; position:absolute; left:14px; top:15px;
+  font-size:11px; font-weight:700; color:var(--accent); opacity:.7;
+}
+
+/* ─── Rachel scenario callout ─── */
+.rachel-card {
+  margin-bottom:28px; padding:28px 32px;
+  background:linear-gradient(135deg,rgba(0,55,56,.18) 0%,rgba(0,226,150,.06) 100%);
+  border:1px solid rgba(0,226,150,.2); border-radius:16px;
   position:relative; overflow:hidden;
 }
-.insight-block::before {
+.rachel-card::before {
   content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
-  background:var(--accent); box-shadow:0 0 8px var(--accent);
+  background:linear-gradient(180deg,#003738,#00E296);
 }
-.insight-block p { font-size:17px; color:var(--text); line-height:1.7; margin-bottom:12px; }
-.insight-block p:last-child { margin-bottom:0; color:var(--muted); font-size:15px; }
+.rachel-eyebrow { font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:#00E296; margin-bottom:10px; opacity:.8; }
+.rachel-title { font-size:16px; font-weight:700; color:var(--text); margin-bottom:6px; }
+.rachel-desc { font-size:14px; color:var(--muted); line-height:1.6; }
 
-/* Uncertainty list */
-.uncertainty-list { list-style:none; display:flex; flex-direction:column; gap:6px; margin:20px 0; }
-.uncertainty-list li {
-  font-size:14px; color:var(--muted); padding:10px 14px 10px 32px;
-  background:rgba(92,46,237,.04); border:1px solid var(--border); border-radius:8px;
-  position:relative;
+/* ─── Discovery areas grid ─── */
+.discovery-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:20px; }
+.discovery-chip {
+  padding:12px 14px; background:var(--card); border:1px solid var(--border);
+  border-radius:10px; font-size:12px; color:var(--text); font-weight:500;
+  text-align:center; line-height:1.4; transition:border-color .2s;
 }
-.uncertainty-list li::before {
-  content:''; position:absolute; left:13px; top:16px;
-  width:5px; height:5px; border:1.5px solid var(--purple); border-radius:50%;
-}
+.discovery-chip:hover { border-color:var(--border-hi); }
 
-/* ─── Color Palette ─── */
-.color-palette { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; margin-top:16px; }
-.color-swatch { display:flex; flex-direction:column; align-items:center; gap:12px; }
-.swatch-circle { width:80px; height:80px; border-radius:50%; border:3px solid var(--border); box-shadow:0 4px 20px rgba(0,0,0,.2); }
-.swatch-name { font-size:12px; font-weight:600; color:var(--text); text-align:center; }
-.swatch-hex { font-size:11px; color:var(--muted); font-family:'Courier New',monospace; }
+/* ─── Discovery form fields ─── */
+.form-fields-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:20px; }
+.form-field-item {
+  display:flex; align-items:center; gap:10px;
+  padding:11px 16px; background:var(--card); border:1px solid var(--border);
+  border-radius:8px; font-size:13px; color:var(--muted); transition:border-color .2s;
+}
+.form-field-item:hover { border-color:var(--border-hi); color:var(--text); }
+.field-dot { width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0; }
 
-/* ─── My Role ─── */
-.role-title { font-size:26px; font-weight:800; letter-spacing:-.03em; color:var(--text); margin-bottom:16px; }
-.role-desc { font-size:17px; color:var(--muted); line-height:1.8; }
-.responsibility-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
-.responsibility-pill {
-  padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:999px;
-  font-size:13px; font-weight:500; color:var(--text); transition:border-color .2s, color .2s;
-}
-.responsibility-pill:hover { border-color:var(--border-hi); color:var(--accent); }
-
-/* ─── Principle highlight ─── */
-.principle-card {
-  padding:48px 40px; margin-bottom:28px;
-  background:linear-gradient(135deg,rgba(2,105,237,.1) 0%,rgba(92,46,237,.08) 100%);
-  border:1px solid var(--border-hi); border-radius:20px;
-  text-align:center; position:relative; overflow:hidden;
-}
-.principle-card::before {
-  content:''; position:absolute; top:0;left:0;right:0; height:2px;
-  background:linear-gradient(90deg,var(--accent),var(--purple));
-}
-.principle-eyebrow { font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
-.principle-text { font-size:clamp(28px,4vw,52px); font-weight:800; letter-spacing:-.04em; color:var(--text); line-height:1; }
-
-/* Lesson examples */
-.lesson-examples { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:24px; }
-.lesson-example {
-  padding:16px 18px 16px 32px; background:var(--card);
-  border:1px solid var(--border); border-radius:12px;
-  font-size:13px; color:var(--text); line-height:1.5;
-  position:relative; transition:border-color .2s;
-}
-.lesson-example:hover { border-color:var(--border-hi); }
-.lesson-example::before {
-  content:''; position:absolute; left:14px; top:20px;
-  width:6px; height:6px; background:var(--accent); border-radius:50%;
-}
-
-/* ─── Module grid ─── */
-.module-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:24px; }
-.module-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.module-row {
-  display:flex; align-items:center; gap:12px;
-  padding:12px 16px; background:var(--card); border:1px solid var(--border);
-  border-radius:10px; font-size:13px; color:var(--text); font-weight:500;
-  transition:border-color .2s;
-}
-.module-row:hover { border-color:var(--border-hi); }
-.module-num {
-  width:24px; height:24px; border-radius:6px;
-  background:var(--accent-lo); border:1px solid var(--border-hi);
-  display:flex; align-items:center; justify-content:center;
-  font-size:9px; font-weight:700; color:var(--accent); flex-shrink:0;
-}
-
-/* ─── UX Comparison ─── */
-.ux-compare { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
-.compare-col {
-  padding:24px 28px; border-radius:14px;
-  background:var(--card); border:1px solid var(--border);
-}
-.compare-col.bad { border-color:rgba(255,80,80,.2); background:rgba(255,80,80,.04); }
-.compare-col.good { border-color:rgba(0,166,81,.25); background:rgba(0,166,81,.05); }
-.compare-label {
-  font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
-  margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border);
-}
-.compare-col.bad .compare-label { color:rgba(255,100,100,.7); }
-.compare-col.good .compare-label { color:rgba(0,166,81,.8); }
-.compare-q { font-size:16px; font-weight:600; color:var(--text); line-height:1.4; }
-
-/* ─── Reinforce pills / technique pills ─── */
-.pill-flex { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
-.pill-item {
-  padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:999px;
-  font-size:13px; font-weight:500; color:var(--muted); transition:border-color .2s, color .2s;
-}
-.pill-item:hover { border-color:var(--border-hi); color:var(--text); }
-
-/* ─── Design choices list ─── */
-.design-choices { list-style:none; display:flex; flex-direction:column; gap:6px; margin-top:20px; }
-.design-choices li {
-  font-size:14px; color:var(--muted); padding:10px 14px 10px 32px;
-  background:var(--card); border:1px solid var(--border); border-radius:8px;
-  position:relative; transition:border-color .2s;
-}
-.design-choices li:hover { border-color:var(--border-hi); }
-.design-choices li::before {
-  content:''; position:absolute; left:13px; top:16px;
-  width:5px; height:5px; background:var(--accent); border-radius:50%;
-}
-
-/* ─── Results grid ─── */
+/* ─── Results / knowledge checks ─── */
 .results-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .result-item {
   display:flex; align-items:flex-start; gap:14px;
@@ -426,6 +343,31 @@ main { padding-bottom:120px; }
 .result-check::after { content:'✓'; font-size:11px; color:var(--green); font-weight:700; }
 .result-text { font-size:14px; color:var(--text); line-height:1.6; }
 
+/* ─── UX Decisions grid ─── */
+.ux-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+.ux-card {
+  background:var(--card); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:16px;
+  padding:28px 24px; transition:border-color .2s; position:relative; overflow:hidden;
+}
+.ux-card::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg, var(--accent), transparent);
+  opacity:0; transition:opacity .2s;
+}
+.ux-card:hover { border-color:var(--border-hi); }
+.ux-card:hover::before { opacity:1; }
+.ux-card-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:10px; letter-spacing:-.02em; }
+.ux-card-desc { font-size:14px; color:var(--muted); line-height:1.7; }
+
+/* ─── Pill flex (learning strategy) ─── */
+.pill-flex { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.pill-item {
+  padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--muted); transition:border-color .2s, color .2s;
+}
+.pill-item:hover { border-color:var(--border-hi); color:var(--text); }
+
 /* ─── Tools ─── */
 .tools-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
 .tool-badge {
@@ -436,14 +378,14 @@ main { padding-bottom:120px; }
 
 /* ─── Takeaway / Reflection ─── */
 .takeaway-block {
-  margin-top:32px; padding:36px 40px;
-  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(92,46,237,.06) 100%);
+  margin-top:20px; padding:36px 40px;
+  background:linear-gradient(135deg,rgba(2,105,237,.07) 0%,rgba(0,55,56,.1) 100%);
   border:1px solid var(--border-hi); border-radius:16px;
   position:relative; overflow:hidden;
 }
 .takeaway-block::before {
   content:''; position:absolute; left:0;top:0;bottom:0; width:3px;
-  background:linear-gradient(180deg,var(--accent),var(--purple));
+  background:linear-gradient(180deg,var(--accent),#00E296);
   box-shadow:0 0 10px var(--accent);
 }
 .takeaway-block p { font-size:17px; color:var(--text); line-height:1.75; margin-bottom:16px; font-style:italic; }
@@ -481,13 +423,13 @@ main { padding-bottom:120px; }
   .case-hero { grid-template-columns:1fr; gap:40px; }
   .cs-row { grid-template-columns:1fr; gap:32px; }
   .question-grid { grid-template-columns:1fr; }
-  .lesson-examples { grid-template-columns:1fr 1fr; }
-  .module-grid { grid-template-columns:1fr; }
-  .ux-compare { grid-template-columns:1fr; }
+  .discovery-grid { grid-template-columns:repeat(2,1fr); }
+  .form-fields-grid { grid-template-columns:1fr; }
   .results-grid { grid-template-columns:1fr; }
+  .ux-grid { grid-template-columns:1fr; }
 }
 @media (max-width:560px) {
-  .lesson-examples { grid-template-columns:1fr; }
+  .discovery-grid { grid-template-columns:1fr 1fr; }
 }
 
 /* ─── Site Footer ─── */
@@ -550,30 +492,30 @@ main { padding-bottom:120px; }
       <div class="breadcrumb reveal">
         <a href="index.html">Portfolio</a><span>/</span>
         <a href="index.html#work">Work</a><span>/</span>
-        Intapp DMS
+        Technical Discovery
       </div>
-      <div class="case-cat reveal">E-Learning &middot; Systems Training</div>
-      <h1 class="reveal">Intapp<br>DMS</h1>
-      <p class="case-subtitle reveal">Tax, BSG &amp; A&amp;A Practice-Specific Training</p>
+      <div class="case-cat reveal">E-Learning &middot; Sales Enablement</div>
+      <h1 class="reveal">Technical<br>Discovery<br>&amp; Next Steps</h1>
+      <p class="case-subtitle reveal">Scenario-based sales enablement for Veeam presales professionals</p>
       <div class="type-tags reveal">
-        <span class="type-pill">Instructional Design</span>
-        <span class="type-pill">Information Architecture</span>
-        <span class="type-pill">UX for Learning</span>
-        <span class="type-pill">Systems Training</span>
+        <span class="type-pill">Storyline</span>
+        <span class="type-pill">Sales Enablement</span>
+        <span class="type-pill">Scenario-Based Learning</span>
+        <span class="type-pill">Interactive Simulation</span>
         <span class="type-pill">Visual Design</span>
       </div>
       <div class="meta-row reveal">
         <div class="meta-cell">
           <div class="meta-label">Client</div>
-          <div class="meta-val">PKF O'Connor Davies</div>
+          <div class="meta-val">Veeam</div>
         </div>
         <div class="meta-cell">
           <div class="meta-label">Year</div>
-          <div class="meta-val">2026</div>
+          <div class="meta-val">2023</div>
         </div>
         <div class="meta-cell">
-          <div class="meta-label">Duration</div>
-          <div class="meta-val">60 min</div>
+          <div class="meta-label">Tool</div>
+          <div class="meta-val">Storyline 360</div>
         </div>
         <div class="meta-cell">
           <div class="meta-label">Role</div>
@@ -582,36 +524,36 @@ main { padding-bottom:120px; }
       </div>
     </div>
 
-    <!-- Hero Panel: Practice Areas -->
+    <!-- Hero Panel: Engagement Phases -->
     <div class="hero-panel reveal">
-      <div class="panel-badge"><span class="panel-dot"></span> Practice-Specific Training</div>
+      <div class="panel-badge"><span class="panel-dot"></span> Storyline Course</div>
       <div class="panel-stats">
         <div class="panel-stat">
-          <span class="panel-stat-num">60</span>
-          <span class="panel-stat-desc">Minute<br>Course</span>
+          <span class="panel-stat-num">1</span>
+          <span class="panel-stat-desc">Customer<br>Scenario</span>
         </div>
         <div class="panel-stat">
-          <span class="panel-stat-num">3</span>
-          <span class="panel-stat-desc">Practice<br>Areas</span>
+          <span class="panel-stat-num">7</span>
+          <span class="panel-stat-desc">Solution<br>Areas</span>
         </div>
         <div class="panel-stat">
-          <span class="panel-stat-num">11</span>
-          <span class="panel-stat-desc">Course<br>Modules</span>
+          <span class="panel-stat-num">10</span>
+          <span class="panel-stat-desc">Discovery<br>Fields</span>
         </div>
       </div>
       <div class="panel-divider"></div>
-      <div class="practice-tracks">
-        <div class="practice-track">
-          <div class="track-num">01</div>
-          Tax
+      <div class="engagement-phases">
+        <div class="engagement-phase">
+          <div class="phase-num">01</div>
+          Customer Discovery
         </div>
-        <div class="practice-track">
-          <div class="track-num">02</div>
-          Business Services Group (BSG)
+        <div class="engagement-phase">
+          <div class="phase-num">02</div>
+          Technical Analysis
         </div>
-        <div class="practice-track">
-          <div class="track-num">03</div>
-          Assurance &amp; Advisory (A&amp;A)
+        <div class="engagement-phase">
+          <div class="phase-num">03</div>
+          Solution Recommendation
         </div>
       </div>
     </div>
@@ -621,12 +563,11 @@ main { padding-bottom:120px; }
 
   <!-- ─── Executive Summary ─── -->
   <div class="cs-section reveal">
-    <div class="cs-label">Executive Summary</div>
+    <div class="cs-label">Overview</div>
     <div class="cs-row full">
       <div class="cs-body">
-        <p>Following PKF O'Connor Davies' migration to Intapp DMS, employees had already completed foundational system training. However, Tax, Business Services Group (BSG), and Assurance &amp; Advisory (A&amp;A) teams were still encountering real-world questions once they began using the platform on actual client engagements.</p>
-        <p>Rather than reteaching the software, I designed a practice-specific reinforcement course that addressed the situations employees experienced after the baseline training ended.</p>
-        <p>The result was a 60-minute eLearning course focused on decision-making, document governance, retention policies, and practice-specific workflows across Tax, BSG, and A&amp;A.</p>
+        <p>Veeam needed a way to help sales and presales professionals move beyond product knowledge and into solution selling. Rather than teaching features in isolation, this Storyline course places learners inside a realistic customer discovery conversation where they gather technical requirements, interpret customer needs, and determine which Veeam solutions best address those challenges.</p>
+        <p>The course transforms a technical discovery meeting into an interactive learning experience that reinforces consultative selling techniques while introducing learners to the tools and resources available after discovery is complete.</p>
       </div>
     </div>
   </div>
@@ -634,29 +575,15 @@ main { padding-bottom:120px; }
   <!-- ─── The Challenge ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">The Challenge</div>
-    <p class="section-intro">Baseline training successfully introduced Intapp DMS. The problem was what happened after employees started doing real work. Users struggled with questions like:</p>
-    <div class="question-grid">
-      <div class="question-card">Which system should I use?</div>
-      <div class="question-card">Where should this document live?</div>
-      <div class="question-card">Which document type should I select?</div>
-      <div class="question-card">What happens if I save it incorrectly?</div>
-      <div class="question-card">When should something remain in Intapp?</div>
-      <div class="question-card">When should it move to another system?</div>
-      <div class="question-card">What changes because of migration?</div>
-      <div class="question-card">Which situations require special handling?</div>
-    </div>
-    <div class="workflow-callout">
-      <p>These weren't software questions.</p>
-      <p>They were workflow questions.</p>
-    </div>
-    <p class="section-sublabel">Those questions directly impacted:</p>
-    <div class="impact-pills">
-      <span class="impact-pill">Compliance</span>
-      <span class="impact-pill">Retention</span>
-      <span class="impact-pill">Audit Readiness</span>
-      <span class="impact-pill">Collaboration</span>
-      <span class="impact-pill">Document Lifecycle Management</span>
-    </div>
+    <p class="section-intro">Technical sales conversations aren't won by memorizing product features. They're won by asking the right questions. Many new sales representatives understood Veeam's products but struggled to connect customer pain points with the appropriate solution. Without a structured discovery process, conversations often became feature demonstrations instead of business consultations.</p>
+    <p class="section-sublabel" style="margin-top:0;">The goal became helping learners:</p>
+    <ul class="goal-list">
+      <li>Gather meaningful technical information</li>
+      <li>Understand customer environments</li>
+      <li>Identify business challenges</li>
+      <li>Recommend appropriate solutions</li>
+      <li>Navigate the next phase of the sales process</li>
+    </ul>
   </div>
 
   <!-- ─── My Role ─── -->
@@ -665,21 +592,19 @@ main { padding-bottom:120px; }
     <div class="cs-row">
       <div>
         <div class="role-title">Learning Experience Designer</div>
-        <p class="role-desc">I owned the learning experience from beginning to end.</p>
+        <p class="role-desc">I designed and developed the entire Storyline experience.</p>
       </div>
       <div>
         <div class="responsibility-grid">
-          <span class="responsibility-pill">Learning analysis</span>
-          <span class="responsibility-pill">SME collaboration</span>
-          <span class="responsibility-pill">Content organization</span>
-          <span class="responsibility-pill">Instructional strategy</span>
+          <span class="responsibility-pill">Instructional analysis</span>
+          <span class="responsibility-pill">Storyboarding</span>
+          <span class="responsibility-pill">Storyline development</span>
+          <span class="responsibility-pill">Interaction design</span>
           <span class="responsibility-pill">UX design</span>
           <span class="responsibility-pill">Visual design</span>
-          <span class="responsibility-pill">Information architecture</span>
-          <span class="responsibility-pill">Storyboarding</span>
-          <span class="responsibility-pill">Rise 360 development</span>
-          <span class="responsibility-pill">Audio scripting</span>
-          <span class="responsibility-pill">Knowledge reinforcement</span>
+          <span class="responsibility-pill">Scenario writing</span>
+          <span class="responsibility-pill">Knowledge checks</span>
+          <span class="responsibility-pill">Feedback design</span>
           <span class="responsibility-pill">Final QA</span>
         </div>
       </div>
@@ -689,23 +614,44 @@ main { padding-bottom:120px; }
   <!-- ─── Color Palette ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">Color Palette</div>
+    <p class="section-intro">The interface follows Veeam's visual identity while creating a modern technical aesthetic. The result feels more like a software application than a slide presentation.</p>
     <div class="color-palette">
       <div class="color-swatch">
-        <div class="swatch-circle" style="background:#003261;"></div>
-        <span class="swatch-name">Navy</span>
-        <span class="swatch-hex">#003261</span>
+        <div class="swatch-circle" style="background:#003738;"></div>
+        <span class="swatch-name">Deep Teal</span>
+        <span class="swatch-hex">#003738</span>
       </div>
       <div class="color-swatch">
-        <div class="swatch-circle" style="background:#00b6c2;"></div>
-        <span class="swatch-name">Cyan</span>
-        <span class="swatch-hex">#00B6C2</span>
+        <div class="swatch-circle" style="background:#159F98;"></div>
+        <span class="swatch-name">Teal</span>
+        <span class="swatch-hex">#159F98</span>
       </div>
       <div class="color-swatch">
-        <div class="swatch-circle" style="background:#0067c8;"></div>
-        <span class="swatch-name">Blue</span>
-        <span class="swatch-hex">#0067C8</span>
+        <div class="swatch-circle" style="background:#00E296;"></div>
+        <span class="swatch-name">Bright Green</span>
+        <span class="swatch-hex">#00E296</span>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-circle" style="background:#FFFFFF;"></div>
+        <span class="swatch-name">White</span>
+        <span class="swatch-hex">#FFFFFF</span>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-circle" style="background:#595959;"></div>
+        <span class="swatch-name">Gray</span>
+        <span class="swatch-hex">#595959</span>
       </div>
     </div>
+    <p class="section-sublabel">Visual design choices included:</p>
+    <ul class="design-choices">
+      <li>Dark interface for high contrast</li>
+      <li>Bright accent colors for interaction states</li>
+      <li>Consistent iconography</li>
+      <li>Card-based layouts</li>
+      <li>Minimal navigation</li>
+      <li>Layer-based pop-up windows</li>
+      <li>Progressive visual cues</li>
+    </ul>
   </div>
 
   <!-- ─── Understanding the Problem ─── -->
@@ -713,173 +659,182 @@ main { padding-bottom:120px; }
     <div class="cs-label">Understanding the Problem</div>
     <div class="cs-row full">
       <div class="cs-body">
-        <p>While reviewing SME interviews, I realized something important. The software wasn't difficult. The rules surrounding the software were. Employees weren't forgetting buttons. They were unsure about:</p>
+        <p>During analysis, I realized the challenge wasn't product knowledge. It was connecting information. Sales professionals often knew individual Veeam products, but struggled with questions like:</p>
       </div>
     </div>
-    <ul class="uncertainty-list">
-      <li>System boundaries</li>
-      <li>Document ownership</li>
-      <li>Retention rules</li>
-      <li>Practice differences</li>
-      <li>Exceptions</li>
-      <li>Migration changes</li>
-    </ul>
-    <div class="insight-block">
-      <p>That changed my entire instructional strategy.</p>
-      <p>Instead of creating another software tutorial, I created a decision-support course.</p>
+    <div class="question-grid">
+      <div class="question-card">What information should I gather first?</div>
+      <div class="question-card">Which questions matter most?</div>
+      <div class="question-card">How do I qualify an opportunity?</div>
+      <div class="question-card">What does this customer's infrastructure tell me?</div>
+      <div class="question-card">Which solution fits this environment?</div>
+      <div class="question-card">What happens after discovery?</div>
+    </div>
+    <div class="hmw-card">
+      <div class="hmw-eyebrow">Design Insight</div>
+      <div class="hmw-q">The learning experience needed to simulate the reasoning process used by experienced solution engineers.</div>
     </div>
   </div>
 
   <!-- ─── Design Strategy ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">Design Strategy</div>
-    <div class="principle-card">
-      <div class="principle-eyebrow">Guiding Principle</div>
-      <div class="principle-text">Reduce Uncertainty</div>
+    <div class="rachel-card">
+      <div class="rachel-eyebrow">Fictional Customer</div>
+      <div class="rachel-title">Meet Rachel</div>
+      <div class="rachel-desc">A fictional customer introduced in a previous course. Learners gradually uncover information about her organization's infrastructure, business priorities, and technical challenges across the scenario.</div>
     </div>
-    <p class="section-intro">Rather than overwhelming learners with every feature of Intapp DMS, I focused on the highest-risk decisions employees make every day. Each lesson answers one practical question. Examples include:</p>
-    <div class="lesson-examples">
-      <div class="lesson-example">Which portal should I use?</div>
-      <div class="lesson-example">Where should this document live?</div>
-      <div class="lesson-example">Which document type is correct?</div>
-      <div class="lesson-example">What changes after migration?</div>
-      <div class="lesson-example">What should happen with late returns?</div>
-      <div class="lesson-example">Why do PDFs require different handling?</div>
-    </div>
-    <div class="hmw-card" style="margin-top:24px;">
-      <div class="hmw-eyebrow">Design Intent</div>
-      <div class="hmw-q">This creates a workflow that mirrors the learner's actual job instead of the software's navigation.</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>Instead of presenting content in chapters, I structured the course around a customer engagement. Each interaction reveals another piece of the customer's environment until learners have enough information to begin recommending solutions.</p>
+        <p>This transforms passive learning into active investigation.</p>
+      </div>
     </div>
   </div>
 
-  <!-- ─── Information Architecture ─── -->
+  <!-- ─── Scenario-Based Learning ─── -->
   <div class="cs-section reveal">
-    <div class="cs-label">Information Architecture</div>
-    <p class="module-intro">The course follows a logical progression from broad concepts to increasingly specific scenarios. Rather than organizing by software feature, I organized content around the mental models employees use while working.</p>
-    <div class="module-grid">
-      <div class="module-row"><span class="module-num">01</span>A&amp;A Portals (Suralink vs. Intapp DMS)</div>
-      <div class="module-row"><span class="module-num">02</span>System Boundaries</div>
-      <div class="module-row"><span class="module-num">03</span>Printing &amp; Admin Handoffs</div>
-      <div class="module-row"><span class="module-num">04</span>SafeSend Signatures</div>
-      <div class="module-row"><span class="module-num">05</span>Where Tax &amp; BSG Work Lives</div>
-      <div class="module-row"><span class="module-num">06</span>Document Types</div>
-      <div class="module-row"><span class="module-num">07</span>Process-Specific Scenarios</div>
-      <div class="module-row"><span class="module-num">08</span>PDF Expectations</div>
-      <div class="module-row"><span class="module-num">09</span>Auto-Sweeps</div>
-      <div class="module-row"><span class="module-num">10</span>Tips &amp; Tricks</div>
-      <div class="module-row"><span class="module-num">11</span>Course Completion</div>
+    <div class="cs-label">Scenario-Based Learning</div>
+    <p class="section-intro">One of the strongest elements of this project is the progressive discovery model. Learners don't receive every answer immediately. Instead, they uncover information through multiple interactions. By the end of the experience, learners have assembled a complete technical profile before making recommendations.</p>
+    <div class="discovery-grid">
+      <div class="discovery-chip">Current Infrastructure</div>
+      <div class="discovery-chip">Existing Backup Strategy</div>
+      <div class="discovery-chip">Disaster Recovery Approach</div>
+      <div class="discovery-chip">Production Workloads</div>
+      <div class="discovery-chip">Growth Plans</div>
+      <div class="discovery-chip">Security Concerns</div>
+      <div class="discovery-chip">Cloud Usage</div>
+      <div class="discovery-chip">Ransomware Preparedness</div>
+    </div>
+  </div>
+
+  <!-- ─── Interactive Discovery Form ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Interactive Discovery Form</div>
+    <p class="section-intro">Instead of asking learners to memorize information, I created an interactive Discovery Form. As learners gather information throughout the scenario, they complete the same type of discovery document they would use during a real customer engagement. This transforms learning into realistic job practice rather than a traditional quiz.</p>
+    <div class="form-fields-grid">
+      <div class="form-field-item"><span class="field-dot"></span>Hypervisor</div>
+      <div class="form-field-item"><span class="field-dot"></span>Server Manufacturer</div>
+      <div class="form-field-item"><span class="field-dot"></span>Production Storage</div>
+      <div class="form-field-item"><span class="field-dot"></span>Number of Virtual Machines</div>
+      <div class="form-field-item"><span class="field-dot"></span>Physical Servers</div>
+      <div class="form-field-item"><span class="field-dot"></span>Workloads</div>
+      <div class="form-field-item"><span class="field-dot"></span>Backup Targets</div>
+      <div class="form-field-item"><span class="field-dot"></span>Cloud Services</div>
+      <div class="form-field-item"><span class="field-dot"></span>Existing Backup Provider</div>
+      <div class="form-field-item"><span class="field-dot"></span>Licensing Information</div>
+    </div>
+  </div>
+
+  <!-- ─── Performance-Based Knowledge Checks ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Performance-Based Knowledge Checks</div>
+    <p class="section-intro">Rather than ending with a multiple-choice assessment, knowledge checks are woven directly into the scenario. Learners analyze Rachel's environment and determine which Veeam solutions address specific business challenges. Immediate feedback encourages learners to reconsider incorrect decisions before moving forward.</p>
+    <div class="results-grid">
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Microsoft Exchange recovery</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">SQL recovery</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Ransomware protection</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Disaster recovery</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Infrastructure monitoring</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">Cloud backup</span>
+      </div>
+      <div class="result-item">
+        <div class="result-check"></div>
+        <span class="result-text">3-2-1 backup strategy</span>
+      </div>
     </div>
   </div>
 
   <!-- ─── UX Decisions ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">UX Decisions</div>
-    <p class="section-intro">One of my favorite design decisions in this project is something most people never notice. Every lesson answers a single question. That subtle shift dramatically reduces cognitive load. Learners leave each lesson with one clear takeaway before moving to the next.</p>
-    <div class="ux-compare">
-      <div class="compare-col bad">
-        <div class="compare-label">Instead of this</div>
-        <div class="compare-q">Here's everything about portals.</div>
+    <p class="section-intro">Several instructional decisions helped reinforce the consultative experience.</p>
+    <div class="ux-grid">
+      <div class="ux-card">
+        <div class="ux-card-title">Progressive Disclosure</div>
+        <div class="ux-card-desc">Information is revealed gradually instead of all at once. This mirrors real customer conversations where understanding builds over time.</div>
       </div>
-      <div class="compare-col good">
-        <div class="compare-label">Every lesson asks this</div>
-        <div class="compare-q">Which portal should I use?</div>
+      <div class="ux-card">
+        <div class="ux-card-title">Context Before Content</div>
+        <div class="ux-card-desc">Learners first understand Rachel's business before discussing products. This prevents feature memorization and encourages solution thinking.</div>
+      </div>
+      <div class="ux-card">
+        <div class="ux-card-title">Learning by Investigation</div>
+        <div class="ux-card-desc">Instead of reading documentation, learners actively collect information and complete the Discovery Form throughout the course.</div>
+      </div>
+      <div class="ux-card">
+        <div class="ux-card-title">Embedded Resources</div>
+        <div class="ux-card-desc">Rather than ending after the scenario, learners are introduced to Veeam sales tools, presales resources, community documentation, demonstrations, and proof-of-concept options.</div>
       </div>
     </div>
-  </div>
-
-  <!-- ─── Reinforcement Instead of Retraining ─── -->
-  <div class="cs-section reveal">
-    <div class="cs-label">Reinforcement Instead of Retraining</div>
-    <p class="section-intro">Another intentional decision was respecting learner experience. The audience had already completed baseline training. I avoided repeating information they already knew. Instead, the course reinforced:</p>
-    <div class="pill-flex">
-      <span class="pill-item">Edge cases</span>
-      <span class="pill-item">Exceptions</span>
-      <span class="pill-item">Practice-specific workflows</span>
-      <span class="pill-item">Migration changes</span>
-      <span class="pill-item">Retention policies</span>
-      <span class="pill-item">Organizational expectations</span>
-    </div>
-    <div class="hmw-card" style="margin-top:28px;">
-      <div class="hmw-eyebrow">Outcome</div>
-      <div class="hmw-q">That kept the experience focused and respectful of experienced professionals' time.</div>
-    </div>
-  </div>
-
-  <!-- ─── Visual Design ─── -->
-  <div class="cs-section reveal">
-    <div class="cs-label">Visual Design</div>
-    <p class="section-intro">Visually, I kept the interface clean and professional. The interface supports comprehension instead of competing for attention.</p>
-    <ul class="design-choices">
-      <li>Large typography</li>
-      <li>Generous white space</li>
-      <li>Consistent lesson layouts</li>
-      <li>Blue branding aligned with the firm's visual identity</li>
-      <li>High contrast for readability</li>
-      <li>Simple diagrams instead of dense documentation</li>
-      <li>Optional narration for accessibility</li>
-    </ul>
   </div>
 
   <!-- ─── Learning Strategy ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">Learning Strategy</div>
-    <p class="section-intro">Rather than memorization, learners build confidence through repeated exposure to realistic decisions. The course combines several instructional techniques:</p>
+    <p class="section-intro">Instead of teaching products one by one, learners practice thinking like a Veeam solutions consultant. The course combines several instructional approaches:</p>
     <div class="pill-flex">
+      <span class="pill-item">Scenario-based learning</span>
       <span class="pill-item">Progressive disclosure</span>
-      <span class="pill-item">Scenario-based explanations</span>
-      <span class="pill-item">Contextual reinforcement</span>
-      <span class="pill-item">Visual hierarchy</span>
-      <span class="pill-item">Repetition of high-risk concepts</span>
-      <span class="pill-item">Chunked learning</span>
-      <span class="pill-item">Optional narration</span>
-      <span class="pill-item">Practice-specific examples</span>
+      <span class="pill-item">Contextual decision making</span>
+      <span class="pill-item">Guided discovery</span>
+      <span class="pill-item">Performance support</span>
+      <span class="pill-item">Retrieval practice</span>
+      <span class="pill-item">Immediate feedback</span>
+      <span class="pill-item">Job-task simulation</span>
     </div>
   </div>
 
   <!-- ─── Business Impact ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">Business Impact</div>
-    <p class="section-intro">This course helped bridge the gap between system training and real-world application. Instead of increasing feature knowledge, it increased confidence in:</p>
+    <p class="section-intro">This course helps prepare sales professionals for real customer conversations by improving their ability to:</p>
     <div class="results-grid">
       <div class="result-item">
         <div class="result-check"></div>
-        <span class="result-text">Document classification</span>
+        <span class="result-text">Conduct structured technical discovery</span>
       </div>
       <div class="result-item">
         <div class="result-check"></div>
-        <span class="result-text">System selection</span>
+        <span class="result-text">Identify customer requirements</span>
       </div>
       <div class="result-item">
         <div class="result-check"></div>
-        <span class="result-text">Retention decisions</span>
+        <span class="result-text">Recommend appropriate solutions</span>
       </div>
       <div class="result-item">
         <div class="result-check"></div>
-        <span class="result-text">Workflow consistency</span>
+        <span class="result-text">Qualify sales opportunities</span>
       </div>
       <div class="result-item">
         <div class="result-check"></div>
-        <span class="result-text">Collaboration between departments</span>
+        <span class="result-text">Transition from discovery to solution design</span>
       </div>
       <div class="result-item">
         <div class="result-check"></div>
-        <span class="result-text">Compliance with firm standards</span>
+        <span class="result-text">Use internal sales tools more effectively</span>
       </div>
     </div>
     <div class="hmw-card" style="margin-top:28px;">
       <div class="hmw-eyebrow">Outcome</div>
-      <div class="hmw-q">Ultimately, the course reduced ambiguity during one of the firm's largest document management transitions.</div>
-    </div>
-  </div>
-
-  <!-- ─── Tools ─── -->
-  <div class="cs-section reveal">
-    <div class="cs-label">Tools &amp; Technologies</div>
-    <div class="tools-grid">
-      <span class="tool-badge">Articulate Rise 360</span>
-      <span class="tool-badge">Adobe Illustrator</span>
-      <span class="tool-badge">Adobe After Effects</span>
-      <span class="tool-badge">Adobe Photoshop</span>
+      <div class="hmw-q">Rather than increasing product knowledge alone, the course develops consultative selling skills that directly support the sales process.</div>
     </div>
   </div>
 
@@ -887,11 +842,23 @@ main { padding-bottom:120px; }
   <div class="cs-section reveal">
     <div class="cs-label">Reflection</div>
     <div class="takeaway-block">
-      <p>This project reinforced an important lesson for me as a learning experience designer: The hardest part of learning isn't understanding software. It's understanding the decisions people must make while using it.</p>
-      <p>By shifting the focus from "how Intapp works" to "how work flows through Intapp," I created an experience that supported employees long after their initial onboarding was complete.</p>
+      <p>One of the biggest lessons from this project was that effective sales training isn't about teaching products -- it's about teaching curiosity.</p>
+      <p>The best sales professionals don't begin with answers. They begin with questions.</p>
+      <p>By designing an experience that required learners to investigate a customer's environment before recommending a solution, I shifted the learning experience from product training to consultative problem solving.</p>
     </div>
     <div class="view-course-wrap">
-      <a href="https://360.articulate.com/review/content/375f741f-0b5a-4cef-96e0-9c134999bd3e/review" target="_blank" rel="noopener" class="view-course-btn">View Course &#8599;</a>
+      <a href="https://360.articulate.com/review/content/8c89a551-bba9-4872-bd32-fa69084ecd5d/review" target="_blank" rel="noopener" class="view-course-btn">View Course &#8599;</a>
+    </div>
+  </div>
+
+  <!-- ─── Tools ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Tools &amp; Technologies</div>
+    <div class="tools-grid">
+      <span class="tool-badge">Articulate Storyline 360</span>
+      <span class="tool-badge">Adobe Illustrator</span>
+      <span class="tool-badge">Adobe Photoshop</span>
+      <span class="tool-badge">Microsoft PowerPoint</span>
     </div>
   </div>
 
