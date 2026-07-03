@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cox Mobile Employee Discount Campaign | Raymond Spellen</title>
+<link rel="stylesheet" href="footer.css" />
+
+<script>
+(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;})();
+</script>
+
+<style>
+:root {
+  --bg:           #07090f;
+  --surface:      #0d1223;
+  --card:         rgba(13, 18, 35, 0.75);
+  --text:         #edf0ff;
+  --muted:        #6b7ca4;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.10);
+  --accent-mid:   rgba(2, 105, 237, 0.22);
+  --accent-glow:  rgba(2, 105, 237, 0.32);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.30);
+  --grid-line:    rgba(2, 105, 237, 0.045);
+  --orb-opacity:  0.11;
+  --nav-bg:       rgba(7, 9, 15, 0.65);
+  --green:        #00a651;
+}
+[data-theme="light"] {
+  --bg:           #f1f4ff;
+  --surface:      #ffffff;
+  --card:         rgba(255, 255, 255, 0.82);
+  --text:         #07090f;
+  --muted:        #505d7e;
+  --accent:       #0269ed;
+  --accent-lo:    rgba(2, 105, 237, 0.07);
+  --accent-mid:   rgba(2, 105, 237, 0.15);
+  --accent-glow:  rgba(2, 105, 237, 0.22);
+  --border:       rgba(0, 0, 0, 0.07);
+  --border-hi:    rgba(2, 105, 237, 0.25);
+  --grid-line:    rgba(2, 105, 237, 0.04);
+  --orb-opacity:  0.05;
+  --nav-bg:       rgba(241, 244, 255, 0.72);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: Inter, -apple-system, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none; z-index: 0;
+  transition: background-image .4s ease;
+}
+
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px);
+  opacity: var(--orb-opacity);
+  pointer-events: none; z-index: 0;
+  will-change: transform;
+  transition: opacity .4s ease;
+}
+.orb-1 { width:600px;height:600px;background:#0072ce;top:-200px;right:-150px;animation:drift 12s ease-in-out infinite; }
+.orb-2 { width:400px;height:400px;background:#ff6900;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
+
+@keyframes drift { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-36px)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+@keyframes glow-pulse { 0%,100%{box-shadow:0 0 20px rgba(2,105,237,.55)} 50%{box-shadow:0 0 36px rgba(2,105,237,.9)} }
+
+nav, main, footer { position: relative; z-index: 1; }
+
+/* ─── Nav ─── */
+nav {
+  position: fixed; top:0;left:0;right:0; z-index:200;
+  padding:16px 6vw;
+  display:flex; justify-content:space-between; align-items:center;
+  background:var(--nav-bg);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:background .4s ease;
+}
+.nav-logo-svg { width:72px; height:auto; display:block; }
+.nav-logo-svg .cls-1 { fill:#0269ed; }
+.nav-right { display:flex; align-items:center; gap:20px; }
+.back-link {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13px; color:var(--muted); text-decoration:none;
+  letter-spacing:.03em; transition:color .2s;
+}
+.back-link:hover { color:var(--text); }
+.back-link::before { content:'←'; }
+.theme-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 16px; border-radius:999px;
+  border:1px solid var(--border-hi);
+  background:var(--accent-lo); color:var(--muted);
+  font-size:13px; font-family:inherit; cursor:pointer;
+  transition:all .25s ease;
+}
+.theme-btn:hover { color:var(--text); border-color:var(--accent); }
+.icon-sun,.icon-moon { width:15px;height:15px;display:none; }
+[data-theme="dark"]  .icon-moon { display:block; }
+[data-theme="light"] .icon-sun  { display:block; }
+[data-theme="dark"]  .toggle-label::after { content:"Light"; }
+[data-theme="light"] .toggle-label::after { content:"Dark"; }
+
+/* ─── Hero ─── */
+.case-hero {
+  padding:140px 6vw 80px;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:60px; align-items:center;
+}
+.breadcrumb {
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:var(--muted); letter-spacing:.06em; margin-bottom:40px;
+}
+.breadcrumb a { color:var(--muted); text-decoration:none; transition:color .2s; }
+.breadcrumb a:hover { color:var(--accent); }
+.breadcrumb span { color:var(--border-hi); }
+.case-cat {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); border:1px solid var(--border-hi);
+  padding:5px 14px; border-radius:999px; background:var(--accent-lo);
+  margin-bottom:28px;
+}
+.case-hero h1 {
+  font-size:clamp(30px,4vw,52px);
+  letter-spacing:-0.05em; line-height:1.05; font-weight:800; margin-bottom:20px;
+}
+.case-subtitle { font-size:18px; color:var(--muted); line-height:1.6; margin-bottom:24px; max-width:560px; }
+
+.type-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:32px; }
+.type-pill {
+  font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:5px 12px; border-radius:999px;
+  background:rgba(255,255,255,.05); border:1px solid var(--border); color:var(--muted);
+}
+[data-theme="light"] .type-pill { background:rgba(0,0,0,.04); }
+
+.meta-row {
+  display:flex; gap:0;
+  border:1px solid var(--border); border-radius:14px;
+  overflow:hidden; background:var(--card); backdrop-filter:blur(12px);
+}
+.meta-cell { flex:1; padding:16px 18px; border-right:1px solid var(--border); }
+.meta-cell:last-child { border-right:none; }
+.meta-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+.meta-val { font-size:13px; font-weight:600; color:var(--text); }
+
+/* ─── Hero Panel ─── */
+.hero-panel {
+  background:var(--card); backdrop-filter:blur(20px);
+  border:1px solid var(--border-hi); border-radius:20px;
+  padding:36px; position:relative; overflow:hidden;
+}
+.hero-panel::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg, #0072ce, #ff6900);
+}
+.panel-badge {
+  display:flex; align-items:center; gap:8px;
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:24px;
+}
+.panel-dot {
+  width:7px;height:7px; background:var(--accent); border-radius:50%;
+  box-shadow:0 0 8px var(--accent); animation:pulse 2s ease-in-out infinite;
+}
+.panel-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-bottom:24px; }
+.panel-stat { text-align:center; padding:14px 8px; }
+.panel-stat-num { display:block; font-size:32px; font-weight:800; letter-spacing:-.05em; color:var(--text); line-height:1; }
+.panel-stat-desc { display:block; font-size:11px; color:var(--muted); margin-top:6px; line-height:1.3; }
+.panel-divider { height:1px; background:var(--border); margin-bottom:20px; }
+
+.engagement-phases { display:flex; flex-direction:column; gap:8px; }
+.engagement-phase {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px;
+  background:rgba(2,105,237,.04); border:1px solid var(--border);
+  border-radius:10px; font-size:12px; color:var(--text); font-weight:500;
+  transition:border-color .2s;
+}
+.engagement-phase:hover { border-color:var(--border-hi); }
+.phase-num {
+  width:26px; height:26px; border-radius:50%;
+  background:var(--accent-lo); border:1px solid var(--border-hi);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700; color:var(--accent); flex-shrink:0;
+}
+
+/* ─── Case Divider ─── */
+.case-divider { height:1px; background:var(--border); margin:0 6vw; }
+
+/* ─── Content layout ─── */
+main { padding-bottom:120px; }
+.cs-section { padding:64px 6vw 0; }
+.cs-row { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+.cs-row.full { grid-template-columns:1fr; }
+.cs-label {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); display:flex; align-items:center; gap:10px; margin-bottom:20px;
+}
+.cs-label::before {
+  content:''; width:18px; height:1px; background:var(--accent); box-shadow:0 0 6px var(--accent);
+}
+.cs-body p { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
+.cs-body p:last-child { margin-bottom:0; }
+.section-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
+.section-sublabel { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; margin-top:28px; }
+
+/* ─── Goal / bullet lists ─── */
+.goal-list { list-style:none; display:flex; flex-direction:column; gap:6px; }
+.goal-list li {
+  font-size:14px; color:var(--muted); padding:10px 14px 10px 32px;
+  background:var(--card); border:1px solid var(--border); border-radius:8px; position:relative;
+}
+.goal-list li::before {
+  content:''; position:absolute; left:13px; top:16px;
+  width:5px; height:5px; background:var(--accent); border-radius:50%;
+}
+
+/* ─── My Role ─── */
+.role-title { font-size:26px; font-weight:800; letter-spacing:-.03em; color:var(--text); margin-bottom:16px; }
+.role-desc { font-size:17px; color:var(--muted); line-height:1.8; }
+.responsibility-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.responsibility-pill {
+  padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text); transition:border-color .2s, color .2s;
+}
+.responsibility-pill:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Info groups (Information Design breakdown) ─── */
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px; }
+.info-card {
+  padding:22px 24px; background:var(--card); border:1px solid var(--border);
+  border-radius:14px;
+}
+.info-card-label {
+  font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);
+}
+.info-card ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.info-card ul li {
+  font-size:14px; color:var(--text); padding-left:16px; position:relative; line-height:1.5;
+}
+.info-card ul li::before {
+  content:''; position:absolute; left:0; top:8px;
+  width:4px; height:4px; background:var(--accent); border-radius:50%;
+}
+
+/* ─── Tools (kept for consistency, unused if no tools section) ─── */
+.tools-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+.tool-badge {
+  padding:10px 20px; background:var(--card); border:1px solid var(--border); border-radius:999px;
+  font-size:13px; font-weight:500; color:var(--text); transition:border-color .2s, color .2s;
+}
+.tool-badge:hover { border-color:var(--border-hi); color:var(--accent); }
+
+/* ─── Video embed ─── */
+.video-section-label {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); margin:0 0 14px;
+}
+.video-block { margin-top:36px; margin-bottom:36px; }
+.video-block:last-child { margin-bottom:0; }
+.video-wrap-outer {
+  border-radius:16px; overflow:hidden; border:1px solid var(--border);
+}
+
+/* ─── Back CTA ─── */
+.back-cta { padding:60px 6vw 0; text-align:center; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 32px; border:1px solid var(--border-hi); border-radius:999px;
+  background:var(--accent-lo); color:var(--accent);
+  text-decoration:none; font-size:14px; font-weight:600; letter-spacing:.04em;
+  transition:all .25s ease;
+}
+.back-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+.back-btn::before { content:'←'; }
+
+/* ─── Reveal ─── */
+.reveal { opacity:0; transform:translateY(20px); }
+
+/* ─── Responsive ─── */
+@media (max-width:900px) {
+  .case-hero { grid-template-columns:1fr; gap:40px; }
+  .cs-row { grid-template-columns:1fr; gap:32px; }
+  .info-grid { grid-template-columns:1fr; }
+}
+
+/* ─── Site Footer ─── */
+.site-footer { display:block !important; background:linear-gradient(135deg,#0b0f22 0%,#10152b 55%,#0e1020 100%); border-top:1px solid rgba(2,105,237,.28); padding:64px 6vw 52px; margin-top:80px; position:relative; z-index:1; overflow:hidden; }
+[data-theme="light"] .site-footer { background:linear-gradient(135deg,#e4eaff 0%,#eef1ff 55%,#dde6ff 100%); border-top:1px solid rgba(2,105,237,.18); }
+.footer-inner { display:grid !important; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:56px; align-items:start; }
+.footer-brand { display:flex !important; flex-direction:column !important; }
+.footer-name { font-size:13px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#fff; margin-bottom:8px; }
+[data-theme="light"] .footer-name { color:#07090f; }
+.footer-tagline { font-family:'Courier New',monospace; font-size:12px; color:rgba(255,255,255,.48); line-height:1.6; margin-bottom:24px; }
+[data-theme="light"] .footer-tagline { color:#505d7e; }
+.footer-copy { font-size:12px; color:rgba(255,255,255,.28); }
+[data-theme="light"] .footer-copy { color:#9aa5c4; }
+.footer-col { display:flex !important; flex-direction:column !important; gap:11px; }
+.footer-col-label { display:block; font-size:9px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:8px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.07); }
+[data-theme="light"] .footer-col-label { color:#7a89b0; border-bottom-color:rgba(0,0,0,.07); }
+.footer-col a { font-size:13px; color:rgba(255,255,255,.65); text-decoration:none; transition:color .2s; }
+.footer-col a:hover { color:#0269ed; }
+[data-theme="light"] .footer-col a { color:#07090f; }
+[data-theme="light"] .footer-col a:hover { color:#0269ed; }
+@media(max-width:780px){.footer-inner{grid-template-columns:1fr 1fr !important;gap:36px;}.footer-brand{grid-column:1/-1;margin-bottom:8px;}}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr !important;}}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav>
+  <svg class="nav-logo-svg" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
+    <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
+    <path class="cls-1" d="M746.52,170.11c-41.01-4.36-80.49-13.59-121.05-20.85-36.13-6.47-71.23-11.73-107.86-14.17-29.82-1.98-58.53-.9-87.3,6.82-17.5,4.69-33.44,12.44-48.13,22.68-16.47,11.48-29.41,26.01-38.27,43.81-15.53,31.22-13.31,71.85,15.78,92.76l-19.06-6.13c-14.24-4.58-26.38-13.5-36.01-24.84-24.78-29.19-21.93-66.45-5.73-99.88,10.49-21.65,25.46-40.45,43.13-56.59,4-3.65,7.99-5.99,12.07-9.19l6.69-5.24c19.83-13.56,40.91-23.45,64.21-29.67l37.31-7.76c42.07-5.44,84.1-2.69,125.65,5.95l70.61,18.24,15.09,4.57,59.17,16.35c79.18,25.2,121,41.06,189.66,34.63s85.92-17.17,88.58-18.08c28.8-9.76,45.96-21.68,65.62-31.13l43.32-22.01c-57.28,35.37-111.01,80.38-176.34,98.19-18.41,5.02-35.52,12.22-98.81,11.55-30.35-.32-68.17-6.8-98.32-10Z"/>
+    <path class="cls-1" d="M389.35,270.35c73.89-64.99,161.21-70.91,202.21-32.68,29.97,27.95,33,77.44,21.45,112.34-29.44,88.96-172.19,139.36-275.74,96.16-13.71-5.72-81.39-31.4-103.15-96.16-15.16-45.12-3.04-93.95,0-93.96,1.83,0,.04,17.59,5.11,34.72,16.6,56.14,105.76,102.1,188.94,86.81,55.87-10.27,110.69-33.31,96-80.68-8.28-26.7-49.24-41.07-52.09-41.87-42.02-11.91-77.17,11.49-82.72,15.32Z"/>
+    <path class="cls-1" d="M412.84.25c7.83-1.89,171,5.68,322.09,73.8,65.77,29.65,86.09,35.79,115.6,40.58,130.66,21.21,242.15-42.4,240.19-40.58-3.19,2.97-108.45,83.8-246.89,58.12-3.77-.7-8.42-1.26-17.36-3.77-90.03-25.29-136.85-61.04-287.14-81.85-90.42-12.52-159.1,30.61-157.17,26.37,1.71-3.75,29.14-72.29,30.69-72.66Z"/>
+  </svg>
+  <div class="nav-right">
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span class="toggle-label"></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ─── Hero ─── -->
+  <div class="case-hero">
+    <div class="hero-content">
+      <div class="breadcrumb reveal">
+        <a href="index.html">Portfolio</a><span>/</span>
+        <a href="index.html#work">Work</a><span>/</span>
+        Cox Mobile Employee Discount Campaign
+      </div>
+      <div class="case-cat reveal">Motion Graphics</div>
+      <h1 class="reveal">Cox Mobile Employee<br>Discount Campaign</h1>
+      <p class="case-subtitle reveal">Turning a policy-heavy benefits announcement into an engaging internal communication</p>
+      <div class="type-tags reveal">
+        <span class="type-pill">Motion Graphics</span>
+        <span class="type-pill">Internal Communications</span>
+        <span class="type-pill">Promotional Video</span>
+        <span class="type-pill">Information Design</span>
+        <span class="type-pill">Video Editing</span>
+      </div>
+      <div class="meta-row reveal">
+        <div class="meta-cell">
+          <div class="meta-label">Client</div>
+          <div class="meta-val">Cox Communications</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2024</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Discipline</div>
+          <div class="meta-val">Motion Graphics</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Role</div>
+          <div class="meta-val">Motion Designer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-panel reveal">
+      <div class="panel-badge"><span class="panel-dot"></span> Internal Communications Campaign</div>
+      <div class="panel-stats">
+        <div class="panel-stat">
+          <span class="panel-stat-num">1</span>
+          <span class="panel-stat-desc">Promotional<br>Video</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">9</span>
+          <span class="panel-stat-desc">Topics<br>Simplified</span>
+        </div>
+        <div class="panel-stat">
+          <span class="panel-stat-num">2024</span>
+          <span class="panel-stat-desc">Release<br>Year</span>
+        </div>
+      </div>
+      <div class="panel-divider"></div>
+      <div class="engagement-phases">
+        <div class="engagement-phase">
+          <div class="phase-num">01</div>
+          Concept &amp; Storyboarding
+        </div>
+        <div class="engagement-phase">
+          <div class="phase-num">02</div>
+          Animation &amp; Motion Design
+        </div>
+        <div class="engagement-phase">
+          <div class="phase-num">03</div>
+          Final Edit &amp; Delivery
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-divider"></div>
+
+  <!-- ─── Overview ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Overview</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>Cox Communications introduced a new employee discount program for Cox Mobile, giving eligible employees and their immediate family members access to exclusive pricing on mobile service plans.</p>
+        <p>To support the rollout, I designed and produced an animated promotional video that transformed detailed policy information into a concise, engaging internal communication. The goal was to quickly explain eligibility, plan options, pricing, and enrollment benefits while encouraging employees to take advantage of the program.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── The Challenge ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">The Challenge</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>Employee benefit announcements often contain important information, but they're rarely engaging.</p>
+        <p>The original content included eligibility requirements, pricing details, financing options, trade-in programs, family eligibility rules, and multiple service plans, all of which needed to be communicated clearly without overwhelming the audience.</p>
+        <p>The challenge was to reduce a policy-heavy script into an easily digestible visual experience that employees would actually watch from beginning to end.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── My Role ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">My Role</div>
+    <div class="cs-row">
+      <div>
+        <div class="role-title">Motion Designer</div>
+        <p class="role-desc">I led the creative development of the promotional video from concept through final delivery.</p>
+      </div>
+      <div>
+        <div class="responsibility-grid">
+          <span class="responsibility-pill">Motion graphics design</span>
+          <span class="responsibility-pill">Storyboarding</span>
+          <span class="responsibility-pill">Visual concept development</span>
+          <span class="responsibility-pill">Information hierarchy</span>
+          <span class="responsibility-pill">Animation</span>
+          <span class="responsibility-pill">Video editing</span>
+          <span class="responsibility-pill">Typography animation</span>
+          <span class="responsibility-pill">Iconography selection</span>
+          <span class="responsibility-pill">Audio synchronization</span>
+          <span class="responsibility-pill">Final rendering</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Understanding the Problem ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Understanding the Problem</div>
+    <p class="section-intro">The biggest challenge wasn't explaining the mobile plans. It was reducing cognitive load.</p>
+    <p class="section-intro">Employees needed immediate answers to questions like:</p>
+    <ul class="goal-list">
+      <li>Who qualifies?</li>
+      <li>What discounts do I receive?</li>
+      <li>Can my family participate?</li>
+      <li>Which plans are available?</li>
+      <li>How much do they cost?</li>
+      <li>Can I finance a phone?</li>
+      <li>Can I bring my own device?</li>
+    </ul>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">If those answers weren't immediately obvious, viewers were likely to stop paying attention.</p>
+  </div>
+
+  <!-- ─── Design Strategy ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Design Strategy</div>
+    <p class="section-intro">Rather than presenting the announcement as a narrated policy document, I organized the information into a visual story that answered employees' questions in the order they were most likely to ask them.</p>
+    <p class="section-intro">The experience gradually introduced:</p>
+    <ul class="goal-list">
+      <li>Employee eligibility</li>
+      <li>Family eligibility</li>
+      <li>Mobile plans</li>
+      <li>Employee pricing</li>
+      <li>Device purchasing options</li>
+      <li>Trade-in opportunities</li>
+      <li>Bring Your Own Device (BYOD)</li>
+      <li>Financing information</li>
+      <li>Call to action</li>
+    </ul>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">This sequential structure reduced information overload while maintaining viewer engagement.</p>
+  </div>
+
+  <!-- ─── Motion Design Decisions ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Motion Design Decisions</div>
+    <p class="section-intro">The animation style emphasized clarity over complexity. Instead of flashy transitions, I focused on motion that reinforced the message.</p>
+    <p class="section-intro">Design techniques included:</p>
+    <ul class="goal-list">
+      <li>Kinetic typography</li>
+      <li>Animated icons</li>
+      <li>Smooth scene transitions</li>
+      <li>Branded motion elements</li>
+      <li>Sequential information reveals</li>
+      <li>Callout animations</li>
+      <li>Pricing emphasis</li>
+      <li>Visual comparisons</li>
+    </ul>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">Each animation served a functional purpose by directing attention to the most important information at the right moment.</p>
+  </div>
+
+  <!-- ─── Information Design ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Information Design</div>
+    <p class="section-intro">One of the most important aspects of the project was organizing large amounts of information into manageable pieces. Rather than displaying everything at once, content was grouped into logical sections so viewers could process one idea before moving to the next.</p>
+    <p class="section-intro">Examples included:</p>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-label">Eligibility</div>
+        <ul>
+          <li>Employees in good standing</li>
+          <li>Immediate family qualification</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Plans</div>
+        <ul>
+          <li>Gig Unlimited</li>
+          <li>Pay As You Gig</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Pricing</div>
+        <ul>
+          <li>Employee-exclusive monthly rates</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Devices</div>
+        <ul>
+          <li>Purchase outright</li>
+          <li>Finance through Citizens Pay (if eligible)</li>
+          <li>Trade-in options</li>
+          <li>Bring your own device</li>
+        </ul>
+      </div>
+    </div>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">Breaking information into smaller visual moments improved readability while keeping the pace energetic.</p>
+  </div>
+
+  <!-- ─── Visual Design ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Visual Design</div>
+    <p class="section-intro">The video followed Cox's corporate brand standards while creating a modern promotional style. Design choices emphasized:</p>
+    <ul class="goal-list">
+      <li>Clean layouts</li>
+      <li>Bold typography</li>
+      <li>High-contrast callouts</li>
+      <li>Brand-consistent color usage</li>
+      <li>Animated icons</li>
+      <li>Minimalist illustrations</li>
+      <li>Consistent spacing</li>
+      <li>Strong visual hierarchy</li>
+    </ul>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">The result balanced professionalism with approachability, making a benefits announcement feel more like a product launch than a policy update.</p>
+  </div>
+
+  <!-- ─── Learning & Communication Strategy ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Learning &amp; Communication Strategy</div>
+    <p class="section-intro">Although promotional in nature, the video applied many instructional design principles. These included:</p>
+    <ul class="goal-list">
+      <li>Progressive disclosure</li>
+      <li>Chunking information</li>
+      <li>Visual reinforcement</li>
+      <li>Signaling important details</li>
+      <li>Story-driven communication</li>
+      <li>Repetition of key benefits</li>
+      <li>Clear calls to action</li>
+    </ul>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">By combining these techniques with motion graphics, the final product supported both awareness and comprehension.</p>
+  </div>
+
+  <!-- ─── Tools Used ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Tools Used</div>
+    <div class="tools-grid">
+      <span class="tool-badge">Adobe After Effects</span>
+      <span class="tool-badge">Adobe Premiere Pro</span>
+      <span class="tool-badge">Adobe Photoshop</span>
+      <span class="tool-badge">WellSaid Labs</span>
+    </div>
+  </div>
+
+  <!-- ─── Final Result ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Final Result</div>
+    <p class="section-intro">The completed promotional video served as an internal marketing asset that introduced the Cox Mobile Employee Discount program in a concise and visually engaging format.</p>
+    <p class="section-intro">Rather than requiring employees to read lengthy documentation, the video communicated:</p>
+    <ul class="goal-list">
+      <li>Eligibility requirements</li>
+      <li>Exclusive employee pricing</li>
+      <li>Available mobile plans</li>
+      <li>Family participation</li>
+      <li>Device purchasing options</li>
+      <li>Financing availability</li>
+      <li>Trade-in opportunities</li>
+      <li>Bring Your Own Device (BYOD) support</li>
+    </ul>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">The finished piece helped transform a complex policy announcement into a communication that was easier to understand, remember, and act upon.</p>
+
+    <div class="video-block">
+      <div class="video-section-label">Watch Video</div>
+      <div class="video-wrap-outer">
+        <div style="padding:56.25% 0 0 0;position:relative;">
+          <iframe src="https://player.vimeo.com/video/1205664962?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;"
+            title="Cox Employee Discount Promo">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Reflection ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Reflection</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>This project reinforced the idea that motion graphics are more than visual decoration. They're a communication tool.</p>
+        <p>The challenge wasn't creating impressive animation. It was determining how to present complex information in a way that respected the viewer's time while increasing understanding.</p>
+        <p>Working on this project strengthened my ability to combine instructional design principles with motion graphics, ensuring every animation had a purpose beyond aesthetics.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Back CTA ─── -->
+  <div class="back-cta reveal">
+    <a href="index.html#work" class="back-btn">Back to Work</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-name">Raymond Spellen</span>
+      <span class="footer-tagline">AI Learning Experience Designer</span>
+      <span class="footer-copy">&copy; 2026 &mdash; Made in ATL</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Pages</span>
+      <a href="index.html">Home</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Afar</span>
+      <a href="https://www.linkedin.com/in/rspellen/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+      <a href="https://github.com/rspellen23" target="_blank" rel="noopener">GitHub &#8599;</a>
+      <a href="#" target="_blank" rel="noopener">RSS &#8599;</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Contact</span>
+      <a href="mailto:rspellen23@gmail.com">rspellen23@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleTheme() {
+  var html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("rs-theme", html.dataset.theme);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.style.transition = "opacity .75s ease, transform .75s ease";
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = "translateY(0)";
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll(".reveal").forEach(function(el) { obs.observe(el); });
+});
+</script>
+
+</body>
+</html>
