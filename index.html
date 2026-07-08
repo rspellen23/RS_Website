@@ -142,6 +142,7 @@ nav {
 }
 
 .nav-logo-svg { width: 72px; height: auto; display: block; }
+.nav-logo-link { display: flex; line-height: 0; }
 
 .nav-links {
   display: flex;
@@ -584,17 +585,105 @@ h1 {
 }
 .work-empty.visible { display: flex; }
 
+/* ─── Awards ─── */
+.awards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 8px;
+}
+.award-card {
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+}
+.award-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), #5c2eed);
+}
+.award-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(2, 105, 237, 0.13);
+}
+.award-img-wrap {
+  width: 110px; height: 110px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px;
+}
+.award-img { width: 100%; height: 100%; object-fit: contain; }
+.award-year {
+  font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-lo); border: 1px solid var(--border-hi);
+  border-radius: 999px; padding: 3px 12px; margin-bottom: 14px; display: inline-block;
+}
+.award-name {
+  font-size: 15px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;
+  color: var(--text); margin-bottom: 8px;
+}
+.award-cat {
+  font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 14px; line-height: 1.4;
+}
+.award-desc {
+  font-size: 13px; color: var(--muted); line-height: 1.65; margin-top: auto;
+}
+/* Center a single orphan card in the last row of a 3-col grid */
+.award-card:last-child:nth-child(3n+1) { grid-column: 2; }
+
 /* ─── About ─── */
 .about-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 220px 1fr 1fr;
   gap: 80px;
   align-items: start;
+}
+.profile-pic-wrap {
+  display: flex;
+  justify-content: flex-start;
+  align-self: center;
+}
+@keyframes profile-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px rgba(2,105,237,0.5),
+      0 0 18px 5px rgba(2,105,237,0.55),
+      0 0 50px 15px rgba(2,105,237,0.22),
+      0 0 100px 28px rgba(2,105,237,0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(2,105,237,0.85),
+      0 0 30px 10px rgba(2,105,237,0.75),
+      0 0 70px 24px rgba(2,105,237,0.35),
+      0 0 130px 40px rgba(2,105,237,0.14);
+  }
+}
+.profile-pic {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 3px solid var(--accent);
+  display: block;
+  animation: profile-glow-pulse 3s ease-in-out infinite;
 }
 .about-text p {
   font-size: 17px;
   color: var(--muted);
   line-height: 1.8;
+  margin-top: 0;
   margin-bottom: 20px;
 }
 .about-text p:last-child { margin-bottom: 0; }
@@ -673,6 +762,8 @@ footer {
 @media (max-width: 900px) {
   .caps-grid { grid-template-columns: 1fr; }
   .work-grid  { grid-template-columns: 1fr; }
+  .awards-grid { grid-template-columns: 1fr 1fr; }
+  .award-card:last-child:nth-child(3n+1) { grid-column: auto; }
   .about-grid { grid-template-columns: 1fr; gap: 48px; }
   .nav-links { display: none; }
   .stats-bar { flex-direction: column; }
@@ -786,17 +877,18 @@ footer {
 
 <!-- ─── Nav ─── -->
 <nav>
-  <svg class="nav-logo-svg" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
+  <a href="index.html" class="nav-logo-link"><svg class="nav-logo-svg" viewBox="0 0 1119.99 461.88" xmlns="http://www.w3.org/2000/svg">
     <path class="cls-1" d="M122.86,336.76l-122.86.14,51.08-73.11,14.62-20.52c2.9-2.01,3.95-5.2,6.02-8.01l38.52-52.41c-39.26-16.86-68.72-46.02-66.66-90.72.02-36.71,24.75-66.36,58.06-79.94C121.98,3.89,143.37.39,165.79.38l215.58-.13,21.4.59-36.93,81.54c-34.11,20.93-61.34,50.14-78.95,86.01-6.89,14.04-11.42,28.09-13.55,43.73l-44.33.18-15.67.8-90.48,123.67ZM194.12,132.17l85.6-.16,26.28-57.83-120.31-.1c-9.86-.26-18.55,1.29-27.49,4.69-15.89,6.06-22.75,24.15-14.33,39.28,7.8,14.02,32.15,13.82,50.25,14.12Z"/>
     <path class="cls-1" d="M746.52,170.11c-41.01-4.36-80.49-13.59-121.05-20.85-36.13-6.47-71.23-11.73-107.86-14.17-29.82-1.98-58.53-.9-87.3,6.82-17.5,4.69-33.44,12.44-48.13,22.68-16.47,11.48-29.41,26.01-38.27,43.81-15.53,31.22-13.31,71.85,15.78,92.76l-19.06-6.13c-14.24-4.58-26.38-13.5-36.01-24.84-24.78-29.19-21.93-66.45-5.73-99.88,10.49-21.65,25.46-40.45,43.13-56.59,4-3.65,7.99-5.99,12.07-9.19l6.69-5.24c19.83-13.56,40.91-23.45,64.21-29.67l37.31-7.76c42.07-5.44,84.1-2.69,125.65,5.95l70.61,18.24,15.09,4.57,59.17,16.35c79.18,25.2,121,41.06,189.66,34.63s85.92-17.17,88.58-18.08c28.8-9.76,45.96-21.68,65.62-31.13l43.32-22.01c-57.28,35.37-111.01,80.38-176.34,98.19-18.41,5.02-35.52,12.22-98.81,11.55-30.35-.32-68.17-6.8-98.32-10Z"/>
     <path class="cls-1" d="M389.35,270.35c73.89-64.99,161.21-70.91,202.21-32.68,29.97,27.95,33,77.44,21.45,112.34-29.44,88.96-172.19,139.36-275.74,96.16-13.71-5.72-81.39-31.4-103.15-96.16-15.16-45.12-3.04-93.95,0-93.96,1.83,0,.04,17.59,5.11,34.72,16.6,56.14,105.76,102.1,188.94,86.81,55.87-10.27,110.69-33.31,96-80.68-8.28-26.7-49.24-41.07-52.09-41.87-42.02-11.91-77.17,11.49-82.72,15.32Z"/>
     <path class="cls-1" d="M412.84.25c7.83-1.89,171,5.68,322.09,73.8,65.77,29.65,86.09,35.79,115.6,40.58,130.66,21.21,242.15-42.4,240.19-40.58-3.19,2.97-108.45,83.8-246.89,58.12-3.77-.7-8.42-1.26-17.36-3.77-90.03-25.29-136.85-61.04-287.14-81.85-90.42-12.52-159.1,30.61-157.17,26.37,1.71-3.75,29.14-72.29,30.69-72.66Z"/>
-  </svg>
+  </svg></a>
 
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#capabilities">Capabilities</a></li>
     <li><a href="#work">Work</a></li>
+    <li><a href="#awards">Awards</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 
@@ -1088,6 +1180,23 @@ footer {
       </div>
     </a>
 
+    <!-- 2026 Cox Code of Conduct — E-Learning category -->
+    <a class="work-item reveal" data-category="elearning" href="cox-code-of-conduct.html">
+      <div class="work-thumb">
+        <span class="thumb-lbl">Cox Code of Conduct</span>
+      </div>
+      <div class="work-body">
+        <div class="work-card-meta">
+          <span class="cat-pill">E-Learning</span>
+          <span class="work-yr">2025</span>
+        </div>
+        <h3>2026 Cox Code of Conduct</h3>
+        <p class="work-client">Compliance Training &middot; Cox Enterprises</p>
+        <p class="work-desc">A story-driven enterprise compliance course built collaboratively by a six-person team, featuring an interactive Vault experience that challenged employees to apply ethical decision-making across responsible AI, workplace safety, and company policy.</p>
+        <span class="work-cta">View Case Study</span>
+      </div>
+    </a>
+
     <!-- Pinocchio: Vampire Slayer — Motion Graphics category -->
     <a class="work-item reveal" data-category="motion" href="pinocchio-vampire-slayer.html">
       <div class="work-thumb">
@@ -1147,12 +1256,99 @@ footer {
   </div>
 </section>
 
+<!-- ─── Awards ─── -->
+<section class="section section-bordered" id="awards">
+  <div class="tag-label reveal">Awards</div>
+  <h2 class="section-h reveal">Industry Recognized.</h2>
+  <p class="section-sub reveal">
+    Seven recognitions from Brandon Hall Group, C2HR, ONCON, and the Stevies Awards — earned across learning strategy, technology innovation, and organizational development.
+  </p>
+
+  <div class="awards-grid">
+
+    <div class="award-card reveal-stagger">
+      <div class="award-img-wrap">
+        <img class="award-img" src="images/award-imgs/2026-ONCON-ICON-Finalist.png" alt="2026 ONCON ICON Finalist" loading="lazy">
+      </div>
+      <span class="award-year">2026</span>
+      <div class="award-name">ONCON ICON Finalist</div>
+      <div class="award-cat">Top 100 Global Learning &amp; Development Team</div>
+      <p class="award-desc">Recognizing continuous high-stakes leadership, agile change management, and elite operational readiness execution.</p>
+    </div>
+
+    <div class="award-card reveal-stagger">
+      <div class="award-img-wrap">
+        <img class="award-img" src="images/award-imgs/2025-ONCON-ICON-Winner.png" alt="2025 ONCON ICON Winner" loading="lazy">
+      </div>
+      <span class="award-year">2025</span>
+      <div class="award-name">ONCON ICON Winner</div>
+      <div class="award-cat">Top 100 Global Learning &amp; Development Team</div>
+      <p class="award-desc">Voted by industry peers for elite organizational development, program strategy, and process modernization leadership.</p>
+    </div>
+
+    <div class="award-card reveal-stagger">
+      <div class="award-img-wrap">
+        <img class="award-img" src="images/award-imgs/2025-brandon-hall-silver-excellence-award.png" alt="2025 Brandon Hall Silver Excellence Award" loading="lazy">
+      </div>
+      <span class="award-year">2025</span>
+      <div class="award-name">Brandon Hall Silver Excellence Award</div>
+      <div class="award-cat">Learning &amp; Development</div>
+      <p class="award-desc">Honored for sustained excellence in curriculum design, cross-functional scaling, and organizational impact.</p>
+    </div>
+
+    <div class="award-card reveal-stagger">
+      <div class="award-img-wrap">
+        <img class="award-img" src="images/award-imgs/2024-C2HR-game-changers-award.jpg" alt="2024 C2HR Game Changers Award" loading="lazy">
+      </div>
+      <span class="award-year">2024</span>
+      <div class="award-name">C2HR Game Changers Award</div>
+      <div class="award-cat">Human Resources &amp; Talent Development</div>
+      <p class="award-desc">Celebrating elite industry leaders pushing the boundaries of modern, forward-thinking learning solutions.</p>
+    </div>
+
+    <div class="award-card reveal-stagger">
+      <div class="award-img-wrap">
+        <img class="award-img" src="images/award-imgs/2024-brandon-hall-gold-technology-award.png" alt="2024 Brandon Hall Gold Technology Award" loading="lazy">
+      </div>
+      <span class="award-year">2024</span>
+      <div class="award-name">Brandon Hall Gold Technology Award</div>
+      <div class="award-cat">Excellence in Technology</div>
+      <p class="award-desc">Awarded for innovative media integration and pioneering advanced digital simulation platforms.</p>
+    </div>
+
+    <div class="award-card reveal-stagger">
+      <div class="award-img-wrap">
+        <img class="award-img" src="images/award-imgs/2024-brandon-hall-gold-excellence-award.png" alt="2024 Brandon Hall Gold Excellence Award" loading="lazy">
+      </div>
+      <span class="award-year">2024</span>
+      <div class="award-name">Brandon Hall Gold Excellence Award</div>
+      <div class="award-cat">Learning &amp; Development</div>
+      <p class="award-desc">Recognized for exceptional instructional strategy and curriculum development architectures that drive enterprise workforce readiness.</p>
+    </div>
+
+    <div class="award-card reveal-stagger">
+      <div class="award-img-wrap">
+        <img class="award-img" src="images/award-imgs/2022-stevies-award.jpg" alt="2022 Stevies Award" loading="lazy">
+      </div>
+      <span class="award-year">2022</span>
+      <div class="award-name">Stevies Award</div>
+      <div class="award-cat">New-Hire Orientation &amp; Onboarding Training</div>
+      <p class="award-desc">Recognizing the seamless integration of new employees into an organization through exceptional onboarding design.</p>
+    </div>
+
+  </div>
+</section>
+
 <!-- ─── About ─── -->
 <section class="section section-bordered" id="about">
   <div class="tag-label reveal">About</div>
-  <h2 class="section-h reveal">Learning Experience Designer.<br>Creative Strategist.</h2>
+  <h2 class="section-h reveal">Learning Experience Designer. Creative Strategist.</h2>
 
   <div class="about-grid">
+    <div class="profile-pic-wrap reveal">
+      <img class="profile-pic" src="images/profile-img/profile-pic.jpg" alt="Raymond Spellen">
+    </div>
+
     <div class="about-text">
       <p class="reveal">
         I've spent the better part of a decade working at the intersection of instructional design, visual craft, and emerging technology. My work shows up in Fortune 500 onboarding programs, custom eLearning builds, and leadership development curricula — anywhere complexity needs to be made clear.
@@ -1236,6 +1432,7 @@ footer {
       <span class="footer-col-label">Pages</span>
       <a href="index.html">Home</a>
       <a href="index.html#work">Work</a>
+      <a href="index.html#awards">Awards</a>
       <a href="index.html#about">About</a>
     </div>
     <div class="footer-col">
@@ -1267,6 +1464,7 @@ function toggleTheme() {
 
 /* ─── Intro Loader ─── */
 document.addEventListener("DOMContentLoaded", () => {
+  window._rsLoaderShown = true; // tells router to skip loader on SPA back-nav
   const loader   = document.getElementById("loader");
   const introPaths = [...document.querySelectorAll(".intro-logo .cls-1")];
   const sigPaths   = [...document.querySelectorAll(".signature-mark .cls-1")];
@@ -1324,7 +1522,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const staggerObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-      const group = entry.target.closest(".caps-grid, .skill-list, .about-grid");
+      const group = entry.target.closest(".caps-grid, .skill-list, .about-grid, .awards-grid");
       const items = group
         ? [...group.querySelectorAll(".reveal-stagger")]
         : [entry.target];
@@ -1382,7 +1580,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- ─── Audio Player ─── -->
 <div class="audio-player" id="audioPlayer">
-  <audio id="audioEl" src="audio/me+you-peace.mp3" preload="metadata"></audio>
+  <audio id="audioEl" src="audio/me+you-peace.mp3" preload="auto"></audio>
   <div class="ap-header">
     <div class="ap-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1406,56 +1604,35 @@ document.addEventListener("DOMContentLoaded", () => {
 </div>
 
 <script>
-(function() {
-  var audio   = document.getElementById('audioEl');
-  var playBtn = document.getElementById('apPlayBtn');
-  var icon    = document.getElementById('apPlayIcon');
-  var bar     = document.getElementById('apBar');
-  var timeEl  = document.getElementById('apTime');
-  var wrap    = document.getElementById('apProgressWrap');
-
-  var PLAY_PATH  = '<polygon points="5,3 19,12 5,21"/>';
-  var PAUSE_PATH = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-
-  function fmt(s) {
-    var m = Math.floor(s / 60);
-    var sec = Math.floor(s % 60);
-    return m + ':' + (sec < 10 ? '0' : '') + sec;
-  }
-
-  playBtn.addEventListener('click', function() {
-    if (audio.paused) { audio.play(); } else { audio.pause(); }
-  });
-
-  audio.addEventListener('play', function() {
-    icon.innerHTML = PAUSE_PATH;
-    playBtn.setAttribute('aria-label', 'Pause');
-  });
-
-  audio.addEventListener('pause', function() {
-    icon.innerHTML = PLAY_PATH;
-    playBtn.setAttribute('aria-label', 'Play');
-  });
-
-  audio.addEventListener('ended', function() {
-    icon.innerHTML = PLAY_PATH;
-    bar.style.width = '0%';
-    timeEl.textContent = '0:00';
-  });
-
-  audio.addEventListener('timeupdate', function() {
-    if (!audio.duration) return;
-    bar.style.width = (audio.currentTime / audio.duration * 100) + '%';
-    timeEl.textContent = fmt(audio.currentTime);
-  });
-
-  wrap.addEventListener('click', function(e) {
-    if (!audio.duration) return;
-    var rect = wrap.getBoundingClientRect();
-    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
-  });
+(function(){
+  var audio=document.getElementById('audioEl'),playBtn=document.getElementById('apPlayBtn'),icon=document.getElementById('apPlayIcon'),bar=document.getElementById('apBar'),timeEl=document.getElementById('apTime'),wrap=document.getElementById('apProgressWrap');
+  var DUCK=0.12,normalVol=1;
+  var PP='<polygon points="5,3 19,12 5,21"/>',PA='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+  function fmt(s){var m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
+  function save(){try{localStorage.setItem('rs-audio',JSON.stringify({playing:!audio.paused,time:audio.currentTime,vol:normalVol}));}catch(e){}}
+  var st={};
+  try{
+    var _nav=(performance.getEntriesByType&&performance.getEntriesByType('navigation'))||[];
+    if(_nav[0]&&_nav[0].type==='reload'){localStorage.removeItem('rs-audio');}
+    else{st=JSON.parse(localStorage.getItem('rs-audio')||'{}');}
+  }catch(e){}
+  normalVol=st.vol!==undefined?st.vol:1;
+  audio.volume=normalVol;
+  audio.addEventListener('canplay',function(){if(st.time)audio.currentTime=st.time;if(st.playing)audio.play().catch(function(){});},{once:true});
+  playBtn.addEventListener('click',function(){if(audio.paused)audio.play();else audio.pause();});
+  audio.addEventListener('play',function(){icon.innerHTML=PA;playBtn.setAttribute('aria-label','Pause');save();});
+  audio.addEventListener('pause',function(){icon.innerHTML=PP;playBtn.setAttribute('aria-label','Play');save();});
+  audio.addEventListener('ended',function(){icon.innerHTML=PP;bar.style.width='0%';timeEl.textContent='0:00';save();});
+  audio.addEventListener('timeupdate',function(){if(!audio.duration)return;bar.style.width=(audio.currentTime/audio.duration*100)+'%';timeEl.textContent=fmt(audio.currentTime);save();});
+  wrap.addEventListener('click',function(e){if(!audio.duration)return;var r=wrap.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;});
+  window.addEventListener('beforeunload',save);
+  function attachDuck(frs){frs.forEach(function(fr){fr.dataset.duck='1';var p=new Vimeo.Player(fr);p.on('play',function(){if(!audio.paused){normalVol=audio.volume>DUCK?audio.volume:normalVol;audio.volume=DUCK;}});p.on('pause',function(){audio.volume=normalVol;});p.on('ended',function(){audio.volume=normalVol;});});}
+  function initDuck(){var frs=document.querySelectorAll('iframe[src*="vimeo"]:not([data-duck])');if(!frs.length)return;if(typeof Vimeo!=='undefined'){attachDuck(frs);}else{var s=document.createElement('script');s.src='https://player.vimeo.com/api/player.js';s.onload=function(){attachDuck(document.querySelectorAll('iframe[src*="vimeo"]:not([data-duck])'));};document.head.appendChild(s);}}
+  window._rsAP={initDuck:initDuck};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initDuck);else initDuck();
 })();
 </script>
 
+<script src="js/router.js"></script>
 </body>
 </html>

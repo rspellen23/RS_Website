@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Pinocchio: Vampire Slayer | Raymond Spellen</title>
+<title>2026 Cox Code of Conduct | Raymond Spellen</title>
 <link rel="stylesheet" href="footer.css" />
 
 <script>
@@ -26,7 +26,6 @@
   --grid-line:    rgba(2, 105, 237, 0.045);
   --orb-opacity:  0.11;
   --nav-bg:       rgba(7, 9, 15, 0.65);
-  --green:        #00a651;
 }
 [data-theme="light"] {
   --bg:           #f1f4ff;
@@ -74,8 +73,8 @@ body::before {
   will-change: transform;
   transition: opacity .4s ease;
 }
-.orb-1 { width:600px;height:600px;background:#8b0000;top:-200px;right:-150px;animation:drift 12s ease-in-out infinite; }
-.orb-2 { width:400px;height:400px;background:#3a2418;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
+.orb-1 { width:600px;height:600px;background:#1e3a5f;top:-200px;right:-150px;animation:drift 12s ease-in-out infinite; }
+.orb-2 { width:400px;height:400px;background:#9b2335;bottom:20%;left:-100px;animation:drift 14s ease-in-out infinite reverse; }
 
 @keyframes drift { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-36px)} }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
@@ -140,8 +139,8 @@ nav {
   margin-bottom:28px;
 }
 .case-hero h1 {
-  font-size:clamp(30px,4vw,58px);
-  letter-spacing:-0.05em; line-height:1; font-weight:800; margin-bottom:20px;
+  font-size:clamp(28px,3.6vw,52px);
+  letter-spacing:-0.05em; line-height:1.05; font-weight:800; margin-bottom:20px;
 }
 .case-subtitle { font-size:18px; color:var(--muted); line-height:1.6; margin-bottom:24px; max-width:560px; }
 
@@ -171,7 +170,7 @@ nav {
 }
 .hero-panel::before {
   content:''; position:absolute; top:0;left:0;right:0; height:2px;
-  background:linear-gradient(90deg, #8b0000, #3a2418);
+  background:linear-gradient(90deg, #1e3a5f, #9b2335);
 }
 .panel-badge {
   display:flex; align-items:center; gap:8px;
@@ -222,7 +221,6 @@ main { padding-bottom:120px; }
 .cs-body p { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
 .cs-body p:last-child { margin-bottom:0; }
 .section-intro { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
-.section-sublabel { font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; margin-top:28px; }
 
 /* ─── Goal / bullet lists ─── */
 .goal-list { list-style:none; display:flex; flex-direction:column; gap:6px; }
@@ -235,28 +233,26 @@ main { padding-bottom:120px; }
   width:5px; height:5px; background:var(--accent); border-radius:50%;
 }
 
-/* ─── My Role ─── */
+/* ─── Role ─── */
 .role-title { font-size:26px; font-weight:800; letter-spacing:-.03em; color:var(--text); margin-bottom:16px; }
-.role-desc { font-size:17px; color:var(--muted); line-height:1.8; }
-.responsibility-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.role-desc { font-size:17px; color:var(--muted); line-height:1.8; margin-bottom:20px; }
+.responsibility-grid { display:flex; flex-wrap:wrap; gap:8px; }
 .responsibility-pill {
   padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:999px;
   font-size:13px; font-weight:500; color:var(--text); transition:border-color .2s, color .2s;
 }
 .responsibility-pill:hover { border-color:var(--border-hi); color:var(--accent); }
 
-/* ─── Compare cards (too little / too much) ─── */
-.ux-compare { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
-.compare-col {
-  padding:24px 28px; border-radius:14px;
-  background:rgba(255,80,80,.04); border:1px solid rgba(255,80,80,.2);
+/* ─── Key message callout ─── */
+.key-message {
+  font-size:18px; font-style:italic; font-weight:500;
+  color:var(--text); line-height:1.6;
+  border-left:3px solid var(--accent);
+  padding:16px 20px;
+  background:var(--accent-lo);
+  border-radius:0 10px 10px 0;
+  margin:24px 0;
 }
-.compare-label {
-  font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
-  margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border);
-  color:rgba(255,100,100,.75);
-}
-.compare-q { font-size:16px; font-weight:600; color:var(--text); line-height:1.4; }
 
 /* ─── Tools ─── */
 .tools-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
@@ -266,16 +262,18 @@ main { padding-bottom:120px; }
 }
 .tool-badge:hover { border-color:var(--border-hi); color:var(--accent); }
 
-/* ─── Video embed ─── */
-.video-section-label {
-  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--muted); margin:0 0 14px;
+/* ─── View Course CTA ─── */
+.view-course-wrap { margin-top:40px; text-align:center; }
+.view-course-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 40px; border-radius:999px; border:1px solid var(--accent);
+  background:var(--accent); color:#fff;
+  text-decoration:none; font-size:15px; font-weight:700; letter-spacing:.04em;
+  box-shadow:0 0 20px rgba(2,105,237,.55);
+  animation:glow-pulse 2.5s ease-in-out infinite;
+  transition:transform .2s ease;
 }
-.video-block { margin-top:36px; margin-bottom:36px; }
-.video-block:last-child { margin-bottom:0; }
-.video-wrap-outer {
-  border-radius:16px; overflow:hidden; border:1px solid var(--border);
-}
+.view-course-btn:hover { transform:translateY(-2px); }
 
 /* ─── Back CTA ─── */
 .back-cta { padding:60px 6vw 0; text-align:center; }
@@ -296,7 +294,6 @@ main { padding-bottom:120px; }
 @media (max-width:900px) {
   .case-hero { grid-template-columns:1fr; gap:40px; }
   .cs-row { grid-template-columns:1fr; gap:32px; }
-  .ux-compare { grid-template-columns:1fr; }
 }
 
 /* ─── Audio Player ─── */
@@ -376,64 +373,68 @@ main { padding-bottom:120px; }
       <div class="breadcrumb reveal">
         <a href="index.html">Portfolio</a><span>/</span>
         <a href="index.html#work">Work</a><span>/</span>
-        Pinocchio: Vampire Slayer
+        2026 Cox Code of Conduct
       </div>
-      <div class="case-cat reveal">Motion Graphics</div>
-      <h1 class="reveal">Pinocchio:<br>Vampire Slayer</h1>
-      <p class="case-subtitle reveal">Bringing a graphic novel to life through cinematic motion design</p>
+      <div class="case-cat reveal">E-Learning</div>
+      <h1 class="reveal">2026 Cox Code<br>of Conduct</h1>
+      <p class="case-subtitle reveal">A story-driven enterprise compliance experience that challenged learners to think rather than click through</p>
       <div class="type-tags reveal">
-        <span class="type-pill">Motion Graphics</span>
-        <span class="type-pill">Trailer Production</span>
-        <span class="type-pill">Motion Comic</span>
-        <span class="type-pill">Video Editing</span>
-        <span class="type-pill">Storytelling</span>
-        <span class="type-pill">Sound Design</span>
+        <span class="type-pill">E-Learning</span>
+        <span class="type-pill">Compliance Training</span>
+        <span class="type-pill">Storyline Development</span>
+        <span class="type-pill">Enterprise Learning</span>
+        <span class="type-pill">AI Governance</span>
+        <span class="type-pill">Localization</span>
       </div>
       <div class="meta-row reveal">
         <div class="meta-cell">
           <div class="meta-label">Client</div>
-          <div class="meta-val">Van Jensen</div>
+          <div class="meta-val">Cox Enterprises</div>
         </div>
         <div class="meta-cell">
           <div class="meta-label">Year</div>
-          <div class="meta-val">2014</div>
+          <div class="meta-val">2025</div>
         </div>
         <div class="meta-cell">
           <div class="meta-label">Discipline</div>
-          <div class="meta-val">Motion Graphics</div>
+          <div class="meta-val">E-Learning</div>
         </div>
         <div class="meta-cell">
           <div class="meta-label">Role</div>
-          <div class="meta-val">Motion Designer</div>
+          <div class="meta-val">Sr. Instructional Designer</div>
         </div>
       </div>
     </div>
 
     <div class="hero-panel reveal">
-      <div class="panel-badge"><span class="panel-dot"></span> Promotional Campaign</div>
+      <div class="panel-badge"><span class="panel-dot"></span> Enterprise Compliance Program</div>
       <div class="panel-stats">
         <div class="panel-stat">
-          <span class="panel-stat-num">2</span>
-          <span class="panel-stat-desc">Promotional<br>Assets</span>
+          <span class="panel-stat-num">6</span>
+          <span class="panel-stat-desc">Team<br>Members</span>
         </div>
         <div class="panel-stat">
-          <span class="panel-stat-num">1</span>
-          <span class="panel-stat-desc">Opening Chapter<br>Adapted</span>
+          <span class="panel-stat-num">3</span>
+          <span class="panel-stat-desc">Languages<br>Supported</span>
         </div>
         <div class="panel-stat">
-          <span class="panel-stat-num">2014</span>
-          <span class="panel-stat-desc">Release<br>Year</span>
+          <span class="panel-stat-num">100+</span>
+          <span class="panel-stat-desc">Storyline<br>Screens</span>
         </div>
       </div>
       <div class="panel-divider"></div>
       <div class="engagement-phases">
         <div class="engagement-phase">
           <div class="phase-num">01</div>
-          Trailer Production
+          Course Concept &amp; Storyline
         </div>
         <div class="engagement-phase">
           <div class="phase-num">02</div>
-          Motion Comic Production
+          Vault Design &amp; Development
+        </div>
+        <div class="engagement-phase">
+          <div class="phase-num">03</div>
+          Localization &amp; Review
         </div>
       </div>
     </div>
@@ -446,8 +447,9 @@ main { padding-bottom:120px; }
     <div class="cs-label">Overview</div>
     <div class="cs-row full">
       <div class="cs-body">
-        <p>Pinocchio: Vampire Slayer is a dark reimagining of the classic fairy tale, following Pinocchio as he battles vampire hordes after the death of Geppetto. Instead of becoming a real boy, Pinocchio discovers that every lie causes his magical nose to grow into an endless supply of wooden stakes, turning his greatest flaw into his greatest weapon.</p>
-        <p>To help promote the graphic novel, I created both a cinematic promotional trailer and a motion comic adaptation of the opening chapter. The goal was to capture the tone of the series while transforming static comic panels into an engaging visual experience that introduced audiences to the world, characters, and central conflict.</p>
+        <p>Every year, Cox Enterprises delivers an enterprise-wide Code of Conduct program that reinforces the company's ethical standards, workplace expectations, and shared values.</p>
+        <p>For the 2026 edition, I collaborated with a multidisciplinary team of six instructional designers, developers, and creative professionals to modernize the learning experience. The course introduced new topics such as responsible AI, workplace safety, ethics, and decision-making while supporting employees in English, Spanish, and French.</p>
+        <p>My primary responsibility was designing and developing the Vault portion of the course, an interactive experience that challenged learners to apply what they had learned through engaging activities and scenarios. I also contributed to the overall learning concept and storyline that shaped the course narrative from beginning to end.</p>
       </div>
     </div>
   </div>
@@ -455,162 +457,103 @@ main { padding-bottom:120px; }
   <!-- ─── The Challenge ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">The Challenge</div>
-    <div class="cs-row full">
-      <div class="cs-body">
-        <p>Comic books tell stories through carefully illustrated panels, but digital audiences often expect movement, pacing, and cinematic presentation.</p>
-        <p>The challenge was creating promotional content that remained faithful to the original artwork while making it feel alive through animation, editing, and audio.</p>
-        <p>Rather than replacing the comic, the videos needed to encourage viewers to experience the full story for themselves.</p>
-      </div>
-    </div>
+    <p class="section-intro">Annual compliance courses often struggle to keep learners engaged because they're viewed as mandatory policy reviews rather than meaningful learning experiences.</p>
+    <p class="section-intro">Our team's challenge was to transform the Code of Conduct into an experience that encouraged employees to think critically about ethical decisions instead of simply acknowledging company policies.</p>
+    <p class="section-intro">The solution also needed to:</p>
+    <ul class="goal-list">
+      <li>Support a global workforce</li>
+      <li>Introduce new AI governance standards</li>
+      <li>Remain consistent across multiple learning modules</li>
+      <li>Support English, Spanish, and French</li>
+      <li>Deliver an engaging experience despite the large amount of required compliance content</li>
+    </ul>
+    <p class="section-intro" style="margin-top:24px;">Working with a team of six also introduced its own creative challenge. Each designer came to the project with a distinct vision for how the course should look and feel. Early in the process, reaching a shared creative direction required significant communication and compromise. Competing ideas about visual style, interaction patterns, and narrative approach had to be reconciled before development could move forward.</p>
+    <p class="section-intro" style="margin-bottom:0;">Aligning six designers around a single cohesive vision while respecting individual contributions was one of the most demanding aspects of the project, and ultimately one of its most valuable lessons.</p>
   </div>
 
   <!-- ─── My Role ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">My Role</div>
-    <div class="cs-row">
-      <div>
-        <div class="role-title">Motion Designer</div>
-        <p class="role-desc">I handled the creative production from concept through final delivery.</p>
-      </div>
-      <div>
-        <div class="responsibility-grid">
-          <span class="responsibility-pill">Motion graphics design</span>
-          <span class="responsibility-pill">Trailer editing</span>
-          <span class="responsibility-pill">Motion comic production</span>
-          <span class="responsibility-pill">Scene composition</span>
-          <span class="responsibility-pill">Timing and pacing</span>
-          <span class="responsibility-pill">Camera animation</span>
-          <span class="responsibility-pill">Visual effects</span>
-          <span class="responsibility-pill">Sound design</span>
-          <span class="responsibility-pill">Music synchronization</span>
-          <span class="responsibility-pill">Final rendering</span>
-        </div>
+    <div class="cs-row full">
+      <div class="role-title">Sr. Instructional Designer</div>
+      <p class="role-desc">This project was developed collaboratively by a team of six. My primary contributions included:</p>
+      <ul class="goal-list" style="margin-top:8px;">
+        <li>Co-developing the overall learning concept and storyline</li>
+        <li>Helping shape the script and narrative flow</li>
+        <li>Designing and developing the interactive Vault experience</li>
+        <li>Building Storyline interactions</li>
+        <li>Creating learner feedback and knowledge checks</li>
+        <li>Collaborating with teammates to ensure a consistent learner experience across the full course</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── The Solution ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">The Solution</div>
+    <div class="cs-row full">
+      <div class="cs-body">
+        <p>Rather than treating compliance as a collection of policy documents, our team designed a story-driven experience that encouraged learners to actively participate.</p>
+        <p>Each section combined multimedia, scenarios, and interactive exercises that reinforced real-world decision-making. As learners progressed through the course, they eventually entered the Vault, where they applied their knowledge through interactive challenges designed to reinforce key concepts before completing the training.</p>
+        <p>This structure helped transform the course from passive content consumption into active learning.</p>
       </div>
     </div>
   </div>
 
-  <!-- ─── Creative Strategy ─── -->
+  <!-- ─── My Contribution: Designing the Vault ─── -->
   <div class="cs-section reveal">
-    <div class="cs-label">Creative Strategy</div>
-    <p class="section-intro">Rather than simply animating comic pages, I approached the project as if I were editing a movie trailer. Each sequence was designed to build anticipation through:</p>
+    <div class="cs-label">Designing the Vault</div>
+    <p class="section-intro">The Vault served as the culminating experience within the course. My goal was to create an environment where learners could demonstrate what they had learned instead of simply recalling information.</p>
+    <p class="section-intro">To accomplish this, I designed interactive activities that required learners to evaluate situations, make decisions, and receive immediate coaching through Storyline feedback layers. Interaction types included:</p>
     <ul class="goal-list">
-      <li>Controlled pacing</li>
-      <li>Dramatic reveals</li>
-      <li>Layered camera movement</li>
-      <li>Dynamic transitions</li>
-      <li>Atmospheric sound design</li>
-      <li>Strategic timing</li>
+      <li>Scenario-based challenges</li>
+      <li>Knowledge checks</li>
+      <li>True/False interactions</li>
+      <li>Slider interactions</li>
+      <li>Immediate feedback</li>
+      <li>Progressive content reveals</li>
     </ul>
-    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">The objective was to preserve the comic's artwork while enhancing emotional impact through motion.</p>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">These activities reinforced topics such as responsible AI, workplace ethics, company procedures, and compliance expectations while giving learners an opportunity to apply their knowledge in context.</p>
   </div>
 
-  <!-- ─── Motion Comic Design ─── -->
+  <!-- ─── Storytelling & Learning Strategy ─── -->
   <div class="cs-section reveal">
-    <div class="cs-label">Motion Comic Design</div>
-    <p class="section-intro">One of the primary creative decisions was determining how much movement was enough.</p>
-    <div class="ux-compare">
-      <div class="compare-col">
-        <div class="compare-label">Too Little</div>
-        <div class="compare-q">Too little movement would feel like a slideshow.</div>
-      </div>
-      <div class="compare-col">
-        <div class="compare-label">Too Much</div>
-        <div class="compare-q">Too much movement would distract from the original illustrations.</div>
-      </div>
-    </div>
-    <p class="section-intro">I used subtle animation techniques to create the illusion of life while respecting the integrity of the artwork. These techniques included:</p>
+    <div class="cs-label">Storytelling &amp; Learning Strategy</div>
+    <p class="section-intro">In addition to development work, I collaborated with the team to help establish the overall storyline for the course. Rather than presenting policies as isolated topics, we created a narrative structure that connected multiple compliance themes into one cohesive learning experience.</p>
+    <p class="section-intro">This approach helped:</p>
     <ul class="goal-list">
-      <li>Camera pans</li>
-      <li>Zooms</li>
-      <li>Layered parallax movement</li>
-      <li>Environmental motion</li>
-      <li>Sequential panel transitions</li>
-      <li>Cinematic framing</li>
-      <li>Timed reveals</li>
+      <li>Increase learner engagement</li>
+      <li>Create smoother transitions between topics</li>
+      <li>Reinforce key messages throughout the course</li>
+      <li>Provide context for interactive activities</li>
+      <li>Make complex compliance topics easier to understand</li>
     </ul>
-    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">This approach maintained the feel of reading a graphic novel while adding the energy of an animated film.</p>
   </div>
 
-  <!-- ─── Trailer Production ─── -->
+  <!-- ─── Designing for a Global Workforce ─── -->
   <div class="cs-section reveal">
-    <div class="cs-label">Trailer Production</div>
-    <p class="section-intro">The promotional trailer was designed to introduce audiences to the story without revealing major plot points. Rather than explaining every detail, the trailer focused on creating curiosity by highlighting:</p>
+    <div class="cs-label">Designing for a Global Workforce</div>
+    <p class="section-intro">The completed course supported employees across multiple regions by providing localized versions in:</p>
     <ul class="goal-list">
-      <li>Pinocchio's transformation into an unlikely hero</li>
-      <li>The vampire invasion</li>
-      <li>High-action moments</li>
-      <li>The dark fantasy atmosphere</li>
-      <li>The central conflict driving the series</li>
+      <li>English</li>
+      <li>Spanish</li>
+      <li>French</li>
     </ul>
-    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">By emphasizing mood and pacing over exposition, the trailer invited viewers to discover the story themselves.</p>
-  </div>
-
-  <!-- ─── Visual Storytelling ─── -->
-  <div class="cs-section reveal">
-    <div class="cs-label">Visual Storytelling</div>
-    <p class="section-intro">Every editing decision was made to reinforce the tone of the source material. The project relied heavily on visual storytelling principles such as:</p>
-    <ul class="goal-list">
-      <li>Suspense through pacing</li>
-      <li>Contrast between quiet and action sequences</li>
-      <li>Dramatic framing</li>
-      <li>Sequential reveals</li>
-      <li>Rhythm created through editing and music</li>
-      <li>Emotional emphasis through timing</li>
-    </ul>
-    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">Instead of simply showing artwork, the videos guided viewers through the narrative in a cinematic way.</p>
-  </div>
-
-  <!-- ─── Tools Used ─── -->
-  <div class="cs-section reveal">
-    <div class="cs-label">Tools Used</div>
-    <div class="tools-grid">
-      <span class="tool-badge">Adobe After Effects</span>
-      <span class="tool-badge">Adobe Premiere Pro</span>
-      <span class="tool-badge">Adobe Photoshop</span>
-      <span class="tool-badge">Adobe Audition</span>
-    </div>
+    <p class="section-intro" style="margin-top:24px; margin-bottom:0;">Although my primary focus remained on the Vault experience, collaboration with the broader team ensured that interactions, feedback, and learning objectives remained consistent across every language version.</p>
   </div>
 
   <!-- ─── Final Result ─── -->
   <div class="cs-section reveal">
     <div class="cs-label">Final Result</div>
-    <p class="section-intro">The completed project included two promotional assets:</p>
     <div class="cs-row full">
       <div class="cs-body">
-        <p><strong style="color:var(--text);">Trailer</strong> &mdash; A cinematic marketing piece designed to introduce audiences to the Pinocchio: Vampire Slayer universe and generate excitement for the graphic novel.</p>
-        <p><strong style="color:var(--text);">Motion Comic</strong> &mdash; A short adaptation of the opening chapter that combined animation, camera movement, sound effects, and music to transform static comic artwork into an engaging digital storytelling experience.</p>
-        <p>Together, these assets extended the reach of the graphic novel beyond traditional print by creating content that could be shared across websites, conventions, and social media.</p>
+        <p>The completed Code of Conduct course became Cox Enterprises' 2026 enterprise-wide compliance training, delivering a modern, interactive learning experience to employees across multiple business units and languages.</p>
+        <p>Working as part of a six-person team, I helped shape the overall learning narrative while designing and developing the interactive Vault experience that reinforced critical compliance concepts through learner participation rather than passive reading.</p>
+        <p>The finished course successfully blended storytelling, multimedia, scenarios, and interactive assessments into a scalable compliance solution that supported ethical decision-making across the organization.</p>
       </div>
     </div>
-
-    <div class="video-block">
-      <div class="video-section-label">Watch Trailer</div>
-      <div class="video-wrap-outer">
-        <div style="padding:66.67% 0 0 0;position:relative;">
-          <iframe src="https://player.vimeo.com/video/104660955?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            style="position:absolute;top:0;left:0;width:100%;height:100%;"
-            title="Pinocchio: The Vampire Slayer Trailer">
-          </iframe>
-        </div>
-      </div>
-    </div>
-
-    <div class="video-block">
-      <div class="video-section-label">Watch Motion Comic</div>
-      <div class="video-wrap-outer">
-        <div style="padding:66.67% 0 0 0;position:relative;">
-          <iframe src="https://player.vimeo.com/video/104656842?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            style="position:absolute;top:0;left:0;width:100%;height:100%;"
-            title="Pinocchio: The Vampire Slayer Motion Comic">
-          </iframe>
-        </div>
-      </div>
+    <div class="view-course-wrap">
+      <a href="https://360.articulate.com/review/content/9f3a303c-3def-475c-911e-620a0a498b12/review" target="_blank" rel="noopener" class="view-course-btn">View Course &#8599;</a>
     </div>
   </div>
 
@@ -619,10 +562,24 @@ main { padding-bottom:120px; }
     <div class="cs-label">Reflection</div>
     <div class="cs-row full">
       <div class="cs-body">
-        <p>This project challenged me to think like both a filmmaker and a motion designer.</p>
-        <p>Unlike traditional animation, motion comics rely on restraint. Every movement must serve the story rather than compete with the artwork. I learned how subtle camera motion, thoughtful editing, and carefully timed audio can dramatically increase emotional impact without altering the original illustrations.</p>
-        <p>It also reinforced an important lesson that continues to influence my work today: motion should support storytelling, not overshadow it. That philosophy has carried forward into my work creating learning experiences, promotional videos, and interactive media.</p>
+        <p>This project reinforced the value of collaboration on large-scale enterprise learning initiatives.</p>
+        <p>Working alongside five other designers allowed us to divide ownership while maintaining a consistent learner experience across more than a hundred Storyline screens. My contributions to both the course narrative and the Vault experience demonstrated how instructional design extends beyond screen development, requiring thoughtful storytelling, collaboration, and interaction design to create learning that employees genuinely engage with.</p>
+        <p>It also strengthened my ability to contribute to complex compliance initiatives where multiple stakeholders, emerging topics like responsible AI, and multilingual delivery all needed to come together in one cohesive learning experience.</p>
       </div>
+    </div>
+  </div>
+
+  <!-- ─── Tools Used ─── -->
+  <div class="cs-section reveal">
+    <div class="cs-label">Tools Used</div>
+    <div class="tools-grid">
+      <span class="tool-badge">Articulate Storyline 360</span>
+      <span class="tool-badge">Adobe Illustrator</span>
+      <span class="tool-badge">Adobe Photoshop</span>
+      <span class="tool-badge">Adobe After Effects</span>
+      <span class="tool-badge">Microsoft Copilot</span>
+      <span class="tool-badge">Claude</span>
+      <span class="tool-badge">Synthesia</span>
     </div>
   </div>
 
@@ -705,7 +662,6 @@ document.addEventListener("DOMContentLoaded", function() {
     <span class="ap-time" id="apTime">0:00</span>
   </div>
 </div>
-<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
 (function(){
   var audio=document.getElementById('audioEl'),playBtn=document.getElementById('apPlayBtn'),icon=document.getElementById('apPlayIcon'),bar=document.getElementById('apBar'),timeEl=document.getElementById('apTime'),wrap=document.getElementById('apProgressWrap');
