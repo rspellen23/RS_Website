@@ -334,6 +334,14 @@ main { padding-bottom:120px; }
 .audio-player.is-min .ap-min-btn svg { transform:rotate(180deg); }
 
 /* ─── Site Footer ─── */
+.conf-notice-wrap { padding:56px 6vw 52px; }
+.conf-notice { display:flex; gap:18px; align-items:flex-start; background:rgba(255,255,255,.05); border:1px solid var(--border); border-left:3px solid var(--border-hi); border-radius:12px; padding:24px 28px; }
+[data-theme="light"] .conf-notice { background:rgba(0,0,0,.04); }
+.conf-notice-icon { font-size:22px; flex-shrink:0; line-height:1; margin-top:2px; }
+.conf-notice-title { font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--text); margin-bottom:10px; }
+.conf-notice-text { font-size:14px; color:var(--muted); line-height:1.75; margin-bottom:8px; }
+.conf-notice-text:last-child { margin-bottom:0; }
+.conf-notice-closing { font-style:italic; color:var(--text) !important; }
 .site-footer { display:block !important; background:linear-gradient(135deg,#0b0f22 0%,#10152b 55%,#0e1020 100%); border-top:1px solid rgba(2,105,237,.28); padding:64px 6vw 52px; margin-top:80px; position:relative; z-index:1; overflow:hidden; }
 [data-theme="light"] .site-footer { background:linear-gradient(135deg,#e4eaff 0%,#eef1ff 55%,#dde6ff 100%); border-top:1px solid rgba(2,105,237,.18); }
 .footer-inner { display:grid !important; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:56px; align-items:start; }
@@ -668,8 +676,19 @@ main { padding-bottom:120px; }
   </div>
 
   <!-- ─── Back CTA ─── -->
-  <div class="back-cta reveal">
-    <a href="index.html#work" class="back-btn">Back to Work</a>
+  <div class="conf-notice-wrap">
+  <div class="conf-notice">
+    <span class="conf-notice-icon">🔒</span>
+    <div>
+      <p class="conf-notice-title">Protecting Client Confidentiality</p>
+      <p class="conf-notice-text">Throughout my career, I&#8217;ve partnered with organizations across healthcare, financial services, technology, and telecommunications to design learning experiences, digital products, and communication campaigns.</p>
+      <p class="conf-notice-text">Because much of this work contains proprietary information, internal processes, or confidential business content, the portfolio examples presented here have been selectively edited. Rather than displaying complete courses or full project deliverables, I&#8217;ve included representative sections that demonstrate my design thinking, creative approach, and technical execution while honoring the confidentiality and trust of the organizations I&#8217;ve worked with.</p>
+      <p class="conf-notice-text conf-notice-closing">Protecting client information is just as important as showcasing my work.</p>
+    </div>
+  </div>
+</div>
+<div class="back-cta reveal">
+<a href="index.html#work" class="back-btn">Back to Work</a>
   </div>
 
 </main>
