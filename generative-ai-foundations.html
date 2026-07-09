@@ -8,7 +8,10 @@
 
 <!-- Run before CSS renders to prevent theme flash -->
 <script>
-(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;})();
+(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;  var minBtn=document.getElementById('apMinBtn'),ap=document.getElementById('audioPlayer');
+  if(localStorage.getItem('rs-audio-min')==='1')ap.classList.add('is-min');
+  minBtn.addEventListener('click',function(e){e.stopPropagation();var m=ap.classList.toggle('is-min');if(m)localStorage.setItem('rs-audio-min','1');else localStorage.removeItem('rs-audio-min');});
+})();
 </script>
 
 <style>
@@ -500,7 +503,7 @@ footer {
 }
 
 /* ─── Audio Player ─── */
-.audio-player { position:fixed; bottom:28px; right:28px; z-index:300; background:var(--card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border-hi); border-radius:18px; padding:18px 22px; min-width:248px; box-shadow:0 8px 40px rgba(0,0,0,.28),0 0 0 1px var(--border); transition:background .4s ease,border-color .4s ease; }
+.audio-player { position:fixed; bottom:28px; right:28px; z-index:300; background:var(--card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border-hi); border-radius:18px; padding:18px 22px; min-width:248px; box-shadow:0 8px 40px rgba(0,0,0,.28),0 0 0 1px var(--border); transition:background .4s ease,border-color .4s ease,padding .25s ease,min-width .25s ease; overflow:hidden; }
 .audio-player::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),#5c2eed); border-radius:18px 18px 0 0; }
 .ap-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
 .ap-icon { width:30px; height:30px; flex-shrink:0; background:var(--accent-lo); border:1px solid var(--border-hi); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--accent); }
@@ -515,6 +518,13 @@ footer {
 .ap-progress-wrap { flex:1; height:4px; background:var(--border); border-radius:2px; cursor:pointer; position:relative; overflow:hidden; }
 .ap-progress-bar { height:100%; width:0%; background:var(--accent); border-radius:2px; transition:width .1s linear; }
 .ap-time { font-size:10px; font-weight:600; color:var(--muted); letter-spacing:.05em; min-width:30px; text-align:right; font-family:'Courier New',monospace; }
+.ap-min-btn { background:none; border:none; color:var(--muted); cursor:pointer; padding:4px 6px; display:flex; align-items:center; justify-content:center; border-radius:6px; margin-left:auto; flex-shrink:0; transition:color .2s,background .2s; }
+.ap-min-btn:hover { color:var(--text); background:var(--accent-lo); }
+.ap-min-btn svg { width:14px; height:14px; transition:transform .3s ease; }
+.audio-player.is-min { padding:12px 16px; min-width:0; }
+.audio-player.is-min .ap-header { margin-bottom:0; }
+.audio-player.is-min .ap-track,.audio-player.is-min .ap-controls { display:none; }
+.audio-player.is-min .ap-min-btn svg { transform:rotate(180deg); }
 
 /* ─── Site Footer ─── */
 .site-footer { display:block !important; background:linear-gradient(135deg,#0b0f22 0%,#10152b 55%,#0e1020 100%); border-top:1px solid rgba(2,105,237,.28); padding:64px 6vw 52px; margin-top:80px; position:relative; z-index:1; overflow:hidden; }
@@ -1069,6 +1079,9 @@ document.addEventListener("DOMContentLoaded", function() {
       <span class="ap-title">me + you &#8212; peace</span>
       <span class="ap-label">Now Playing</span>
     </div>
+    <button class="ap-min-btn" id="apMinBtn" aria-label="Minimize player">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 9 12 15 6 9"/></svg>
+    </button>
   </div>
   <div class="ap-controls">
     <button class="ap-play-btn" id="apPlayBtn" aria-label="Play">

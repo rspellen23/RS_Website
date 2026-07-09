@@ -519,6 +519,27 @@ h1 {
   position: relative;
   z-index: 1;
 }
+.work-thumb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: grayscale(100%);
+  opacity: 0.45;
+}
+.work-thumb.has-img::after {
+  background: linear-gradient(135deg, rgba(0,0,0,0.28) 0%, transparent 55%, var(--accent-mid) 100%);
+}
+.work-thumb.has-img .thumb-lbl {
+  color: rgba(255,255,255,0.92);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.75);
+}
+[data-theme="light"] .work-thumb.has-img .thumb-lbl {
+  color: #07090f;
+  text-shadow: 0 1px 4px rgba(255,255,255,0.6);
+}
 
 .work-body { padding: 28px 28px 32px; }
 
@@ -780,7 +801,8 @@ footer {
   border: 1px solid var(--border-hi); border-radius: 18px;
   padding: 18px 22px; min-width: 248px;
   box-shadow: 0 8px 40px rgba(0,0,0,.28), 0 0 0 1px var(--border);
-  transition: background .4s ease, border-color .4s ease;
+  transition: background .4s ease, border-color .4s ease, padding .25s ease, min-width .25s ease;
+  overflow: hidden;
 }
 .audio-player::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -834,6 +856,20 @@ footer {
   letter-spacing: .05em; min-width: 30px; text-align: right;
   font-family: 'Courier New', monospace;
 }
+.ap-min-btn {
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; padding: 4px 6px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; margin-left: auto; flex-shrink: 0;
+  transition: color .2s, background .2s;
+}
+.ap-min-btn:hover { color: var(--text); background: var(--accent-lo); }
+.ap-min-btn svg { width: 14px; height: 14px; transition: transform .3s ease; }
+.audio-player.is-min { padding: 12px 16px; min-width: 0; }
+.audio-player.is-min .ap-header { margin-bottom: 0; }
+.audio-player.is-min .ap-track,
+.audio-player.is-min .ap-controls { display: none; }
+.audio-player.is-min .ap-min-btn svg { transform: rotate(180deg); }
 
 /* ─── Site Footer ─── */
 .site-footer { display:block !important; background:linear-gradient(135deg,#0b0f22 0%,#10152b 55%,#0e1020 100%); border-top:1px solid rgba(2,105,237,.28); padding:64px 6vw 52px; margin-top:80px; position:relative; z-index:1; overflow:hidden; }
@@ -1046,7 +1082,8 @@ footer {
 
     <!-- AT&T Collaborate — UI/UX -->
     <a class="work-item reveal" data-category="uiux" href="att-collaborate.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/att-collab-title-card.jpg" alt="" loading="lazy">
         <span class="thumb-lbl">AT&amp;T Collaborate</span>
       </div>
       <div class="work-body">
@@ -1063,7 +1100,8 @@ footer {
 
     <!-- Shepherd Center Website Redesign — UI/UX category -->
     <a class="work-item reveal" data-category="uiux" href="shepherd-center.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/sc-title-card.jpg" alt="" loading="lazy">
         <span class="thumb-lbl">Shepherd Center</span>
       </div>
       <div class="work-body">
@@ -1080,7 +1118,8 @@ footer {
 
     <!-- AI Customer Segmentation — AI category -->
     <a class="work-item reveal" data-category="ai" href="ai-segmentation.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/cb-segmentation-title-card.png" alt="" loading="lazy" style="opacity:.6">
         <span class="thumb-lbl">AI Segmentation</span>
       </div>
       <div class="work-body">
@@ -1097,8 +1136,9 @@ footer {
 
     <!-- Generative AI Foundations — AI category -->
     <a class="work-item reveal" data-category="ai" href="generative-ai-foundations.html">
-      <div class="work-thumb">
-        <span class="thumb-lbl">AI Foundations</span>
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/gen-ai-title-card.jpg" alt="" loading="lazy" style="opacity:.7">
+        <span class="thumb-lbl">Generative AI Foundations</span>
       </div>
       <div class="work-body">
         <div class="work-card-meta">
@@ -1114,8 +1154,9 @@ footer {
 
     <!-- Microsoft Copilot in Action at First Tech — AI category -->
     <a class="work-item reveal" data-category="ai" href="copilot-in-action.html">
-      <div class="work-thumb">
-        <span class="thumb-lbl">Copilot in Action</span>
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/copilot-first-tech-title-card.png" alt="" loading="lazy">
+        <span class="thumb-lbl">Copilot in Action at First Tech</span>
       </div>
       <div class="work-body">
         <div class="work-card-meta">
@@ -1131,7 +1172,8 @@ footer {
 
     <!-- Account Life Cycle — E-Learning -->
     <a class="work-item reveal" data-category="elearning" href="account-life-cycle.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/account-life-cycle-title-card.jpg" alt="" loading="lazy">
         <span class="thumb-lbl">Account Life Cycle</span>
       </div>
       <div class="work-body">
@@ -1148,7 +1190,8 @@ footer {
 
     <!-- Intapp DMS — E-Learning -->
     <a class="work-item reveal" data-category="elearning" href="intapp-dms.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/intapp-dms-title-card.jpg" alt="" loading="lazy">
         <span class="thumb-lbl">Intapp DMS</span>
       </div>
       <div class="work-body">
@@ -1165,7 +1208,8 @@ footer {
 
     <!-- Technical Discovery — E-Learning -->
     <a class="work-item reveal" data-category="elearning" href="technical-discovery.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/technical-discovery-title-card.png" alt="" loading="lazy" style="opacity:.7">
         <span class="thumb-lbl">Technical Discovery</span>
       </div>
       <div class="work-body">
@@ -1182,7 +1226,8 @@ footer {
 
     <!-- 2026 Cox Code of Conduct — E-Learning category -->
     <a class="work-item reveal" data-category="elearning" href="cox-code-of-conduct.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/2026-cox-code-of-conduct-title-card.png" alt="" loading="lazy">
         <span class="thumb-lbl">Cox Code of Conduct</span>
       </div>
       <div class="work-body">
@@ -1199,7 +1244,8 @@ footer {
 
     <!-- Pinocchio: Vampire Slayer — Motion Graphics category -->
     <a class="work-item reveal" data-category="motion" href="pinocchio-vampire-slayer.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/pinocchio-vampire-slayer-title-card.png" alt="" loading="lazy" style="opacity:.6; filter:grayscale(100%) brightness(0.85)">
         <span class="thumb-lbl">Pinocchio: Vampire Slayer</span>
       </div>
       <div class="work-body">
@@ -1216,7 +1262,8 @@ footer {
 
     <!-- Cox Mobile Employee Discount Campaign — Motion Graphics category -->
     <a class="work-item reveal" data-category="motion" href="cox-employee-discount.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/cox-employee-discount-title-card.jpg" alt="" loading="lazy">
         <span class="thumb-lbl">Cox Mobile Employee Discount</span>
       </div>
       <div class="work-body">
@@ -1233,7 +1280,8 @@ footer {
 
     <!-- Bulk in ICE Launch Campaign — Motion Graphics category -->
     <a class="work-item reveal" data-category="motion" href="bulk-in-ice.html">
-      <div class="work-thumb">
+      <div class="work-thumb has-img">
+        <img class="work-thumb-img" src="images/title-cards-imgs/bulk-in-ice-title-card.jpg" alt="" loading="lazy" style="opacity:.7">
         <span class="thumb-lbl">Bulk in ICE</span>
       </div>
       <div class="work-body">
@@ -1591,6 +1639,9 @@ document.addEventListener("DOMContentLoaded", () => {
       <span class="ap-title">me + you — peace</span>
       <span class="ap-label">Now Playing</span>
     </div>
+    <button class="ap-min-btn" id="apMinBtn" aria-label="Minimize player">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 9 12 15 6 9"/></svg>
+    </button>
   </div>
   <div class="ap-controls">
     <button class="ap-play-btn" id="apPlayBtn" aria-label="Play">
@@ -1630,6 +1681,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function initDuck(){var frs=document.querySelectorAll('iframe[src*="vimeo"]:not([data-duck])');if(!frs.length)return;if(typeof Vimeo!=='undefined'){attachDuck(frs);}else{var s=document.createElement('script');s.src='https://player.vimeo.com/api/player.js';s.onload=function(){attachDuck(document.querySelectorAll('iframe[src*="vimeo"]:not([data-duck])'));};document.head.appendChild(s);}}
   window._rsAP={initDuck:initDuck};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initDuck);else initDuck();
+  var minBtn=document.getElementById('apMinBtn'),ap=document.getElementById('audioPlayer');
+  if(localStorage.getItem('rs-audio-min')==='1')ap.classList.add('is-min');
+  minBtn.addEventListener('click',function(e){e.stopPropagation();var m=ap.classList.toggle('is-min');if(m)localStorage.setItem('rs-audio-min','1');else localStorage.removeItem('rs-audio-min');});
 })();
 </script>
 
