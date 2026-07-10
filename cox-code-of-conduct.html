@@ -265,18 +265,10 @@ main { padding-bottom:120px; }
 }
 .tool-badge:hover { border-color:var(--border-hi); color:var(--accent); }
 
-/* ─── View Course CTA ─── */
-.view-course-wrap { margin-top:40px; text-align:center; }
-.view-course-btn {
-  display:inline-flex; align-items:center; gap:10px;
-  padding:16px 40px; border-radius:999px; border:1px solid var(--accent);
-  background:var(--accent); color:#fff;
-  text-decoration:none; font-size:15px; font-weight:700; letter-spacing:.04em;
-  box-shadow:0 0 20px rgba(2,105,237,.55);
-  animation:glow-pulse 2.5s ease-in-out infinite;
-  transition:transform .2s ease;
-}
-.view-course-btn:hover { transform:translateY(-2px); }
+/* ─── Video Embed ─── */
+.video-block { margin-top:36px; margin-bottom:36px; }
+.video-block:last-child { margin-bottom:0; }
+.video-wrap-outer { border-radius:16px; overflow:hidden; border:1px solid var(--border); }
 
 /* ─── Back CTA ─── */
 .back-cta { padding:60px 6vw 0; text-align:center; }
@@ -581,9 +573,11 @@ main { padding-bottom:120px; }
     </div>
   </div>
 </div>
-<div class="view-course-wrap">
-      <a href="https://360.articulate.com/review/content/9f3a303c-3def-475c-911e-620a0a498b12/review" target="_blank" rel="noopener" class="view-course-btn">View Course &#8599;</a>
-    </div>
+<div class="video-block">
+  <div class="video-wrap-outer">
+    <div style="padding:52.83% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1208642676?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="2026 Cox CoC Demo"></iframe></div>
+  </div>
+</div>
   </div>
 
   <!-- ─── Reflection ─── -->
@@ -724,6 +718,7 @@ document.addEventListener("DOMContentLoaded", function() {
 })();
 </script>
 
+<script src="https://player.vimeo.com/api/player.js"></script>
 <script src="js/router.js"></script>
 </body>
 </html>
