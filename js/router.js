@@ -73,7 +73,17 @@
         }
 
         if (!isPop) history.pushState({}, doc.title, url);
-        window.scrollTo(0, 0);
+
+        var _hash = url.split('#')[1];
+        if (_hash) {
+          window.scrollTo(0, 0);
+          setTimeout(function() {
+            var _el = document.getElementById(_hash);
+            if (_el) _el.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        } else {
+          window.scrollTo(0, 0);
+        }
 
         if (isIndexUrl(url)) {
           initIndex();
@@ -300,8 +310,16 @@
     var url = a.href;
     if (!isSameDir(url)) return;
 
-    // Same page → scroll to top
+    // Same page
     if (url.split('#')[0] === location.href.split('#')[0]) {
+      var _h = url.split('#')[1];
+      if (_h) {
+        // Hash link on same page — let browser scroll natively
+        var _target = document.getElementById(_h);
+        if (_target) { e.preventDefault(); _target.scrollIntoView({ behavior: 'smooth' }); }
+        return;
+      }
+      // No hash (e.g. logo click on homepage) → scroll to top
       window.scrollTo(0, 0);
       return;
     }
