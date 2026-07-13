@@ -7,10 +7,7 @@
 <link rel="stylesheet" href="footer.css" />
 
 <script>
-(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;  var minBtn=document.getElementById('apMinBtn'),ap=document.getElementById('audioPlayer');
-  if(localStorage.getItem('rs-audio-min')==='1')ap.classList.add('is-min');
-  minBtn.addEventListener('click',function(e){e.stopPropagation();var m=ap.classList.toggle('is-min');if(m)localStorage.setItem('rs-audio-min','1');else localStorage.removeItem('rs-audio-min');});
-})();
+(function(){var s=localStorage.getItem("rs-theme");if(s)document.documentElement.dataset.theme=s;})();
 </script>
 
 <style>
@@ -759,6 +756,9 @@ document.addEventListener("DOMContentLoaded", function() {
   function initDuck(){var frs=document.querySelectorAll('iframe[src*="vimeo"]:not([data-duck])');if(!frs.length)return;if(typeof Vimeo!=='undefined'){attachDuck(frs);}else{var s=document.createElement('script');s.src='https://player.vimeo.com/api/player.js';s.onload=function(){attachDuck(document.querySelectorAll('iframe[src*="vimeo"]:not([data-duck])'));};document.head.appendChild(s);}}
   window._rsAP={initDuck:initDuck};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initDuck);else initDuck();
+  var minBtn=document.getElementById('apMinBtn'),ap=document.getElementById('audioPlayer');
+  if(localStorage.getItem('rs-audio-min')==='1')ap.classList.add('is-min');
+  minBtn.addEventListener('click',function(e){e.stopPropagation();var m=ap.classList.toggle('is-min');if(m)localStorage.setItem('rs-audio-min','1');else localStorage.removeItem('rs-audio-min');});
 })();
 </script>
 
