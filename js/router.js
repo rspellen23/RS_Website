@@ -81,13 +81,12 @@
 
         var _hash = url.split('#')[1];
         if (_hash) {
-          window.scrollTo(0, 0);
-          setTimeout(function() {
+          requestAnimationFrame(function() {
             var _el = document.getElementById(_hash);
             if (_el) _el.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
+          });
         } else {
-          window.scrollTo(0, 0);
+          window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
         if (isIndexUrl(url)) {
