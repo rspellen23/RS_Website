@@ -58,6 +58,11 @@
           cm.innerHTML = nm.innerHTML;
         }
 
+        // Swap <nav> (homepage and case studies have different nav HTML)
+        var nn = doc.querySelector('nav');
+        var cn = document.querySelector('nav');
+        if (nn && cn) cn.innerHTML = nn.innerHTML;
+
         // Swap lightbox overlay (lives outside <main>)
         var curLb = document.getElementById('lightbox');
         var newLb = doc.getElementById('lightbox');
